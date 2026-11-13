@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Grade Tracker · Fall 2026</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><style id="app-css">:root{
+  --bg:#F6F7FB; --card:#FFFFFF; --ink:#0D1226; --ink2:#3A4360; --mut:#69728C; --line:#E4E8F2; --soft:#EFF1F8;
+  --blue:#1B3FD1; --blue-soft:#E8EDFD; --gold:#FFB81C; --good:#0F8A5F; --good-soft:#E1F5EA; --warn:#B8400A; --warn-soft:#FFF0E6;
+  --disp:"Unbounded","Plus Jakarta Sans",system-ui,sans-serif;
+  --shadow:0 1px 2px rgba(13,18,38,.05),0 12px 30px -16px rgba(13,18,38,.18);
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 72px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.55 "Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:rgba(255,255,255,.95);z-index:30}
+h1,h2,h3,p{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
+.disp{font-family:var(--disp);font-weight:800;letter-spacing:-0.04em}
+
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:62px}
+.brand{display:flex;align-items:center;gap:11px;font-family:var(--disp);font-weight:800;font-size:15px;letter-spacing:-0.03em;background:none;border:0;cursor:pointer;padding:0}
+.mark{width:28px;height:28px;border-radius:9px;background:var(--blue);position:relative;flex:0 0 auto}
+.mark::after{content:"";position:absolute;left:7px;bottom:6px;width:14px;height:14px;border-radius:4px;background:var(--gold)}
+.tabs{display:flex;gap:4px;overflow-x:auto}
+.tabs button{background:none;border:0;border-radius:99px;padding:8px 15px;cursor:pointer;color:var(--ink2);font-weight:600;white-space:nowrap}
+.tabs button:hover{background:var(--soft);color:var(--ink)}
+
+main{padding:34px 0 110px}
+.page-h{font-family:var(--disp);font-size:clamp(34px,6vw,60px);font-weight:800;letter-spacing:-0.05em;line-height:1}
+.lede{color:var(--mut);margin-top:12px;max-width:56ch;font-size:16px}
+.card{background:var(--card);border-radius:28px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.mut{color:var(--mut)}
+.sechead{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:56px 0 16px;scroll-margin-top:76px}
+.sechead h2{font-family:var(--disp);font-size:clamp(22px,3vw,30px);font-weight:800;letter-spacing:-0.045em}
+.sechead p{color:var(--mut);font-size:14px}
+
+.hero{position:relative;overflow:hidden;margin-top:28px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:22px 40px;align-items:center;padding:clamp(24px,3.6vw,44px);border-radius:36px;background-color:var(--blue);background-image:radial-gradient(rgba(255,255,255,.16) 1.2px,transparent 1.4px);background-size:24px 24px;color:#fff}
+.hero .lab{font-weight:700;display:flex;align-items:center;gap:12px;color:#fff}
+.hero .lab::before{content:"";width:30px;height:5px;border-radius:5px;background:var(--gold)}
+.gnum{font-family:var(--disp);font-size:clamp(50px,8.4vw,96px);font-weight:800;letter-spacing:-0.05em;line-height:1;margin-top:18px;color:#fff}
+.hero .sub{margin-top:12px;color:rgba(255,255,255,.82)}
+.after{margin-top:18px;padding:11px 16px;border-radius:16px;background:rgba(255,255,255,.14);color:#fff;font-size:14px;display:inline-block}
+.after b{color:var(--gold);font-family:var(--disp);font-weight:800;font-size:17px;letter-spacing:-0.03em}
+.hc svg{display:block;width:100%;height:auto}
+.hc text{fill:rgba(255,255,255,.8);font:12px "Plus Jakarta Sans",system-ui,sans-serif}
+.hc .val{fill:#fff;font-weight:800;font-size:13px}
+.hc .ch-grid{stroke:rgba(255,255,255,.2)}
+.hc .ch-line{fill:none;stroke:var(--gold);stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.hc .ch-area{fill:var(--gold);fill-opacity:.16}
+.hc .ch-dot{fill:var(--gold);stroke:#fff;stroke-width:3}
+.hc .ch-dot.proj{fill:var(--blue);stroke:var(--gold)}
+
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.tile{position:relative;display:flex;flex-direction:column;text-align:left;width:100%;min-height:290px;cursor:pointer;border:0;border-radius:32px;padding:24px 24px 22px;background:var(--c);color:var(--fg);box-shadow:var(--shadow)}
+.tile:focus-visible{outline-color:var(--ink)}
+@media (prefers-reduced-motion:no-preference){.tile{transition:transform .18s ease,box-shadow .18s ease}.tile:hover{transform:translateY(-4px);box-shadow:0 18px 36px -18px rgba(13,18,38,.5)}}
+.tile .nm{font-weight:800;font-size:18px;line-height:1.2;letter-spacing:-0.02em}
+.tile .cd{font-size:13px;opacity:.78;margin-top:3px}
+.tile .L{font-family:var(--disp);font-weight:800;font-size:clamp(64px,7.6vw,92px);letter-spacing:-0.06em;line-height:1;margin-top:auto;padding-top:18px}
+.tile .row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:8px}
+.tile .p{font-weight:800;font-size:21px;letter-spacing:-0.02em}
+.tile .pj{font-size:13.5px;opacity:.85}
+.tile .pj b{font-weight:800}
+.tbar{height:8px;border-radius:99px;background:color-mix(in srgb,var(--fg) 20%,transparent);overflow:hidden;margin-top:16px}
+.tbar i{display:block;height:100%;background:var(--fg);border-radius:99px}
+.tile small{display:block;margin-top:8px;font-size:12.5px;opacity:.85}
+.tile .late{display:inline-block;margin-top:9px;padding:3px 11px;border-radius:99px;background:var(--fg);color:var(--c);font-size:12px;font-weight:700}
+
+.panel{padding:6px 26px}
+.up{display:grid;grid-template-columns:116px minmax(0,1fr);gap:4px 16px;padding:14px 0;border-bottom:1px solid var(--line);align-items:start}
+.up:last-child{border-bottom:0}
+.up .d{font-weight:700;font-size:14px}
+.up .c{color:var(--mut);font-size:13px;display:flex;align-items:center;gap:8px}
+.dot{width:12px;height:12px;border-radius:99px;background:var(--c);flex:0 0 auto}
+.up .c .dot{width:9px;height:9px}
+.empty{padding:18px 0;color:var(--mut)}
+.banner{margin-top:22px;padding:15px 20px;border-radius:20px;background:var(--gold);color:#2B1D00}
+.banner b{font-weight:800}
+
+.gpagrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:14px}
+.gp{padding:20px 24px}
+.gp .t{color:var(--mut);font-size:13.5px;font-weight:600}
+.gp .v{font-family:var(--disp);font-size:clamp(32px,4.4vw,42px);font-weight:800;letter-spacing:-0.05em;line-height:1.1;margin-top:8px;color:var(--blue)}
+.gp .s{color:var(--mut);font-size:13.5px;margin-top:6px}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:13px 8px;border-bottom:1px solid var(--line);font-size:14.5px;vertical-align:middle}
+th{color:var(--mut);font-weight:700;font-size:12.5px}
+td.r,th.r{text-align:right}
+tr:last-child td{border-bottom:0}
+td .dot{display:inline-block;margin-right:12px;width:11px;height:11px;vertical-align:-1px}
+.scroll{overflow-x:auto}
+
+input[type=number],input[type=text],select{background:var(--soft);border:2px solid transparent;border-radius:12px;padding:8px 11px;width:100%;min-width:0}
+input[type=number]:hover,input[type=text]:hover,select:hover{border-color:var(--line)}
+input[type=number]:focus,input[type=text]:focus,select:focus{border-color:var(--blue);background:#fff;outline:0}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield;appearance:textfield}
+td input[type=number]{width:78px}
+td select{width:116px}
+
+.semgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(440px,1fr));gap:16px}
+.sem{padding:0;overflow:hidden}
+.semtop{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 24px;background:var(--hd);color:var(--hf)}
+.semtop h3{font-size:17px;font-weight:800;letter-spacing:-0.02em}
+.semtop .g{font-family:var(--disp);font-size:28px;font-weight:800;letter-spacing:-0.05em;line-height:1;text-align:right}
+.semtop .g small{display:block;font:600 12px "Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:0;margin-top:6px;opacity:.85}
+.semb{padding:8px 24px 20px}
+.cr{display:grid;grid-template-columns:minmax(0,1fr) 42px 56px 42px;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:14.5px}
+.cr:last-of-type{border-bottom:0}
+.cr .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.cr .m{color:var(--mut);text-align:right;font-size:13px}
+.cr .gg{background:var(--blue-soft);color:var(--blue);border-radius:99px;text-align:center;font-weight:800;font-size:13px;padding:2px 0}
+.semnote{color:var(--mut);font-size:13px;margin-top:12px}
+.semnote b{color:var(--ink)}
+
+.back{background:none;border:0;color:var(--mut);cursor:pointer;padding:6px 0;font-weight:600}
+.back:hover{color:var(--ink)}
+.cpage{--c:var(--blue);--fg:#fff}
+.cband{margin-top:10px;border-radius:36px;padding:clamp(22px,3.4vw,40px);background:var(--c);color:var(--fg);box-shadow:var(--shadow)}
+.chead{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.chead h1{font-family:var(--disp);font-size:clamp(26px,4.4vw,44px);font-weight:800;letter-spacing:-0.05em;line-height:1.05}
+.chead p{opacity:.8;margin-top:8px;font-weight:500}
+.fld{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;background:var(--fg);color:var(--c);border-radius:99px;padding:6px 8px 6px 18px}
+.fld input{width:72px;text-align:center;border-radius:99px;background:#fff;color:var(--ink)}
+.gblocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:26px 44px;margin-top:30px}
+.glabel{font-weight:700;font-size:13.5px;opacity:.85}
+.gletter{font-family:var(--disp);font-size:clamp(70px,11vw,118px);font-weight:800;letter-spacing:-0.06em;line-height:1;margin-top:8px}
+.gpct{font-size:23px;font-weight:800;margin-top:10px;letter-spacing:-0.02em}
+.ghint{font-size:13px;margin-top:4px;opacity:.8}
+.track{height:10px;border-radius:99px;background:color-mix(in srgb,var(--fg) 20%,transparent);overflow:hidden;margin-top:28px}
+.track i{display:block;height:100%;background:var(--fg);border-radius:99px}
+.csum{margin-top:16px;padding:26px clamp(20px,3vw,32px)}
+.fillbox label{display:flex;justify-content:space-between;gap:12px;color:var(--ink2);font-weight:600}
+.fillbox label b{font-family:var(--disp);font-weight:800;color:var(--ink);letter-spacing:-0.03em}
+input[type=range]{width:100%;accent-color:var(--blue);margin:14px 0 0}
+.need{margin-top:24px;padding-top:24px;border-top:1px solid var(--line)}
+.need h3{font-size:15px;font-weight:800;margin-bottom:12px}
+.needgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.nd{background:var(--soft);border-radius:18px;padding:13px 15px}
+.nd b{font-family:var(--disp);font-size:19px;font-weight:800;letter-spacing:-0.05em}
+.nd span{display:block;font-size:13px;color:var(--mut);margin-top:4px}
+.nd.lock{background:var(--good-soft)}
+.nd.lock b{color:var(--good)}
+.nd.out{opacity:.55}
+
+.ecbox{margin-top:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--ink2);font-weight:600;background:#fff;border:1px solid var(--line);border-radius:22px;padding:14px 22px;box-shadow:var(--shadow)}
+.ecbox input{width:92px}
+.cat{margin-top:18px;overflow:hidden}
+.cathead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:16px 22px;border-bottom:1px solid var(--line)}
+.cathead h3{font-size:17px;font-weight:800;letter-spacing:-0.02em;display:flex;align-items:center;gap:11px}
+.cathead h3::before{content:"";width:12px;height:12px;border-radius:4px;background:var(--c);flex:0 0 auto}
+.catmeta{display:flex;align-items:center;gap:14px;color:var(--mut);font-size:13.5px;flex-wrap:wrap}
+.catmeta input{width:66px;padding:6px 8px}
+.catmeta .cpct{color:var(--ink);font-weight:800;min-width:5.5ch;text-align:center;background:var(--soft);border-radius:99px;padding:4px 12px}
+.rule{padding:12px 22px 0;color:var(--mut);font-size:13.5px}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 88px 88px 88px 74px 28px;gap:8px;align-items:center;padding:6px 22px}
+.grid.h{color:var(--mut);font-size:12.5px;font-weight:700;padding-top:14px;padding-bottom:2px}
+.grid .it{min-width:0}
+.grid .it input{background:transparent;padding:5px 8px;font-weight:600}
+.grid .it input:hover{background:var(--soft)}
+.due{padding:0 10px;font-size:12.5px;color:var(--mut)}
+.due.late{color:var(--warn)}
+.rpct{font-size:13.5px;text-align:center;font-weight:800;border-radius:99px;padding:4px 6px;color:var(--mut)}
+.rpct.on{background:var(--c);color:var(--fg)}
+.rpct.wi{font-style:italic;font-weight:600;border:1px dashed var(--mut)}
+.x{background:none;border:0;color:var(--mut);cursor:pointer;font-size:18px;line-height:1;border-radius:8px;padding:2px 6px}
+.x:hover{color:var(--warn);background:var(--warn-soft)}
+.addrow{padding:8px 22px 18px;display:flex;gap:10px;flex-wrap:wrap}
+.btn{background:#fff;border:2px solid var(--line);border-radius:99px;padding:8px 17px;cursor:pointer;font-size:14px;font-weight:700}
+.btn:hover{border-color:var(--blue);color:var(--blue)}
+.btn.pri{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.pri:hover{color:#fff;opacity:.92}
+.notes{margin-top:36px}
+.notes h2{font-family:var(--disp);font-size:22px;font-weight:800;letter-spacing:-0.045em}
+.notes ul{margin:12px 0 0;padding-left:20px;color:var(--ink2)}
+.notes li{margin:8px 0;max-width:78ch}
+
+details{margin-top:48px}
+summary{cursor:pointer;color:var(--mut);padding:6px 0;font-weight:600}
+textarea{width:100%;min-height:120px;background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:12px;font:12.5px/1.4 ui-monospace,Menlo,Consolas,monospace}
+.savestat{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:40;padding:8px 15px;border-radius:99px;background:var(--ink);color:#fff;font-size:13px;font-weight:700;box-shadow:var(--shadow);display:none}
+.savestat.busy,.savestat.ok,.savestat.warn{display:block}
+.savestat.busy{background:var(--ink2)}
+.savestat.ok{background:var(--good)}
+.savestat.warn{background:var(--warn)}
+
+@media (max-width:980px){
+  .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:860px){
+  .hero{grid-template-columns:1fr}
+  .tabs button{padding:8px 11px}
+}
+@media (max-width:640px){
+  .tiles{grid-template-columns:1fr}
+  .tile{min-height:250px}
+  .semgrid{grid-template-columns:1fr}
+  .grid{grid-template-columns:minmax(0,1fr) 1fr 1fr 1fr 66px 24px;padding:6px 16px}
+  .grid .it{grid-column:1/-1}
+  .grid.h{display:none}
+  .grid{row-gap:2px}
+  .cathead,.rule,.addrow{padding-left:16px;padding-right:16px}
+  .up{grid-template-columns:1fr}
+  .brand span.t{display:none}
+}
+</style></head><body><header class="top" id="shell-header"><div class="wrap">
+  <button class="brand" data-act="go" data-v="home" aria-label="Grade Tracker home"><span class="mark"></span><span class="t">Grade Tracker</span></button>
+  <nav class="tabs" aria-label="Sections">
+    <button data-act="go" data-v="home">Home</button>
+    <button data-act="jump" data-t="classes">Classes</button>
+    <button data-act="jump" data-t="gpa">GPA</button>
+  </nav>
+</div></header><main><div class="wrap" id="main"></div></main><div id="saveStat" class="savestat" role="status" aria-live="polite"></div><script id="saved" type="application/json">null</script><script id="app-js">
+
+"use strict";
+/* ---------- grade scales ---------- */
+const STD=[[97,'A+',4],[93,'A',4],[90,'A-',3.75],[87,'B+',3.25],[83,'B',3],[80,'B-',2.75],[77,'C+',2.25],[73,'C',2],[70,'C-',1.75],[67,'D+',1.25],[63,'D',1],[60,'D-',0.75],[0,'F',0]];
+const S370=[[98,'A+',4],[93,'A',4],[90,'A-',3.75],[88,'B+',3.25],[83,'B',3],[80,'B-',2.75],[78,'C+',2.25],[73,'C',2],[70,'C-',1.75],[68,'D+',1.25],[63,'D',1],[60,'D-',0.75],[0,'F',0]];
+const S1017=[[98,'A+',4],[93,'A',4],[90,'A-',3.75],[88,'B+',3.25],[82,'B',3],[80,'B-',2.75],[78,'C+',2.25],[72,'C',2],[70,'C-',1.75],[68,'D+',1.25],[60,'D',1],[0,'F',0]];
+const SCALES={std:STD,s370:S370,s1017:S1017};
+const COLORS={tob:'#FF7A59',syn:'#7B5CFF',fna:'#19C3A5',ecl:'#B8E651',eco:'#FFC233',hps:'#4C92FF'};
+const LETTERS=['A+','A','A-','B+','B','B-','C+','C','C-','D+','D','D-','F'];
+const GPAOF={'A+':4,'A':4,'A-':3.75,'B+':3.25,'B':3,'B-':2.75,'C+':2.25,'C':2,'C-':1.75,'D+':1.25,'D':1,'D-':0.75,'F':0};
+
+/* ---------- earlier semesters ---------- */
+const PRIOR=[];
+const PRIOR_CR=PRIOR.reduce((a,s)=>a+s.c.reduce((b,x)=>b+x[1],0),0);
+const PRIOR_QP=PRIOR.reduce((a,s)=>a+s.c.reduce((b,x)=>b+x[1]*x[2],0),0);
+
+/* ---------- course definitions ---------- */
+const I=(n,p,d,dl,opt)=>({n:n,p:p,e:null,w:null,d:d||null,dl:dl||'',opt:!!opt});
+const G=(n,p,e,d)=>{const x=I(n,p,d);x.e=e;return x;};
+
+function baseDefaults(){
+  const mods=[['Module 1','2026-09-12','2026-09-14'],['Module 2','2026-09-30','2026-10-02'],['Module 3','2026-10-24','2026-10-26'],['Module 4','2026-11-14','2026-11-16'],['Module 5','2026-12-07','2026-12-09']];
+  return {v:1,ts:0,gpaPick:{},courses:[
+  {id:'tob',name:'Technologies of the Body',code:'ENGFLM 0585 · Hebert',credits:null,scale:'std',scaleAssumed:true,pooled:false,lenience:0,fill:90,target:'A',ec:null,
+   notes:[
+    'Weekly reflections: 13 are offered but only 10 count, so each one is 5% of your grade. Pick the ones you skip.',
+    'Two absences are allowed. More than two starts to hurt your grade. Regular lateness counts as an absence.',
+    'Late work isn’t accepted without prior approval from Dr. Hebert.',
+    'Creative Assignment #1 was due Sep 22–29, #2 Oct 27–Nov 3, #3 on Dec 1.',
+    'The syllabus has no grading scale, so the standard +/− scale is used here.'],
+   cats:[
+    {name:'Participation and attendance',w:20,rule:'avg',items:[I('Participation and attendance',100)]},
+    {name:'Creative Assignment #1 (flipbook / zoetrope)',w:10,rule:'avg',items:[I('Creative Assignment #1',100,'2026-09-29','due Sep 22–29')]},
+    {name:'Creative Assignment #2 (video project)',w:10,rule:'avg',items:[I('Creative Assignment #2',100,'2026-11-03','due Oct 27–Nov 3')]},
+    {name:'Creative Assignment #3 (stop-motion short)',w:10,rule:'avg',items:[I('Creative Assignment #3',100,'2026-12-01')]},
+    {name:'Weekly reflections (best 10 of 13)',w:50,rule:'avg',items:[1,2,3,4,5,6,7,8,9,10].map(n=>I('Reflection '+n,100))}
+   ]},
+  {id:'syn',name:'Synaptic Transmission',code:'NROSCI 1017 · Fraser',credits:null,scale:'s1017',scaleAssumed:false,pooled:false,lenience:0,fill:90,target:'A',ec:null,
+   notes:[
+    'Exams 1–3 are 20% each and the final is 30%. No exams are dropped, and there are no make-ups for unexcused absences.',
+    'The final has a Unit 4 section plus a cumulative section.',
+    'Four quizzes are 2.5% each. Optional case studies can replace a lower quiz if the case study score is higher. A quiz you skipped (zero) isn’t swapped.',
+    'Exam dates aren’t in the syllabus. Check Canvas and add them to the item names if you want them here.'],
+   cats:[
+    {name:'Exam 1',w:20,rule:'avg',items:[I('Exam 1',100)]},
+    {name:'Exam 2',w:20,rule:'avg',items:[I('Exam 2',100)]},
+    {name:'Exam 3',w:20,rule:'avg',items:[I('Exam 3',100)]},
+    {name:'Final exam',w:30,rule:'avg',items:[I('Final exam',100)]},
+    {name:'Quizzes (and optional case studies)',w:10,rule:'swap',items:[I('Quiz 1',100),I('Quiz 2',100),I('Quiz 3',100),I('Quiz 4',100),I('Case study 1',100,null,'',true),I('Case study 2',100,null,'',true)]}
+   ]},
+  {id:'fna',name:'Functional Neuroanatomy',code:'NROSCI 1011 · Fanselow',credits:null,scale:'std',scaleAssumed:false,pooled:true,lenience:0,fill:90,target:'A',
+   ec:{label:'Extra points (in-class exercises, online modules)',unit:'pts',val:null},
+   notes:[
+    'Graded on total points out of 370. Nothing is dropped.',
+    'Anatomy quizzes can be taken twice. General quizzes once. All quizzes and case studies close at 11:59:00 PM.',
+    'Extra points come from in-class exercises (in person only) and some online modules. They only help.',
+    'The syllabus lists the Module 5 exam as Mon 12/9, 2:00–2:50 AM. Dec 9, 2026 is a Wednesday, so confirm the date and time on Canvas.'],
+   cats:[
+    {name:'Anatomy quizzes',w:25,rule:'sum',items:mods.map(m=>I(m[0]+' anatomy quiz',5,m[1]))},
+    {name:'General quizzes',w:25,rule:'sum',items:mods.map(m=>I(m[0]+' general quiz',5,m[1]))},
+    {name:'Case studies',w:20,rule:'sum',items:mods.map(m=>I(m[0]+' case study',4,m[1]))},
+    {name:'Module exams',w:300,rule:'sum',items:mods.map(m=>I(m[0]+' exam',60,m[2]))}
+   ]},
+  {id:'ecl',name:'Ecology Lab',code:'BIOSC 0373 · Olmsted',credits:null,scale:'std',scaleAssumed:false,pooled:false,lenience:0.5,fill:90,target:'A',
+   ec:{label:'Extra credit: research talks (+1 point each, max 3)',unit:'pct',val:null,max:3},
+   notes:[
+    'Final grades within 0.5% of the next letter round up. The letter shown here already counts that.',
+    'Late work loses 10% and is accepted until the last day of class (work from the first 8 weeks was due by Oct 30). Failing submitted work is floored at 50%.',
+    'Two unexcused absences and you can’t pass the class.',
+    'Extra credit talks need a one-page summary within a week of attending.',
+    'Dates for notebook checks, drafts and discussions are the week they’re due. Check the schedule for the exact day.'],
+   cats:[
+    {name:'Field notebook / datasheet checks',w:15,rule:'avg',items:[I('Notebook check 1',100,'2026-09-25','week of Sep 21'),I('Notebook check 2',100,'2026-10-23','week of Oct 19'),I('Notebook check 3',100,'2026-11-20','week of Nov 16')]},
+    {name:'Mini-manuscripts (final drafts)',w:20,rule:'avg',items:[I('Mini-manuscript 1 final',100,'2026-10-16','week of Oct 12'),I('Mini-manuscript 2 final',100,'2026-11-20','week of Nov 16')]},
+    {name:'Paper discussions',w:10,rule:'avg',items:[I('Paper discussion 1',100,'2026-10-02','week of Sep 28'),I('Paper discussion 2',100,'2026-10-23','week of Oct 19')]},
+    {name:'Assignments and activities',w:25,rule:'avg',items:[I('Assignments and activities (running average)',100)]},
+    {name:'Student-led research project',w:15,rule:'avg',items:[I('Research project',100)]},
+    {name:'Final presentation',w:15,rule:'avg',items:[I('Final presentation',100,'2026-12-04','week of Nov 30')]}
+   ]},
+  {id:'eco',name:'Ecology',code:'BIOSC 0370 · Lehrer',credits:null,scale:'s370',scaleAssumed:false,pooled:false,lenience:0,fill:90,target:'A',ec:null,
+   notes:[
+    'Only your best 3 of 4 exams count (115 points each, 69% of the grade). A skipped exam is fine, but a zero from cheating still counts.',
+    'Participation (Top Hat): 75 of 100 points is full credit. Homework: 80 of 100 points is full credit. Extra points beyond that don’t carry over.',
+    'For both, enter points earned and points possible so far, and the full-credit line is applied for you.',
+    'Late homework loses 10% per day for up to 10 days. Exams are 9/15, 10/6 and 11/5. The final date isn’t set yet.'],
+   cats:[
+    {name:'Exams (best 3 of 4)',w:69,rule:'best',n:3,items:[G('Exam 1',115,null,'2026-09-15'),G('Exam 2',115,null,'2026-10-06'),G('Exam 3',115,null,'2026-11-05'),I('Final exam',115,null,'date to be announced')]},
+    {name:'Participation (Top Hat)',w:15,rule:'cap',cap:0.75,items:[G('Class 1 · Introduction to Ecology',3,null),G('Class 2 · Evolutionary Ecology',3,null),G('Class 3 · Global Climates',4,null),G('Class 5 · Terrestrial Biomes',2,null),G('Class 6 · Aquatic Biomes',4,null),G('Class 8 · Aquatic adaptations',4,null),G('Class 10 · Variable environments',4,null),G('Class 11 · Life Histories',4,null),G('Class 12 · Reproductive Strategies',4,null),G('Class 14 · Social Behaviors',4,null),G('Class 15 · Population Distributions',4,null),G('Class 18 · Population Dynamics',6,null),G('Class 19 · Predation and Herbivory',4,null),G('Class 20 · Predation and Herbivory',4,null),G('Class 23 · Community Structure, part 1',2,null),G('Class 24 · Community Succession',4,null)]},
+    {name:'Homework (Achieve)',w:16,rule:'cap',cap:0.8,items:[G('Chapter 1 homework',4,null,'2026-08-30'),G('Chapter 5 homework',4,null,'2026-08-30'),G('Post-debate reflection',4,null,'2026-09-04'),G('Chapter 2 homework',4,null,'2026-09-06'),G('Chapter 3 homework',4,null,'2026-09-06'),G('Biome climate diagram',2,null,'2026-09-08'),G('Chapter 4 homework',7,null,'2026-09-13'),G('Chapter 6 homework',7,null,'2026-09-20'),G('Class 9 · Terrestrial adaptations',4,null,'2026-09-22'),G('Chapter 7 homework',4,null,'2026-09-27'),G('Chapter 8 homework',4,null,'2026-09-27'),G('Chapter 9 homework',4,null,'2026-10-04'),G('Chapter 10 homework',4,null,'2026-10-04'),G('Chapter 11 homework',7,null,'2026-10-11'),G('Class 16 · Population growth',5,null,'2026-10-15'),G('Chapter 12 homework',4,null,'2026-10-18'),G('Chapter 13 homework',4,null,'2026-10-18'),G('Class 17 · Population dynamics',6,null,'2026-10-20'),G('Chapter 14 homework',7,null,'2026-10-25'),G('Chapter 15 homework',7,null,'2026-11-01'),G('Class 21 · Competition',8,null,'2026-11-04'),G('Chapter 17 homework',7,null,'2026-11-08'),G('Class 23 · Community structure, part 2',2,null,'2026-11-12'),G('Chapter 19 homework',4,null,'2026-11-15'),G('Chapter 20 homework',4,null,'2026-11-15')]}
+   ]},
+  {id:'hps',name:'Mind and Medicine',code:'HPS 0612 · Atanasova',credits:null,scale:'std',scaleAssumed:true,pooled:false,lenience:0,fill:90,target:'A',
+   ec:{label:'Extra credit (percentage points added)',unit:'pct',val:null},
+   notes:[
+    'Canvas says assignments aren’t weighted. The weights here come from the syllabus.',
+    'Quizzes in the first category are treated as equal weight. Change that by editing their “out of” values.',
+    'Top Hat quizzes can’t be made up. Extra credit exists to cover missed ones.',
+    'White paper: the syllabus says due Dec 11, Canvas lists Dec 12. The earlier date is used. Presentations are in class Nov 30 and Dec 2.',
+    'The syllabus has no grading scale, so the standard +/− scale is used here.'],
+   cats:[
+    {name:'Comprehension quizzes (Canvas)',w:15,rule:'avg',items:[
+      I('Quiz on arguments and reading an article',100,'2026-08-28'),I('Quiz 2.1 · Rise and Fall of the Asylum',100,'2026-08-31'),I('Quiz 2.2 · Szasz',100,'2026-09-02'),I('Quiz 3 · Rosenhan',100),
+      I('Quiz 4.2 · Medical model',100,'2026-09-16'),I('Quiz 5.1 · Biopsychosocial model',100,'2026-09-21'),I('Quiz 5.2 · Harmful dysfunction',100,'2026-09-21'),
+      I('Quiz 6.1.1 · Ex-Patients’ Movement',100,'2026-09-28'),I('Quiz 6.1.2 · Neurodiversity',100,'2026-09-28'),I('Quiz 9.1 · Addiction as a brain disease',100,'2026-10-21'),
+      I('Quiz 9.2 · Addiction as a contextual disease',100,'2026-10-21'),I('Quiz 11.1 · Medicalization of cannabis',100,'2026-11-02'),I('Quiz 11.2 · Cannabis use disorder',100,'2026-11-04')]},
+    {name:'In-class quizzes (Top Hat)',w:15,rule:'avg',items:[I('Top Hat overall',100)]},
+    {name:'Midterm quiz',w:15,rule:'avg',items:[I('Midterm quiz',100,'2026-10-18')]},
+    {name:'Final quiz',w:15,rule:'avg',items:[I('Final quiz',100,'2026-11-29')]},
+    {name:'Group presentation',w:10,rule:'avg',items:[I('Group presentation',100,'2026-12-02','in class Nov 30 / Dec 2')]},
+    {name:'Group white paper',w:20,rule:'avg',items:[I('Group white paper',100,'2026-12-11','Canvas: Dec 12')]},
+    {name:'White paper individual notes',w:5,rule:'avg',items:[I('Individual notes',100,'2026-12-12')]},
+    {name:'Course dictionary (Quizlet)',w:5,rule:'avg',items:[I('Course dictionary',100)]}
+   ]}
+  ]};
+}
+
+/* ---------- state ---------- */
+const KEY='pitt-grade-tracker-fall26-v2', KEY1='pitt-grade-tracker-fall26-v1';
+let S=null, view='home', dbDoc=null, wipeArmed=false;
+
+function loadMerged(saved){
+  const D=defaults();
+  if(!saved||!saved.courses) return D;
+  D.gpaPick=saved.gpaPick||{};
+  D.ts=saved.ts||0;
+  D.courses.forEach(c=>{
+    const sc=saved.courses.find(x=>x.id===c.id);
+    if(!sc) return;
+    if(sc.credits!==undefined) c.credits=sc.credits;
+    if(typeof sc.fill==='number') c.fill=sc.fill;
+    if(sc.target) c.target=sc.target;
+    if(c.ec&&sc.ec&&sc.ec.val!==undefined) c.ec.val=sc.ec.val;
+    c.cats.forEach(k=>{
+      const sk=(sc.cats||[]).find(x=>x.name===k.name);
+      if(!sk) return;
+      if(typeof sk.w==='number') k.w=sk.w;
+      if(Array.isArray(sk.items)) k.items=sk.items.map(it=>({n:String(it.n||''),p:(typeof it.p==='number'?it.p:100),e:(typeof it.e==='number'?it.e:null),w:(typeof it.w==='number'?it.w:null),d:it.d||null,dl:it.dl||'',opt:!!it.opt}));
+    });
+  });
+  return D;
+}
+function readLocal(k){ try{ const r=localStorage.getItem(k||KEY); return r?JSON.parse(r):null; }catch(e){ return null; } }
+
+/* ---------- grade engine ---------- */
+function ratio(it,mode,fill){
+  if(!(it.p>0)) return null;
+  if(it.e!=null) return it.e/it.p;
+  if(mode==='proj'){
+    if(it.w!=null) return it.w/it.p;
+    if(!it.opt && fill!=null) return fill/100;
+  }
+  return null;
+}
+function catRes(cat,mode,fill){
+  const its=cat.items;
+  if(cat.rule==='swap'){
+    const q=[],cs=[];
+    its.forEach(it=>{
+      if(it.opt){
+        let r=null;
+        if(it.p>0&&it.e!=null) r=it.e/it.p; else if(mode==='proj'&&it.p>0&&it.w!=null) r=it.w/it.p;
+        if(r!=null) cs.push(r);
+      }else{
+        const r=ratio(it,mode,fill); if(r!=null) q.push(r);
+      }
+    });
+    if(!q.length) return null;
+    cs.sort((a,b)=>b-a);
+    const idx=q.map((r,i)=>i).filter(i=>q[i]>0).sort((a,b)=>q[a]-q[b]);
+    let ci=0;
+    idx.forEach(i=>{ if(ci<cs.length&&cs[ci]>q[i]){ q[i]=cs[ci]; ci++; } });
+    return {pct:100*q.reduce((a,b)=>a+b,0)/q.length};
+  }
+  const list=[];
+  its.forEach(it=>{ const r=ratio(it,mode,fill); if(r!=null) list.push({r:r,p:it.p,e:r*it.p}); });
+  if(!list.length) return null;
+  const sumE=a=>a.reduce((s,x)=>s+x.e,0), sumP=a=>a.reduce((s,x)=>s+x.p,0);
+  if(cat.rule==='avg') return {pct:100*list.reduce((s,x)=>s+x.r,0)/list.length};
+  if(cat.rule==='best'){
+    const top=list.slice().sort((a,b)=>b.r-a.r).slice(0,cat.n||list.length);
+    return {pct:100*sumE(top)/sumP(top)};
+  }
+  if(cat.rule==='cap') return {pct:Math.min(100,100*(sumE(list)/sumP(list))/cat.cap)};
+  return {pct:100*sumE(list)/sumP(list)};
+}
+function ecVal(c){
+  if(!c.ec||c.ec.val==null) return 0;
+  const v=c.ec.val; return c.ec.max!=null?Math.min(v,c.ec.max):v;
+}
+function courseRes(c,mode,fill){
+  if(fill===undefined) fill=c.fill;
+  if(c.pooled){
+    let E=0,P=0,allP=0,done=0,count=0;
+    c.cats.forEach(k=>k.items.forEach(it=>{
+      if(!(it.p>0)) return;
+      allP+=it.p; count++;
+      if(it.e!=null){ done+=it.p; }
+      const r=ratio(it,mode,fill);
+      if(r!=null){ E+=r*it.p; P+=it.p; }
+    }));
+    let pct=null;
+    if(P>0) pct=100*(E+((c.ec&&c.ec.unit==='pts')?ecVal(c):0))/P;
+    return {pct:pct,progress:allP?done/allP:0};
+  }
+  let num=0,den=0,tw=0,pw=0;
+  c.cats.forEach(k=>{
+    const w=k.w||0; tw+=w;
+    const real=k.items.filter(it=>!it.opt);
+    const entered=real.filter(it=>it.e!=null&&it.p>0).length;
+    const denom=Math.min(real.length,k.rule==='best'?(k.n||real.length):real.length)||1;
+    pw+=w*Math.min(1,entered/denom);
+    const r=catRes(k,mode,fill);
+    if(r){ num+=w*r.pct; den+=w; }
+  });
+  let pct=null;
+  if(den>0){ pct=num/den; if(c.ec&&c.ec.unit==='pct') pct+=ecVal(c); }
+  return {pct:pct,progress:tw?pw/tw:0};
+}
+function scaleRow(c,pct){
+  if(pct==null) return null;
+  const sc=SCALES[c.scale]; const adj=pct+(c.lenience||0)+1e-9;
+  return sc.find(r=>adj>=r[0])||sc[sc.length-1];
+}
+const letterOf=(c,pct)=>{const r=scaleRow(c,pct);return r?r[1]:'–';};
+function remaining(c){
+  let n=0; c.cats.forEach(k=>k.items.forEach(it=>{ if(!it.opt&&it.p>0&&it.e==null&&it.w==null) n++; })); return n;
+}
+function needed(c,min){
+  const g=x=>{const p=courseRes(c,'proj',x).pct; return p==null?-1e9:p+(c.lenience||0)+1e-9;};
+  if(g(0)>=min) return {kind:'lock'};
+  if(g(150)<min) return {kind:'out'};
+  let lo=0,hi=150;
+  for(let i=0;i<50;i++){ const mid=(lo+hi)/2; if(g(mid)>=min) hi=mid; else lo=mid; }
+  const x=Math.ceil(hi*1000)/1000;
+  return {kind:x>100?'over':'need',x:x};
+}
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const $$=s=>Array.from(document.querySelectorAll(s));
+const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+const num=v=>{v=String(v).trim(); if(v==='') return null; const x=parseFloat(v); return isNaN(x)?null:x;};
+const f1=x=>(Math.round(x*10)/10).toFixed(1);
+const trim=s=>s.indexOf('.')<0?s:s.replace(/0+$/,'').replace(/\.$/,'');
+const f3=x=>trim((Math.round(x*1000)/1000).toFixed(3));
+const pctS=x=>x==null?'–':f3(x)+'%';
+const getC=id=>S.courses.find(c=>c.id===id);
+const T=new Date();
+const TODAY=T.getFullYear()+'-'+String(T.getMonth()+1).padStart(2,'0')+'-'+String(T.getDate()).padStart(2,'0');
+function isoPlus(n){const d=new Date(T.getFullYear(),T.getMonth(),T.getDate()+n);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+const fd=d=>new Date(d+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+const gpaOf=(c,pct)=>{const r=scaleRow(c,pct);return r?r[2]:null;};
+const g2=x=>x==null?'–':trim((Math.round(x*1000)/1000).toFixed(3));
+
+function defaults(){
+  const D=baseDefaults();
+  const C=id=>D.courses.find(c=>c.id===id);
+  const K=(c,n)=>c.cats.find(k=>k.name===n);
+
+  /* Synaptic Transmission: scores from Canvas */
+  const syn=C('syn');
+  K(syn,'Quizzes (and optional case studies)').items=[G('Unit 1 quiz',14,null,'2026-09-15'),G('Unit 2 quiz',11,null,'2026-10-11'),G('Unit 3 quiz',13,null,'2026-11-07'),I('Unit 4 quiz (extra time)',13),I('Case study #1',13,'2026-11-07','',true)];
+
+  /* Mind and Medicine: scores from Canvas */
+  const hps=C('hps');
+  const q=K(hps,'Comprehension quizzes (Canvas)'); q.rule='sum';
+  q.items=[G('Quiz on arguments and reading an article',10,null,'2026-08-28'),G('Quiz 2.1 · Rise and Fall of the Asylum',5,null,'2026-08-31'),G('Quiz 2.2 · Szasz',4,null,'2026-09-02'),G('Quiz 3 · Rosenhan',10,null),G('Quiz 4.2 · Medical model',10,null,'2026-09-16'),G('Quiz 5.1 · Biopsychosocial model',10,null,'2026-09-21'),G('Quiz 5.2 · Harmful dysfunction',10,null,'2026-09-21'),G('Quiz 6.1.1 · Ex-Patients’ Movement',10,null,'2026-09-28'),G('Quiz 6.1.2 · Neurodiversity',10,null,'2026-09-28'),G('Quiz 9.1 · Addiction as a brain disease',3,null,'2026-10-21'),G('Quiz 9.2 · Addiction as a contextual disease',3,null,'2026-10-21'),G('Quiz 11.1 · Medicalization of cannabis',5,null,'2026-11-02'),G('Quiz 11.2 · Cannabis use disorder',5,null,'2026-11-04')];
+  K(hps,'Midterm quiz').items=[G('Midterm quiz',20,null,'2026-10-18')];
+  const gp=K(hps,'Group presentation'); gp.items=[G('Final presentation',100,null,'2026-12-09')]; gp.items[0].dl='in class Nov 30 / Dec 2';
+  K(hps,'Group white paper').items=[G('Phase 3 · Complete paper',35,null,'2026-12-12')];
+  K(hps,'White paper individual notes').items=[G('Individual notes submission',35,null,'2026-12-12')];
+  hps.notes=[
+    "Canvas says assignments aren’t weighted. The weights here come from the syllabus.",
+    "Quizzes are scored by total points within the category, the way Canvas groups work.",
+    "Top Hat quizzes can’t be made up. Extra credit exists to cover missed ones.",
+    "Final presentations, the white paper and individual notes are due Dec 9 and Dec 12 on Canvas.",
+    "The syllabus has no grading scale, so the standard +/− scale is used here."
+  ];
+  return D;
+}
+
+
+const OLD_PCT={};
+const OLD_X=[];
+
+function ruleText(k){
+  if(k.rule==='avg') return k.items.length>1?'Each item counts equally.':'';
+  if(k.rule==='sum') return '';
+  if(k.rule==='best') return 'Only your best '+k.n+' of '+k.items.length+' count.';
+  if(k.rule==='cap') return Math.round(k.cap*100)+'% of all points is full credit. Enter points earned and possible so far.';
+  if(k.rule==='swap') return 'A higher case study score replaces your lowest quiz. A quiz you skipped isn’t swapped.';
+  return '';
+}
+function itemRow(c,k,i,it){
+  const base='data-c="'+c.id+'" data-k="'+k+'" data-i="'+i+'"';
+  const late=it.d&&it.d<TODAY&&it.e==null&&!it.opt;
+  const due=it.d?'<div class="due'+(late?' late':'')+'" data-due="1">'+(it.dl?esc(it.dl)+' · ':'')+(late?'past due · ':'')+fd(it.d)+'</div>':(it.dl?'<div class="due">'+esc(it.dl)+'</div>':'');
+  return '<div class="grid">'
+    +'<div class="it"><input type="text" data-f="n" '+base+' value="'+esc(it.n)+'" aria-label="Item name">'+due+'</div>'
+    +'<input type="number" step="any" inputmode="decimal" data-f="e" '+base+' value="'+(it.e==null?'':it.e)+'" placeholder="earned" aria-label="Points earned">'
+    +'<input type="number" step="any" inputmode="decimal" data-f="p" '+base+' value="'+(it.p==null?'':it.p)+'" placeholder="out of" aria-label="Points possible">'
+    +'<input type="number" step="any" inputmode="decimal" data-f="w" '+base+' value="'+(it.w==null?'':it.w)+'" placeholder="what-if" aria-label="What-if points">'
+    +'<span class="rpct" data-k="'+k+'" data-i="'+i+'">–</span>'
+    +'<button class="x" data-act="del" '+base+' aria-label="Remove item" title="Remove">×</button></div>';
+}
+function needHtml(c){
+  const left=remaining(c);
+  if(!left) return '<h3>What you need</h3><div class="empty" style="padding:0">Everything has a score or a what-if, so the projection above is final.</div>';
+  const sc=SCALES[c.scale];
+  const rows=['A+','A','A-','B+','B','B-'].map(L=>{
+    const r=sc.find(x=>x[1]===L); if(!r) return '';
+    const n=needed(c,r[0]);
+    let cls='nd',txt;
+    if(n.kind==='lock'){cls+=' lock';txt='Already locked in';}
+    else if(n.kind==='out'){cls+=' out';txt='Out of reach';}
+    else if(n.kind==='over'){cls+=' out';txt='Needs over 100% on the rest';}
+    else txt='Average '+f3(n.x)+'% on the rest';
+    return '<div class="'+cls+'"><b>'+L+'</b><span>'+txt+'</span></div>';
+  }).join('');
+  return '<h3>What you need on the '+left+' ungraded item'+(left===1?'':'s')+'</h3><div class="needgrid">'+rows+'</div>';
+}
+function backupHtml(){
+  return '<details><summary>Backup and reset</summary>'
+    +'<p class="sub">Your changes save on this device automatically. Download a backup file now and then so you can restore it on another device or after clearing your browser data.</p>'
+    +'<div class="addrow" style="padding-left:0"><button class="btn pri" data-act="download">Download backup file</button>'
+    +'<label class="btn" style="cursor:pointer">Restore from file<input type="file" id="bkfile" accept=".json,application/json" hidden></label>'
+    +'<button class="btn" data-act="wipe" id="wipeBtn">Clear all scores</button></div>'
+    +'<textarea id="bk" aria-label="Backup text" placeholder="Or paste backup text here"></textarea>'
+    +'<div class="addrow" style="padding-left:0"><button class="btn" data-act="export">Show backup text</button><button class="btn" data-act="import">Restore from text</button></div>'
+    +'<div class="sub" id="bkmsg"></div></details>';
+}
+
+function gpaCalc(kind){
+  let cr=0,qp=0,missing=[];
+  S.courses.forEach(c=>{
+    if(!(c.credits>0)){ missing.push(c.name); return; }
+    let g=null;
+    if(kind==='cur') g=gpaOf(c,courseRes(c,'cur').pct);
+    else if(kind==='proj') g=gpaOf(c,courseRes(c,'proj').pct);
+    else { const pick=S.gpaPick[c.id]; g=(pick&&pick!=='proj')?GPAOF[pick]:gpaOf(c,courseRes(c,'proj').pct); }
+    if(g==null) return;
+    cr+=c.credits; qp+=c.credits*g;
+  });
+  return {cr:cr,qp:qp,sem:cr?qp/cr:null,cum:(PRIOR_CR+cr)?(PRIOR_QP+qp)/(PRIOR_CR+cr):null,missing:missing};
+}
+const LETTER_OF_GPA={'4':'A','3.75':'A-','3.25':'B+','3':'B','2.75':'B-','2.25':'C+','2':'C','1.75':'C-','1.25':'D+','1':'D','0.75':'D-','0':'F'};
+const TILE={tob:'#2A1006',syn:'#FFFFFF',fna:'#052A24',ecl:'#1D2B04',eco:'#33240A',hps:'#06173A'};
+const SEMCOL=[['#FFC233','#33240A'],['#19C3A5','#052A24'],['#7B5CFF','#FFFFFF'],['#FF7A59','#2A1006']];
+const FONT_URL='https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap';
+
+/* ---------- saving: local browser + embedded in this page ---------- */
+let pubT=null, statT=null;
+function setStat(t,cls){ const el=document.getElementById('saveStat'); if(el){ el.textContent=t; el.className='savestat '+(cls||''); } }
+function publishSelf(){ setStat('Saved on this device','ok'); clearTimeout(statT); statT=setTimeout(function(){ setStat('',''); },1600); }
+function save(){
+  S.ts=Date.now();
+  try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){ setStat('Couldn’t save in this browser','warn'); return; }
+  setStat('Saving…','busy');
+  clearTimeout(pubT); pubT=setTimeout(publishSelf,350);
+}
+
+/* ---------- charts + home ---------- */
+function cumPoints(gp){
+  let cr=0,qp=0; const pts=[]; const lab=['Fr 1','Fr 2','So 1','So 2'];
+  PRIOR.forEach(function(s,i){ s.c.forEach(x=>{cr+=x[1];qp+=x[1]*x[2];}); pts.push({l:lab[i],v:qp/cr}); });
+  if(gp&&gp.cr) pts.push({l:'Jr 1 (proj.)',v:gp.cum,proj:true});
+  return pts;
+}
+function chartSvg(pts){
+  const W=640,H=260,pl=46,pr=28,pt=34,pb=40;
+  const vals=pts.map(p=>p.v);
+  let lo=Math.floor((Math.min.apply(null,vals)-0.02)*20)/20, hi=4;
+  if(hi-lo<0.1) lo=hi-0.1;
+  const X=i=>pl+(pts.length===1?0:i*(W-pl-pr)/(pts.length-1));
+  const Y=v=>pt+(hi-v)/(hi-lo)*(H-pt-pb);
+  let g='';
+  [lo,(lo+hi)/2,hi].forEach(v=>{ g+='<line class="ch-grid" x1="'+pl+'" x2="'+(W-pr)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'"/><text x="'+(pl-10)+'" y="'+(Y(v)+4).toFixed(1)+'" text-anchor="end">'+v.toFixed(2)+'</text>'; });
+  const solid=pts.filter(p=>!p.proj), last=pts.filter(p=>p.proj);
+  const d=a=>a.map((p,i)=>(i?'L':'M')+X(pts.indexOf(p)).toFixed(1)+' '+Y(p.v).toFixed(1)).join(' ');
+  let s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Cumulative GPA by semester">'+g;
+  if(solid.length>1){
+    const base=(H-pb).toFixed(1);
+    s+='<path class="ch-area" d="'+d(solid)+' L'+X(solid.length-1).toFixed(1)+' '+base+' L'+X(0).toFixed(1)+' '+base+' Z"/>';
+  }
+  s+='<path class="ch-line" d="'+d(solid)+'"/>';
+  if(last.length&&solid.length){ const lp=solid[solid.length-1]; s+='<path class="ch-line" stroke-dasharray="2 9" d="M'+X(pts.indexOf(lp)).toFixed(1)+' '+Y(lp.v).toFixed(1)+' L'+X(pts.indexOf(last[0])).toFixed(1)+' '+Y(last[0].v).toFixed(1)+'"/>'; }
+  pts.forEach(function(p,i){
+    s+='<circle class="ch-dot'+(p.proj?' proj':'')+'" cx="'+X(i).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="7"/>';
+    s+='<text class="val" x="'+X(i).toFixed(1)+'" y="'+(Y(p.v)-16).toFixed(1)+'" text-anchor="middle">'+f3(p.v)+'</text>';
+    s+='<text x="'+X(i).toFixed(1)+'" y="'+(H-14)+'" text-anchor="middle">'+esc(p.l)+'</text>';
+  });
+  return s+'</svg>';
+}
+function heroHtml(){
+  const gp=gpaCalc('proj');
+  if(!PRIOR_CR) return '<section class="hero" style="grid-template-columns:1fr"><div class="hl"><div class="lab">Projected semester GPA</div><div class="gnum">'+(gp.cr?g2(gp.sem):'–')+'</div>'
+    +(gp.cr?'<p class="sub">'+gp.cr+' credits counted</p>':'<div class="after">Add credits in the GPA section to project this semester.</div>')
+    +'</div></section>';
+  return '<section class="hero"><div class="hl"><div class="lab">Cumulative GPA</div><div class="gnum">'+g2(PRIOR_QP/PRIOR_CR)+'</div>'
+    +'<p class="sub">Through sophomore year · '+PRIOR_CR+' graded credits</p>'
+    +(gp.cr?'<div class="after"><b>'+g2(gp.cum)+'</b> if this semester lands where it’s projected</div>':'<div class="after">Add credits in the GPA section to project this semester.</div>')
+    +'</div><div class="hc">'+chartSvg(cumPoints(gp))+'</div></section>';
+}
+function gpaSumHtml(){
+  const a=gpaCalc('cur'),b=gpaCalc('proj'),c=gpaCalc('pick');
+  if(!a.cr&&!b.cr&&!c.cr) return '<div class="banner"><b>Add credits to see GPA.</b> Type each class’s credits in the table below.</div>';
+  const box=(t,x)=>'<div class="card gp"><div class="t">'+t+'</div><div class="v">'+g2(x.sem)+'</div><div class="s">Cumulative '+g2(x.cum)+'</div></div>';
+  const miss=a.missing.length?'<p class="semnote">Not counted yet (no credits): '+a.missing.map(esc).join(', ')+'.</p>':'';
+  return '<div class="gpagrid">'+box('Semester GPA now',a)+box('Semester GPA projected',b)+box('With your letter picks',c)+'</div>'+miss;
+}
+
+function homeView(){
+  const anyScore=S.courses.some(c=>c.cats.some(k=>k.items.some(it=>it.e!=null)));
+  const tiles=S.courses.map(function(c){
+    const cur=courseRes(c,'cur'), pr=courseRes(c,'proj');
+    let late=0; c.cats.forEach(k=>k.items.forEach(it=>{ if(it.d&&it.d<TODAY&&it.e==null&&!it.opt) late++; }));
+    return '<button class="tile" style="--c:'+COLORS[c.id]+';--fg:'+TILE[c.id]+'" data-act="go" data-v="'+c.id+'">'
+      +'<div class="nm">'+esc(c.name)+'</div><div class="cd">'+esc(c.code)+'</div>'
+      +'<div class="L">'+letterOf(c,cur.pct)+'</div>'
+      +'<div class="row"><span class="p">'+(cur.pct==null?'No scores yet':pctS(cur.pct))+'</span><span class="pj">Projected <b>'+letterOf(c,pr.pct)+' · '+pctS(pr.pct)+'</b></span></div>'
+      +'<div class="tbar"><i style="width:'+Math.round(cur.progress*100)+'%"></i></div>'
+      +'<small>'+Math.round(cur.progress*100)+'% of the grade is in</small>'
+      +(late&&cur.pct!=null?'<span class="late">'+late+' past due, no score entered</span>':'')
+      +'</button>';
+  }).join('');
+  const lim=isoPlus(14), up=[];
+  S.courses.forEach(c=>c.cats.forEach(k=>k.items.forEach(it=>{ if(it.d&&it.e==null&&!it.opt&&it.d>=TODAY&&it.d<=lim) up.push({d:it.d,dl:it.dl,c:c.name,id:c.id,n:it.n}); })));
+  up.sort((a,b)=>a.d<b.d?-1:a.d>b.d?1:0);
+  const upHtml=up.length?up.map(u=>'<div class="up"><div class="d">'+fd(u.d)+'</div><div><div style="font-weight:700">'+esc(u.n)+'</div><div class="c"><i class="dot" style="background:'+COLORS[u.id]+'"></i>'+esc(u.c)+(u.dl?' · '+esc(u.dl):'')+'</div></div></div>').join('')
+    :'<div class="empty">Nothing with a due date in the next two weeks.</div>';
+  const gpaRows=S.courses.map(c=>{
+    const cur=courseRes(c,'cur'),pr=courseRes(c,'proj'), pick=S.gpaPick[c.id]||'proj';
+    const opts='<option value="proj"'+(pick==='proj'?' selected':'')+'>Projected</option>'+LETTERS.map(L=>'<option value="'+L+'"'+(pick===L?' selected':'')+'>'+L+'</option>').join('');
+    return '<tr><td><i class="dot" style="background:'+COLORS[c.id]+'"></i>'+esc(c.name)+'</td><td><input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="–" aria-label="Credits for '+esc(c.name)+'"></td>'
+      +'<td class="r">'+letterOf(c,cur.pct)+'</td><td class="r">'+letterOf(c,pr.pct)+'</td><td class="r"><select data-f="pick" data-c="'+c.id+'" aria-label="Letter to use for '+esc(c.name)+'">'+opts+'</select></td></tr>';
+  }).join('');
+  const cards=PRIOR.map(function(s,si){
+    const scr=s.c.reduce((a,x)=>a+x[1],0), sqp=s.c.reduce((a,x)=>a+x[1]*x[2],0);
+    let cr=0,qp=0; PRIOR.slice(0,si+1).forEach(t=>t.c.forEach(x=>{cr+=x[1];qp+=x[1]*x[2];}));
+    return '<section class="card sem"><div class="semtop" style="--hd:'+SEMCOL[si][0]+';--hf:'+SEMCOL[si][1]+'"><h3>'+esc(s.t)+'</h3><div class="g">'+g2(sqp/scr)+'<small>'+scr+' credits</small></div></div><div class="semb">'
+      +s.c.map(x=>'<div class="cr"><span class="n">'+esc(x[0])+'</span><span class="m">'+x[1]+' cr</span><span class="m">'+(OLD_PCT[x[0]]!=null?f3(OLD_PCT[x[0]])+'%':'')+'</span><span class="gg">'+(LETTER_OF_GPA[String(x[2])]||x[2])+'</span></div>').join('')
+      +'<div class="semnote">Cumulative after this semester: <b>'+g2(qp/cr)+'</b>'+(OLD_X[si].length?'<br>Not in GPA (0.00 in your sheet): '+OLD_X[si].map(esc).join(', '):'')+'</div></div></section>';
+  }).join('');
+  const banner=anyScore?'':'<div class="banner"><b>Start with what you already have.</b> Open a class and fill in the Earned column for graded work.</div>';
+  return '<h1 class="page-h">Fall 2026</h1><p class="lede">Junior year, first semester. Tap a class to enter scores and try what-ifs. Everything you change saves on its own.</p>'
+    +'<div id="heroBox">'+heroHtml()+'</div>'+banner
+    +'<div class="sechead" id="classes"><h2>This semester</h2><p>Grade so far, and where it lands if the rest goes at the level you set</p></div>'
+    +'<div class="tiles">'+tiles+'</div>'
+    +'<div class="sechead"><h2>Coming up</h2><p>Next two weeks</p></div><div class="card panel">'+upHtml+'</div>'
+    +'<div class="sechead" id="gpa"><h2>GPA planner</h2><p>Add credits, then pick Projected or a letter for each class</p></div>'
+    +'<div id="gpasum"></div><div class="card panel scroll"><table><thead><tr><th>Class</th><th>Credits</th><th class="r">Now</th><th class="r">Projected</th><th class="r">What-if letter</th></tr></thead><tbody>'+gpaRows+'</tbody></table></div>'
+    +(PRIOR.length?'<div class="sechead" id="history"><h2>Past semesters</h2><p>Earlier semesters</p></div>'
+    +'<div class="semgrid">'+cards+'</div>'
+    +'<p class="semnote" style="margin-top:16px">GPA is weighted by credits.</p>':'')
+    +backupHtml();
+}
+
+function courseView(c){
+  const cats=c.cats.map((k,ki)=>{
+    const meta=c.pooled
+      ?'<span>'+k.items.reduce((a,x)=>a+(x.p||0),0)+' points total</span>'
+      :'<label>Weight <input type="number" step="any" inputmode="decimal" data-f="cw" data-c="'+c.id+'" data-k="'+ki+'" value="'+k.w+'" aria-label="Category weight in percent"> %</label>';
+    const rt=ruleText(k);
+    return '<section class="card cat"><div class="cathead"><h3>'+esc(k.name)+'</h3><div class="catmeta">'+meta+'<span class="cpct" data-k="'+ki+'">–</span></div></div>'
+      +(rt?'<div class="rule">'+rt+'</div>':'')
+      +'<div class="grid h"><div>Item</div><div>Earned</div><div>Out of</div><div>What-if</div><div style="text-align:center">Score</div><div></div></div>'
+      +k.items.map((it,ii)=>itemRow(c,ki,ii,it)).join('')
+      +'<div class="addrow"><button class="btn" data-act="add" data-c="'+c.id+'" data-k="'+ki+'">Add item</button>'
+      +(k.rule==='swap'?'<button class="btn" data-act="addopt" data-c="'+c.id+'" data-k="'+ki+'">Add case study</button>':'')+'</div></section>';
+  }).join('');
+  const ec=c.ec?'<div class="ecbox"><span>'+esc(c.ec.label)+'</span><input type="number" step="any" inputmode="decimal" data-f="ec" data-c="'+c.id+'" value="'+(c.ec.val==null?'':c.ec.val)+'" aria-label="Extra credit"></div>':'';
+  const notes='<div class="notes"><h2>From the syllabus</h2><ul>'+c.notes.map(n=>'<li>'+n+'</li>').join('')+'</ul></div>';
+  const tot=c.cats.reduce((a,k)=>a+(k.w||0),0);
+  const wn=(!c.pooled&&Math.abs(tot-100)>0.01)?'<div class="banner">Category weights add up to '+f1(tot)+'%, not 100%. Grades are scaled to the weights you’ve set.</div>':'';
+  return '<div class="cpage" style="--c:'+COLORS[c.id]+';--fg:'+TILE[c.id]+'"><button class="back" data-act="go" data-v="home">← All classes</button>'
+    +'<section class="cband"><header class="chead"><div><h1>'+esc(c.name)+'</h1><p>'+esc(c.code)+'</p></div>'
+    +'<label class="fld">Credits <input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="–"></label></header>'
+    +'<div id="sum"></div></section>'
+    +'<section class="card csum"><div class="fillbox"><label for="fill"><span>Assume the rest of your work scores</span><b id="fillv">'+c.fill+'%</b></label>'
+    +'<input type="range" id="fill" min="0" max="110" step="1" value="'+c.fill+'" data-f="fill" data-c="'+c.id+'"></div>'
+    +'<div class="need" id="need"></div></section>'
+    +ec+wn+cats+notes+'</div>';
+}
+function sumHtml(c){
+  const cur=courseRes(c,'cur'), pr=courseRes(c,'proj');
+  const as=c.scaleAssumed?' · assumed +/− scale':'';
+  return '<div class="gblocks">'
+    +'<div><div class="glabel">Graded so far</div><div class="gletter">'+letterOf(c,cur.pct)+'</div><div class="gpct">'+pctS(cur.pct)+'</div><div class="ghint">'+Math.round(cur.progress*100)+'% of the grade is in</div></div>'
+    +'<div><div class="glabel">Projected final</div><div class="gletter">'+letterOf(c,pr.pct)+'</div><div class="gpct">'+pctS(pr.pct)+'</div><div class="ghint">your what-ifs plus the slider'+as+'</div></div></div>'
+    +'<div class="track" title="Share of the grade that has a score"><i style="width:'+Math.round(cur.progress*100)+'%"></i></div>';
+}
+
+/* ---------- render + refresh ---------- */
+function render(){
+  const m=$('#main');
+  if(view==='home'||!getC(view)){ view='home'; m.innerHTML=homeView(); }
+  else m.innerHTML=courseView(getC(view));
+  refresh();
+}
+function refresh(){
+  if(view==='home'){
+    const h=$('#heroBox'); if(h) h.innerHTML=heroHtml();
+    const g=$('#gpasum'); if(g) g.innerHTML=gpaSumHtml();
+    return;
+  }
+  const c=getC(view); if(!c) return;
+  $('#sum').innerHTML=sumHtml(c);
+  $('#need').innerHTML=needHtml(c);
+  $$('.cpct').forEach(el=>{
+    const k=c.cats[+el.dataset.k]; const r=catRes(k,'cur',null);
+    el.textContent=r?pctS(r.pct):'–';
+  });
+  $$('.rpct').forEach(el=>{
+    const it=c.cats[+el.dataset.k].items[+el.dataset.i];
+    el.classList.remove('wi','on');
+    if(it.e!=null&&it.p>0){ el.textContent=pctS(100*it.e/it.p); el.classList.add('on'); }
+    else if(it.w!=null&&it.p>0){ el.textContent=pctS(100*it.w/it.p); el.classList.add('wi'); }
+    else el.textContent='–';
+  });
+}
+
+/* ---------- events ---------- */
+document.addEventListener('input',function(ev){
+  const t=ev.target, f=t.dataset&&t.dataset.f; if(!f) return;
+  const c=t.dataset.c?getC(t.dataset.c):null;
+  if(f==='e'||f==='w'||f==='p'){ const it=c.cats[+t.dataset.k].items[+t.dataset.i]; it[f]=num(t.value); if(f==='p'&&it.p==null) it.p=0; }
+  else if(f==='n'){ c.cats[+t.dataset.k].items[+t.dataset.i].n=t.value; }
+  else if(f==='cw'){ c.cats[+t.dataset.k].w=num(t.value)||0; }
+  else if(f==='credits'){ c.credits=num(t.value); }
+  else if(f==='ec'){ c.ec.val=num(t.value); }
+  else if(f==='fill'){ c.fill=num(t.value)||0; const fv=document.getElementById('fillv'); if(fv) fv.textContent=c.fill+'%'; }
+  else if(f==='pick'){ S.gpaPick[c.id]=t.value; }
+  if(f==='e'){
+    const row=t.closest('.grid'), du=row&&row.querySelector('[data-due]');
+    const it=c.cats[+t.dataset.k].items[+t.dataset.i];
+    if(du){ du.classList.toggle('late',!!(it.d&&it.d<TODAY&&it.e==null)); }
+  }
+  save(); refresh();
+});
+function setHash(){ try{ location.hash=(view==='home'?'':view); }catch(e){} }
+document.addEventListener('click',function(ev){
+  const b=ev.target.closest('[data-act]'); if(!b) return;
+  const a=b.dataset.act;
+  if(a==='go'){ view=b.dataset.v; wipeArmed=false; setHash(); render(); window.scrollTo(0,0); return; }
+  if(a==='jump'){ view='home'; wipeArmed=false; setHash(); render(); const el=document.getElementById(b.dataset.t); if(el) el.scrollIntoView(); else window.scrollTo(0,0); return; }
+  const c=b.dataset.c?getC(b.dataset.c):null;
+  if(a==='add'){ c.cats[+b.dataset.k].items.push(I('New item',(c.pooled?5:100))); save(); render(); }
+  else if(a==='addopt'){ c.cats[+b.dataset.k].items.push(I('Case study',100,null,'',true)); save(); render(); }
+  else if(a==='del'){ c.cats[+b.dataset.k].items.splice(+b.dataset.i,1); save(); render(); }
+  else if(a==='download'){ const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'}); const u=URL.createObjectURL(blob); const l=document.createElement('a'); l.href=u; l.download='grade-tracker-backup.json'; document.body.appendChild(l); l.click(); l.remove(); setTimeout(function(){URL.revokeObjectURL(u);},1000); }
+  else if(a==='export'){ $('#bk').value=JSON.stringify(S); $('#bkmsg').textContent='Copy all of that text and keep it somewhere safe.'; }
+  else if(a==='import'){
+    try{ const v=JSON.parse($('#bk').value); if(!v||!v.courses) throw new Error('x'); S=loadMerged(v); save(); render(); }
+    catch(e){ $('#bkmsg').textContent='That text isn’t a valid backup. Paste the full text you copied earlier.'; }
+  }
+  else if(a==='wipe'){
+    if(!wipeArmed){ wipeArmed=true; b.textContent='Click again to erase every score'; }
+    else { wipeArmed=false; S.courses.forEach(x=>{ x.cats.forEach(k=>k.items.forEach(it=>{it.e=null;it.w=null;})); if(x.ec) x.ec.val=null; }); save(); render(); }
+  }
+});
+
+document.addEventListener('change',function(ev){
+  const t=ev.target; if(!(t&&t.id==='bkfile'&&t.files&&t.files[0])) return;
+  const r=new FileReader();
+  r.onload=function(){ try{ const v=JSON.parse(r.result); if(!v||!v.courses) throw new Error('x'); S=loadMerged(v); save(); render(); }catch(e){ const m=$('#bkmsg'); if(m) m.textContent='That file isn’t a valid backup.'; } };
+  r.readAsText(t.files[0]);
+});
+
+/* ---------- start ---------- */
+(function init(){
+  let emb=null; try{ emb=JSON.parse(document.getElementById('saved').textContent); }catch(e){}
+  const loc=readLocal(KEY);
+  const et=(emb&&emb.ts)||0, lt=(loc&&loc.ts)||0;
+  const src=(lt>et)?loc:emb;
+  S=loadMerged(src||null);
+  S.ts=Math.max(et,lt);
+  if(!src){
+    const o=readLocal(KEY1);
+    if(o&&o.courses) o.courses.forEach(oc=>{ const c=getC(oc.id); if(c&&oc.credits!=null) c.credits=oc.credits; });
+  }
+  const h=(location.hash||'').replace('#','');
+  if(h&&getC(h)) view=h;
+  render();
+  try{
+    const sc=JSON.parse(sessionStorage.getItem('gt-scroll')||'null');
+    if(sc&&Date.now()-sc.t<20000) window.scrollTo(0,sc.y);
+    sessionStorage.removeItem('gt-scroll');
+  }catch(e){}
+  
+})();
+
+</script></body></html>
