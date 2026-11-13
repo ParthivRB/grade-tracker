@@ -194,6 +194,14 @@ input[type=range]{width:100%;accent-color:var(--blue);margin:14px 0 0}
 
 .ecbox{margin-top:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--ink2);font-weight:600;background:#fff;border:1px solid var(--line);border-radius:22px;padding:14px 22px;box-shadow:var(--shadow)}
 .ecbox input{width:92px}
+.ecl{display:flex;flex-direction:column;gap:3px;max-width:46ch}
+.ecl small{color:var(--mut);font-weight:500;font-size:12.5px;line-height:1.4}
+.ecctl{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ectot{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--mut);font-weight:600}
+.ecbox .ectot input{width:88px}
+.seg{display:inline-flex;background:var(--soft);border-radius:99px;padding:3px}
+.seg button{border:0;background:none;border-radius:99px;padding:6px 14px;font-weight:700;font-size:13px;color:var(--ink2);cursor:pointer;transition:background-color .2s ease,color .2s ease,box-shadow .2s ease}
+.seg button.on{background:#fff;color:var(--blue);box-shadow:0 1px 3px rgba(13,18,38,.15)}
 .cat{margin-top:18px;overflow:hidden}
 .cathead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:16px 22px;border-bottom:1px solid var(--line)}
 .cathead h3{font-size:17px;font-weight:800;letter-spacing:-0.02em;display:flex;align-items:center;gap:11px}
@@ -386,8 +394,15 @@ function baseDefaults(){
 const KEY='pitt-grade-tracker-fall26-v2', KEY1='pitt-grade-tracker-fall26-v1';
 let S=null, view='home', dbDoc=null, wipeArmed=false;
 
+function normEc(D){
+  D.courses.forEach(function(c){
+    if(!c.ec) c.ec={label:'Extra credit',unit:'pct',val:null};
+    if(c.ec.total===undefined) c.ec.total=null;
+    if(c.ec.max!=null&&!c.ec.mu) c.ec.mu=c.ec.unit;
+  });
+}
 function loadMerged(saved){
-  const D=defaults();
+  const D=defaults(); normEc(D);
   setHistory(saved); D.prior=PRIOR; D.oldPct=OLD_PCT; D.oldX=OLD_X; D.history=HIST;
   if(!saved||!saved.courses) return D;
   D.gpaPick=saved.gpaPick||{};
@@ -398,7 +413,11 @@ function loadMerged(saved){
     if(sc.credits!==undefined) c.credits=sc.credits;
     if(typeof sc.fill==='number') c.fill=sc.fill;
     if(sc.target) c.target=sc.target;
-    if(c.ec&&sc.ec&&sc.ec.val!==undefined) c.ec.val=sc.ec.val;
+    if(c.ec&&sc.ec){
+      if(sc.ec.val!==undefined) c.ec.val=sc.ec.val;
+      if(sc.ec.unit==='pts'||sc.ec.unit==='pct') c.ec.unit=sc.ec.unit;
+      if(typeof sc.ec.total==='number') c.ec.total=sc.ec.total;
+    }
     c.cats.forEach(k=>{
       const sk=(sc.cats||[]).find(x=>x.name===k.name);
       if(!sk) return;
@@ -452,7 +471,12 @@ function catRes(cat,mode,fill){
 }
 function ecVal(c){
   if(!c.ec||c.ec.val==null) return 0;
-  const v=c.ec.val; return c.ec.max!=null?Math.min(v,c.ec.max):v;
+  const v=c.ec.val, lim=(c.ec.max!=null&&(c.ec.mu||c.ec.unit)===c.ec.unit)?c.ec.max:null;
+  return lim!=null?Math.min(v,lim):v;
+}
+function ecTotal(c){
+  if(c.ec&&c.ec.total>0) return c.ec.total;
+  let t=0; c.cats.forEach(k=>k.items.forEach(it=>{ if(!it.opt&&it.p>0) t+=it.p; })); return t;
 }
 function courseRes(c,mode,fill){
   if(fill===undefined) fill=c.fill;
@@ -466,7 +490,7 @@ function courseRes(c,mode,fill){
       if(r!=null){ E+=r*it.p; P+=it.p; }
     }));
     let pct=null;
-    if(P>0) pct=100*(E+((c.ec&&c.ec.unit==='pts')?ecVal(c):0))/P;
+    if(P>0){ pct=100*(E+((c.ec&&c.ec.unit==='pts')?ecVal(c):0))/P; if(c.ec&&c.ec.unit==='pct') pct+=ecVal(c); }
     return {pct:pct,progress:allP?done/allP:0};
   }
   let num=0,den=0,tw=0,pw=0;
@@ -480,7 +504,10 @@ function courseRes(c,mode,fill){
     if(r){ num+=w*r.pct; den+=w; }
   });
   let pct=null;
-  if(den>0){ pct=num/den; if(c.ec&&c.ec.unit==='pct') pct+=ecVal(c); }
+  if(den>0){
+    pct=num/den;
+    if(c.ec){ if(c.ec.unit==='pct') pct+=ecVal(c); else { const T=ecTotal(c); if(T>0) pct+=100*ecVal(c)/T; } }
+  }
   return {pct:pct,progress:tw?pw/tw:0};
 }
 function scaleRow(c,pct){
@@ -756,6 +783,15 @@ function homeView(){
     +backupHtml();
 }
 
+function ecHtml(c){
+  const e=c.ec, pts=e.unit==='pts';
+  const lim=(e.max!=null&&(e.mu||e.unit)===e.unit)?e.max:null;
+  const tot=(!c.pooled&&pts)?'<label class="ectot">out of <input type="number" step="any" inputmode="decimal" data-f="ectotal" data-c="'+c.id+'" value="'+(e.total==null?'':e.total)+'" placeholder="'+f3(ecTotal(c))+'" aria-label="Total points in this class"> total points</label>':'';
+  const hint=pts?(c.pooled?'Added to the points you’ve earned.':'Points ÷ total points, added to your final percent. Leave the total blank to use the points on this page.'):'Added straight onto your final percent.';
+  return '<div class="ecbox" id="ecbox"><div class="ecl"><span>'+esc(e.label)+'</span><small>'+hint+(lim!=null?' Max '+lim+'.':'')+'</small></div>'
+    +'<div class="ecctl"><input type="number" step="any" inputmode="decimal" data-f="ec" data-c="'+c.id+'" value="'+(e.val==null?'':e.val)+'" placeholder="0" aria-label="Extra credit">'
+    +'<div class="seg" role="group" aria-label="Extra credit unit"><button type="button" class="'+(pts?'on':'')+'" data-act="ecunit" data-u="pts" data-c="'+c.id+'">points</button><button type="button" class="'+(pts?'':'on')+'" data-act="ecunit" data-u="pct" data-c="'+c.id+'">percent</button></div>'+tot+'</div></div>';
+}
 function courseView(c){
   const cats=c.cats.map((k,ki)=>{
     const meta=c.pooled
@@ -769,7 +805,7 @@ function courseView(c){
       +'<div class="addrow"><button class="btn" data-act="add" data-c="'+c.id+'" data-k="'+ki+'">Add item</button>'
       +(k.rule==='swap'?'<button class="btn" data-act="addopt" data-c="'+c.id+'" data-k="'+ki+'">Add case study</button>':'')+'</div></section>';
   }).join('');
-  const ec=c.ec?'<div class="ecbox"><span>'+esc(c.ec.label)+'</span><input type="number" step="any" inputmode="decimal" data-f="ec" data-c="'+c.id+'" value="'+(c.ec.val==null?'':c.ec.val)+'" aria-label="Extra credit"></div>':'';
+  const ec=ecHtml(c);
   const notes='<div class="notes"><h2>From the syllabus</h2><ul>'+c.notes.map(n=>'<li>'+n+'</li>').join('')+'</ul></div>';
   const tot=c.cats.reduce((a,k)=>a+(k.w||0),0);
   const wn=(!c.pooled&&Math.abs(tot-100)>0.01)?'<div class="banner">Category weights add up to '+f1(tot)+'%, not 100%. Grades are scaled to the weights you’ve set.</div>':'';
@@ -834,7 +870,7 @@ function render(){
   const m=$('#main');
   if(view==='home'||!getC(view)){ view='home'; m.innerHTML=homeView(); }
   else m.innerHTML=courseView(getC(view));
-  if(!REDUCED){ m.classList.remove('enter'); void m.offsetWidth; m.classList.add('enter'); }
+  if(!REDUCED){ m.classList.remove('enter'); void m.offsetWidth; m.classList.add('enter'); clearTimeout(m._et); m._et=setTimeout(function(){ m.classList.remove('enter'); },900); }
   refresh();
 }
 function refresh(){
@@ -870,6 +906,7 @@ document.addEventListener('input',function(ev){
   else if(f==='cw'){ c.cats[+t.dataset.k].w=num(t.value)||0; }
   else if(f==='credits'){ c.credits=num(t.value); }
   else if(f==='ec'){ c.ec.val=num(t.value); }
+  else if(f==='ectotal'){ c.ec.total=num(t.value); }
   else if(f==='fill'){ c.fill=num(t.value)||0; const fv=document.getElementById('fillv'); if(fv) fv.textContent=c.fill+'%'; }
   else if(f==='pick'){ S.gpaPick[c.id]=t.value; }
   if(f==='e'){
@@ -888,6 +925,7 @@ document.addEventListener('click',function(ev){
   const c=b.dataset.c?getC(b.dataset.c):null;
   if(a==='add'){ c.cats[+b.dataset.k].items.push(I('New item',(c.pooled?5:100))); save(); render(); }
   else if(a==='addopt'){ c.cats[+b.dataset.k].items.push(I('Case study',100,null,'',true)); save(); render(); }
+  else if(a==='ecunit'){ c.ec.unit=b.dataset.u; const eb=$('#ecbox'); if(eb) eb.outerHTML=ecHtml(c); save(); refresh(); }
   else if(a==='del'){ c.cats[+b.dataset.k].items.splice(+b.dataset.i,1); save(); render(); }
   else if(a==='download'){ const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'}); const u=URL.createObjectURL(blob); const l=document.createElement('a'); l.href=u; l.download='grade-tracker-backup.json'; document.body.appendChild(l); l.click(); l.remove(); setTimeout(function(){URL.revokeObjectURL(u);},1000); }
   else if(a==='export'){ $('#bk').value=JSON.stringify(S); $('#bkmsg').textContent='Copy all of that text and keep it somewhere safe.'; }
