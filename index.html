@@ -115,6 +115,26 @@ td select{width:116px}
 .cr .gg{background:var(--blue-soft);color:var(--blue);border-radius:99px;text-align:center;font-weight:800;font-size:13px;padding:2px 0}
 .semnote{color:var(--mut);font-size:13px;margin-top:12px}
 .semnote b{color:var(--ink)}
+.rpct{transition:background-color .25s ease,color .25s ease,border-color .25s ease}
+input[data-f="w"]:not(:placeholder-shown){background:var(--blue-soft);border-color:var(--blue)}
+input[type=number],input[type=text],select{transition:border-color .18s ease,background-color .18s ease}
+.btn,.tabs button,.back,.fld{transition:border-color .18s ease,color .18s ease,background-color .18s ease,opacity .18s ease}
+.track i,.tbar i{transition:width .55s cubic-bezier(.2,.7,.2,1)}
+.gletter,.gpct,.projres .l,.projres .p{display:block}
+.projres .l,.projres .p{display:inline-block}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes bump{0%{opacity:.35;transform:translateY(5px)}100%{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.bump{animation:bump .32s cubic-bezier(.2,.7,.2,1)}
+#main.enter>*,#main.enter .cpage>*{animation:rise .42s cubic-bezier(.2,.7,.2,1) backwards}
+#main.enter>*:nth-child(2),#main.enter .cpage>*:nth-child(2){animation-delay:.04s}
+#main.enter>*:nth-child(3),#main.enter .cpage>*:nth-child(3){animation-delay:.08s}
+#main.enter>*:nth-child(4),#main.enter .cpage>*:nth-child(4){animation-delay:.12s}
+#main.enter>*:nth-child(n+5),#main.enter .cpage>*:nth-child(n+5){animation-delay:.16s}
+details.hx[open]>.hxb{animation:rise .3s cubic-bezier(.2,.7,.2,1)}
+details.hx>summary .n::after{display:inline-block;transition:transform .2s ease}
+.savestat.ok,.savestat.busy,.savestat.warn{animation:fadeIn .2s ease}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 .projh{font-family:var(--disp);font-size:22px;font-weight:800;letter-spacing:-0.045em;margin:0}
 .projp{color:var(--mut);font-size:13.5px;margin:6px 0 0;max-width:62ch}
 .projres{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:16px 0 22px}
@@ -393,11 +413,9 @@ function readLocal(k){ try{ const r=localStorage.getItem(k||KEY); return r?JSON.
 /* ---------- grade engine ---------- */
 function ratio(it,mode,fill){
   if(!(it.p>0)) return null;
+  if((mode==='proj'||mode==='whatif')&&it.w!=null) return it.w/it.p;
   if(it.e!=null) return it.e/it.p;
-  if(mode==='proj'||mode==='whatif'){
-    if(it.w!=null) return it.w/it.p;
-    if(mode==='proj'&&!it.opt&&fill!=null) return fill/100;
-  }
+  if(mode==='proj'&&!it.opt&&fill!=null) return fill/100;
   return null;
 }
 function catRes(cat,mode,fill){
@@ -407,7 +425,7 @@ function catRes(cat,mode,fill){
     its.forEach(it=>{
       if(it.opt){
         let r=null;
-        if(it.p>0&&it.e!=null) r=it.e/it.p; else if((mode==='proj'||mode==='whatif')&&it.p>0&&it.w!=null) r=it.w/it.p;
+        if(it.p>0){ if((mode==='proj'||mode==='whatif')&&it.w!=null) r=it.w/it.p; else if(it.e!=null) r=it.e/it.p; }
         if(r!=null) cs.push(r);
       }else{
         const r=ratio(it,mode,fill); if(r!=null) q.push(r);
@@ -546,7 +564,7 @@ function itemRow(c,k,i,it){
     +'<div class="it"><input type="text" data-f="n" '+base+' value="'+esc(it.n)+'" aria-label="Item name">'+due+'</div>'
     +'<input type="number" step="any" inputmode="decimal" data-f="e" '+base+' value="'+(it.e==null?'':it.e)+'" placeholder="earned" aria-label="Points earned">'
     +'<input type="number" step="any" inputmode="decimal" data-f="p" '+base+' value="'+(it.p==null?'':it.p)+'" placeholder="out of" aria-label="Points possible">'
-    +'<input type="number" step="any" inputmode="decimal" data-f="w" '+base+' value="'+(it.w==null?'':it.w)+'" placeholder="what-if" aria-label="What-if points">'
+    +'<input type="number" step="any" inputmode="decimal" data-f="w" '+base+' value="'+(it.w==null?'':it.w)+'" placeholder="what-if" aria-label="What-if score (replaces earned)">'
     +'<span class="rpct" data-k="'+k+'" data-i="'+i+'">–</span>'
     +'<button class="x" data-act="del" '+base+' aria-label="Remove item" title="Remove">×</button></div>';
 }
@@ -767,16 +785,48 @@ function courseView(c){
     +notes+'</div>';
 }
 function projHtml(c){
-  const pr=courseRes(c,'proj');
-  return '<div class="projres"><span class="l">'+letterOf(c,pr.pct)+'</span><span class="p">'+pctS(pr.pct)+'</span><span class="h">projected final'+(c.scaleAssumed?' · assumed +/− scale':'')+'</span></div>';
+  return '<div class="projres"><span class="l" data-s="pL"></span><span class="p" data-s="pP"></span><span class="h">projected final'+(c.scaleAssumed?' · assumed +/− scale':'')+'</span></div>';
 }
 function sumHtml(c){
-  const cur=courseRes(c,'cur'), wi=courseRes(c,'whatif');
   const as=c.scaleAssumed?' · assumed +/− scale':'';
   return '<div class="gblocks">'
-    +'<div><div class="glabel">Graded so far</div><div class="gletter">'+letterOf(c,cur.pct)+'</div><div class="gpct">'+pctS(cur.pct)+'</div><div class="ghint">'+Math.round(cur.progress*100)+'% of the grade is in</div></div>'
-    +'<div><div class="glabel">What-if final</div><div class="gletter">'+letterOf(c,wi.pct)+'</div><div class="gpct">'+pctS(wi.pct)+'</div><div class="ghint">what you’ve earned plus your what-if points'+as+'</div></div></div>'
-    +'<div class="track" title="Share of the grade that has a score"><i style="width:'+Math.round(cur.progress*100)+'%"></i></div>';
+    +'<div><div class="glabel">Graded so far</div><div class="gletter" data-s="cL"></div><div class="gpct" data-s="cP"></div><div class="ghint" data-s="cH"></div></div>'
+    +'<div><div class="glabel">What-if final</div><div class="gletter" data-s="wL"></div><div class="gpct" data-s="wP"></div><div class="ghint">a what-if score replaces the earned score on its row'+as+'</div></div></div>'
+    +'<div class="track" title="Share of the grade that has a score"><i data-s="bar"></i></div>';
+}
+const REDUCED=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function setTxt(el,t){
+  if(!el||el.textContent===t) return;
+  el.textContent=t;
+  if(!REDUCED){ el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
+}
+function tweenPct(el,to){
+  if(!el) return;
+  const from=el._v; el._v=to;
+  cancelAnimationFrame(el._raf);
+  clearTimeout(el._to);
+  if(REDUCED||to==null||from==null||from===to){ el.textContent=pctS(to); return; }
+  const t0=performance.now(), D=420;
+  clearTimeout(el._to); el._to=setTimeout(function(){ cancelAnimationFrame(el._raf); el.textContent=pctS(to); },D+80);
+  (function step(now){
+    const k=Math.min(1,(now-t0)/D), e=1-Math.pow(1-k,3);
+    el.textContent=k<1?f3(from+(to-from)*e)+'%':pctS(to);
+    if(k<1) el._raf=requestAnimationFrame(step);
+  })(t0);
+}
+function mount(id,html){ const h=$(id); if(h&&!h.firstChild) h.innerHTML=html; return h; }
+function updateSum(c){
+  const h=mount('#sum',sumHtml(c)); if(!h) return;
+  const cur=courseRes(c,'cur'), wi=courseRes(c,'whatif'), q=k=>h.querySelector('[data-s="'+k+'"]');
+  setTxt(q('cL'),letterOf(c,cur.pct)); tweenPct(q('cP'),cur.pct);
+  setTxt(q('cH'),Math.round(cur.progress*100)+'% of the grade is in');
+  setTxt(q('wL'),letterOf(c,wi.pct)); tweenPct(q('wP'),wi.pct);
+  q('bar').style.width=Math.round(cur.progress*100)+'%';
+}
+function updateProj(c){
+  const h=mount('#projsum',projHtml(c)); if(!h) return;
+  const pr=courseRes(c,'proj'), q=k=>h.querySelector('[data-s="'+k+'"]');
+  setTxt(q('pL'),letterOf(c,pr.pct)); tweenPct(q('pP'),pr.pct);
 }
 
 /* ---------- render + refresh ---------- */
@@ -784,6 +834,7 @@ function render(){
   const m=$('#main');
   if(view==='home'||!getC(view)){ view='home'; m.innerHTML=homeView(); }
   else m.innerHTML=courseView(getC(view));
+  if(!REDUCED){ m.classList.remove('enter'); void m.offsetWidth; m.classList.add('enter'); }
   refresh();
 }
 function refresh(){
@@ -794,19 +845,19 @@ function refresh(){
     return;
   }
   const c=getC(view); if(!c) return;
-  $('#sum').innerHTML=sumHtml(c);
-  $('#projsum').innerHTML=projHtml(c);
+  updateSum(c);
+  updateProj(c);
   $('#need').innerHTML=needHtml(c);
   $$('.cpct').forEach(el=>{
-    const k=c.cats[+el.dataset.k]; const r=catRes(k,'cur',null);
+    const k=c.cats[+el.dataset.k]; const r=catRes(k,'whatif',null);
     el.textContent=r?pctS(r.pct):'–';
   });
   $$('.rpct').forEach(el=>{
     const it=c.cats[+el.dataset.k].items[+el.dataset.i];
     el.classList.remove('wi','on');
-    if(it.e!=null&&it.p>0){ el.textContent=pctS(100*it.e/it.p); el.classList.add('on'); }
-    else if(it.w!=null&&it.p>0){ el.textContent=pctS(100*it.w/it.p); el.classList.add('wi'); }
-    else el.textContent='–';
+    if(it.w!=null&&it.p>0){ el.textContent=pctS(100*it.w/it.p); el.classList.add('wi'); el.title=it.e!=null&&it.p>0?'What-if (earned: '+pctS(100*it.e/it.p)+')':'What-if'; }
+    else if(it.e!=null&&it.p>0){ el.textContent=pctS(100*it.e/it.p); el.classList.add('on'); el.title=''; }
+    else { el.textContent='–'; el.title=''; }
   });
 }
 
