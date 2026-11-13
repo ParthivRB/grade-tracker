@@ -13,7 +13,7 @@ The page starts with your classes but no scores. Anything you enter is saved in 
 
 ## Updating it
 
-- **Scores and what-ifs:** just type in the page. The big grade on each class is your **what-if final** (what you earned plus any what-if points you typed). The **projected final**, which assumes the rest of the work scores at a level you set, is in its own section near the bottom. Everything saves on that device.
+- **Scores and what-ifs:** just type in the page. The big grade on each class is your **current grade**. Next to it is a **what-if final** (what you earned plus any what-if points you typed). The **projected final**, which assumes the rest of the work scores at a level you set, is in its own section near the bottom. Everything saves on that device.
 - **New semester, new classes, design changes:** open the repo in Claude Code and ask it to edit `index.html`, then commit and push. GitHub Pages updates on its own.
 - **Loading your grades:** click "Upload grade file" and pick your grades `.json` file (scores, past semesters, and every old class with its categories and assignment scores). Keep that file on your computer, never in this repo.
 - **Moving to another device:** click "Download backup file" on the old one, then "Upload grade file" on the new one.
