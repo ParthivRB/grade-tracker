@@ -115,6 +115,32 @@ td select{width:116px}
 .cr .gg{background:var(--blue-soft);color:var(--blue);border-radius:99px;text-align:center;font-weight:800;font-size:13px;padding:2px 0}
 .semnote{color:var(--mut);font-size:13px;margin-top:12px}
 .semnote b{color:var(--ink)}
+.projh{font-family:var(--disp);font-size:22px;font-weight:800;letter-spacing:-0.045em;margin:0}
+.projp{color:var(--mut);font-size:13.5px;margin:6px 0 0;max-width:62ch}
+.projres{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:16px 0 22px}
+.projres .l{font-family:var(--disp);font-weight:800;font-size:40px;letter-spacing:-0.05em;line-height:1}
+.projres .p{font-weight:800;font-size:20px}
+.projres .h{color:var(--mut);font-size:13.5px}
+details.hx{border-bottom:1px solid var(--line)}
+details.hx:last-of-type{border-bottom:0}
+details.hx>summary{list-style:none;cursor:pointer;border-bottom:0}
+details.hx>summary::-webkit-details-marker{display:none}
+details.hx>summary .n::after{content:" ▾";color:var(--mut);font-weight:400}
+details.hx[open]>summary .n::after{content:" ▴"}
+.hxb{padding:2px 0 16px}
+.hxv{font-weight:800;font-size:13.5px;margin-top:14px}
+.hxc{margin-top:12px}
+.hxh{display:flex;gap:10px;align-items:baseline;font-size:13.5px}
+.hxh b{flex:1;font-weight:700}
+.hxh span{color:var(--mut)}
+.hxh .hxa{color:var(--ink);font-weight:800;background:var(--soft);border-radius:99px;padding:2px 10px}
+.hxi{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip{font-size:12px;background:var(--soft);border-radius:8px;padding:3px 8px;color:var(--ink2)}
+.chip b{color:var(--ink);font-weight:700}
+.chip.ex{background:var(--good-soft);color:var(--good)}
+.chip.ex.neg{background:var(--warn-soft);color:var(--warn)}
+.hxn{color:var(--mut);font-size:12.5px;margin-top:6px}
+.hxf{margin-top:12px;font-size:13.5px;font-weight:700}
 
 .back{background:none;border:0;color:var(--mut);cursor:pointer;padding:6px 0;font-weight:600}
 .back:hover{color:var(--ink)}
@@ -226,12 +252,13 @@ const LETTERS=['A+','A','A-','B+','B','B-','C+','C','C-','D+','D','D-','F'];
 const GPAOF={'A+':4,'A':4,'A-':3.75,'B+':3.25,'B':3,'B-':2.75,'C+':2.25,'C':2,'C-':1.75,'D+':1.25,'D':1,'D-':0.75,'F':0};
 
 /* ---------- earlier semesters ---------- */
-let PRIOR=[], PRIOR_CR=0, PRIOR_QP=0, OLD_PCT={}, OLD_X=[];
+let PRIOR=[], PRIOR_CR=0, PRIOR_QP=0, OLD_PCT={}, OLD_X=[], HIST={};
 function setHistory(src){
   const ok=a=>Array.isArray(a)&&a.every(t=>t&&Array.isArray(t.c));
   PRIOR=(src&&ok(src.prior))?src.prior:[];
   OLD_PCT=(src&&src.oldPct&&typeof src.oldPct==='object')?src.oldPct:{};
   OLD_X=(src&&Array.isArray(src.oldX))?src.oldX:[];
+  HIST=(src&&src.history&&typeof src.history==='object')?src.history:{};
   PRIOR_CR=PRIOR.reduce((a,s)=>a+s.c.reduce((b,x)=>b+x[1],0),0);
   PRIOR_QP=PRIOR.reduce((a,s)=>a+s.c.reduce((b,x)=>b+x[1]*x[2],0),0);
 }
@@ -341,7 +368,7 @@ let S=null, view='home', dbDoc=null, wipeArmed=false;
 
 function loadMerged(saved){
   const D=defaults();
-  setHistory(saved); D.prior=PRIOR; D.oldPct=OLD_PCT; D.oldX=OLD_X;
+  setHistory(saved); D.prior=PRIOR; D.oldPct=OLD_PCT; D.oldX=OLD_X; D.history=HIST;
   if(!saved||!saved.courses) return D;
   D.gpaPick=saved.gpaPick||{};
   D.ts=saved.ts||0;
@@ -367,9 +394,9 @@ function readLocal(k){ try{ const r=localStorage.getItem(k||KEY); return r?JSON.
 function ratio(it,mode,fill){
   if(!(it.p>0)) return null;
   if(it.e!=null) return it.e/it.p;
-  if(mode==='proj'){
+  if(mode==='proj'||mode==='whatif'){
     if(it.w!=null) return it.w/it.p;
-    if(!it.opt && fill!=null) return fill/100;
+    if(mode==='proj'&&!it.opt&&fill!=null) return fill/100;
   }
   return null;
 }
@@ -380,7 +407,7 @@ function catRes(cat,mode,fill){
     its.forEach(it=>{
       if(it.opt){
         let r=null;
-        if(it.p>0&&it.e!=null) r=it.e/it.p; else if(mode==='proj'&&it.p>0&&it.w!=null) r=it.w/it.p;
+        if(it.p>0&&it.e!=null) r=it.e/it.p; else if((mode==='proj'||mode==='whatif')&&it.p>0&&it.w!=null) r=it.w/it.p;
         if(r!=null) cs.push(r);
       }else{
         const r=ratio(it,mode,fill); if(r!=null) q.push(r);
@@ -525,7 +552,7 @@ function itemRow(c,k,i,it){
 }
 function needHtml(c){
   const left=remaining(c);
-  if(!left) return '<h3>What you need</h3><div class="empty" style="padding:0">Everything has a score or a what-if, so the projection above is final.</div>';
+  if(!left) return '<h3>What you need</h3><div class="empty" style="padding:0">Everything has a score or a what-if, so the projection is final.</div>';
   const sc=SCALES[c.scale];
   const rows=['A+','A','A-','B+','B','B-'].map(L=>{
     const r=sc.find(x=>x[1]===L); if(!r) return '';
@@ -557,7 +584,8 @@ function gpaCalc(kind){
     let g=null;
     if(kind==='cur') g=gpaOf(c,courseRes(c,'cur').pct);
     else if(kind==='proj') g=gpaOf(c,courseRes(c,'proj').pct);
-    else { const pick=S.gpaPick[c.id]; g=(pick&&pick!=='proj')?GPAOF[pick]:gpaOf(c,courseRes(c,'proj').pct); }
+    else if(kind==='whatif') g=gpaOf(c,courseRes(c,'whatif').pct);
+    else { const pick=S.gpaPick[c.id]; g=(pick&&GPAOF[pick]!==undefined)?GPAOF[pick]:gpaOf(c,courseRes(c,pick==='proj'?'proj':'whatif').pct); }
     if(g==null) return;
     cr+=c.credits; qp+=c.credits*g;
   });
@@ -583,7 +611,7 @@ function save(){
 function cumPoints(gp){
   let cr=0,qp=0; const pts=[]; const lab=PRIOR.map(t=>t.short||t.t);
   PRIOR.forEach(function(s,i){ s.c.forEach(x=>{cr+=x[1];qp+=x[1]*x[2];}); pts.push({l:lab[i],v:qp/cr}); });
-  if(gp&&gp.cr) pts.push({l:'Jr 1 (proj.)',v:gp.cum,proj:true});
+  if(gp&&gp.cr) pts.push({l:'Jr 1 (what-if)',v:gp.cum,proj:true});
   return pts;
 }
 function chartSvg(pts){
@@ -612,32 +640,65 @@ function chartSvg(pts){
   return s+'</svg>';
 }
 function heroHtml(){
-  const gp=gpaCalc('proj');
-  if(!PRIOR_CR) return '<section class="hero" style="grid-template-columns:1fr"><div class="hl"><div class="lab">Projected semester GPA</div><div class="gnum">'+(gp.cr?g2(gp.sem):'–')+'</div>'
-    +(gp.cr?'<p class="sub">'+gp.cr+' credits counted</p>':'<div class="after">Add credits in the GPA section to project this semester.</div>')
+  const gp=gpaCalc('whatif');
+  if(!PRIOR_CR) return '<section class="hero" style="grid-template-columns:1fr"><div class="hl"><div class="lab">What-if semester GPA</div><div class="gnum">'+(gp.cr?g2(gp.sem):'–')+'</div>'
+    +(gp.cr?'<p class="sub">'+gp.cr+' credits counted</p>':'<div class="after">Add credits in the GPA section to see a what-if GPA for this semester.</div>')
     +'</div></section>';
   return '<section class="hero"><div class="hl"><div class="lab">Cumulative GPA</div><div class="gnum">'+g2(PRIOR_QP/PRIOR_CR)+'</div>'
     +'<p class="sub">Past semesters · '+PRIOR_CR+' graded credits</p>'
-    +(gp.cr?'<div class="after"><b>'+g2(gp.cum)+'</b> if this semester lands where it’s projected</div>':'<div class="after">Add credits in the GPA section to project this semester.</div>')
+    +(gp.cr?'<div class="after"><b>'+g2(gp.cum)+'</b> with your what-ifs</div>':'<div class="after">Add credits in the GPA section to see a what-if GPA for this semester.</div>')
     +'</div><div class="hc">'+chartSvg(cumPoints(gp))+'</div></section>';
 }
 function gpaSumHtml(){
-  const a=gpaCalc('cur'),b=gpaCalc('proj'),c=gpaCalc('pick');
+  const a=gpaCalc('cur'),b=gpaCalc('whatif'),c=gpaCalc('pick');
   if(!a.cr&&!b.cr&&!c.cr) return '<div class="banner"><b>Add credits to see GPA.</b> Type each class’s credits in the table below.</div>';
   const box=(t,x)=>'<div class="card gp"><div class="t">'+t+'</div><div class="v">'+g2(x.sem)+'</div><div class="s">Cumulative '+g2(x.cum)+'</div></div>';
   const miss=a.missing.length?'<p class="semnote">Not counted yet (no credits): '+a.missing.map(esc).join(', ')+'.</p>':'';
-  return '<div class="gpagrid">'+box('Semester GPA now',a)+box('Semester GPA projected',b)+box('With your letter picks',c)+'</div>'+miss;
+  return '<div class="gpagrid">'+box('Semester GPA now',a)+box('Semester GPA what-if',b)+box('With your letter picks',c)+'</div>'+miss;
 }
 
+const fx=x=>trim((Math.round(x*100)/100).toFixed(2));
+function pastPct(n){
+  if(OLD_PCT[n]!=null) return OLD_PCT[n];
+  const h=HIST[n]; return (h&&h.variants&&h.variants.length===1&&h.variants[0].pct!=null)?h.variants[0].pct:null;
+}
+function pastDetail(n){
+  const h=HIST[n]; if(!h||!h.variants||!h.variants.length) return '';
+  const many=h.variants.length>1;
+  return (many?'<div class="semnote" style="margin:4px 0 0">Your sheet has '+h.variants.length+' versions of this class, shown below.</div>':'')
+  +h.variants.map(function(v,vi){
+    const cats=v.cats.map(function(k){
+      const its=k.items.map(i=>'<span class="chip">'+(i.n?esc(i.n)+' ':'')+'<b>'+fx(i.e)+'</b>/'+fx(i.p)+'</span>').join('');
+      const ex=(k.extra||[]).map(x=>'<span class="chip ex'+(x.e<0?' neg':'')+'">'+(x.n?esc(x.n)+' ':'')+(x.e<0?'−'+fx(-x.e)+' deducted':'+'+fx(x.e)+' extra')+'</span>').join('');
+      return '<div class="hxc"><div class="hxh"><b>'+esc(k.name)+'</b><span>'+trim((Math.round(k.w*1000)/10).toFixed(1))+'% of grade</span><span class="hxa">'+(k.avg!=null?f3(k.avg*100)+'%':'–')+'</span></div>'
+        +'<div class="hxi">'+its+ex+'</div>'+(k.note?'<div class="hxn">'+esc(k.note)+'</div>':'')+'</div>';
+    }).join('');
+    return (many?'<div class="hxv">Version '+(vi+1)+'</div>':'')+cats
+      +'<div class="hxf">Final '+(v.pct!=null?f3(v.pct)+'%':'–')+(v.letter?' · '+esc(v.letter):'')+'</div>';
+  }).join('');
+}
+function pastRow(x,gg,cr){
+  const pct=pastPct(x[0]);
+  const cells='<span class="n">'+esc(x[0])+'</span><span class="m">'+cr+'</span><span class="m">'+(pct!=null?f3(pct)+'%':'')+'</span><span class="gg">'+gg+'</span>';
+  return HIST[x[0]]?'<details class="hx"><summary class="cr">'+cells+'</summary><div class="hxb">'+pastDetail(x[0])+'</div></details>':'<div class="cr">'+cells+'</div>';
+}
+function projHomeHtml(){
+  const b=gpaCalc('proj');
+  const rows=S.courses.map(function(c){ const pr=courseRes(c,'proj');
+    return '<tr><td><i class="dot" style="background:'+COLORS[c.id]+'"></i>'+esc(c.name)+'</td><td class="r">'+c.fill+'%</td><td class="r">'+letterOf(c,pr.pct)+'</td><td class="r">'+pctS(pr.pct)+'</td></tr>'; }).join('');
+  const gp=b.cr?'<p class="semnote">Projected semester GPA <b>'+g2(b.sem)+'</b>'+(PRIOR_CR&&b.cum!=null?' · cumulative <b>'+g2(b.cum)+'</b>':'')+'</p>':'<p class="semnote">Add credits in the GPA planner to see a projected GPA.</p>';
+  return '<div class="sechead" id="projected"><h2>Projected final</h2><p>Your what-ifs, plus the rest of each class scoring at the level set on its page</p></div>'
+    +'<div class="card panel scroll"><table><thead><tr><th>Class</th><th class="r">Rest scores</th><th class="r">Letter</th><th class="r">Percent</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+gp;
+}
 function homeView(){
   const anyScore=S.courses.some(c=>c.cats.some(k=>k.items.some(it=>it.e!=null)));
   const tiles=S.courses.map(function(c){
-    const cur=courseRes(c,'cur'), pr=courseRes(c,'proj');
+    const cur=courseRes(c,'cur'), wi=courseRes(c,'whatif');
     let late=0; c.cats.forEach(k=>k.items.forEach(it=>{ if(it.d&&it.d<TODAY&&it.e==null&&!it.opt) late++; }));
     return '<button class="tile" style="--c:'+COLORS[c.id]+';--fg:'+TILE[c.id]+'" data-act="go" data-v="'+c.id+'">'
       +'<div class="nm">'+esc(c.name)+'</div><div class="cd">'+esc(c.code)+'</div>'
       +'<div class="L">'+letterOf(c,cur.pct)+'</div>'
-      +'<div class="row"><span class="p">'+(cur.pct==null?'No scores yet':pctS(cur.pct))+'</span><span class="pj">Projected <b>'+letterOf(c,pr.pct)+' · '+pctS(pr.pct)+'</b></span></div>'
+      +'<div class="row"><span class="p">'+(cur.pct==null?'No scores yet':pctS(cur.pct))+'</span><span class="pj">What-if <b>'+letterOf(c,wi.pct)+' · '+pctS(wi.pct)+'</b></span></div>'
       +'<div class="tbar"><i style="width:'+Math.round(cur.progress*100)+'%"></i></div>'
       +'<small>'+Math.round(cur.progress*100)+'% of the grade is in</small>'
       +(late&&cur.pct!=null?'<span class="late">'+late+' past due, no score entered</span>':'')
@@ -649,29 +710,31 @@ function homeView(){
   const upHtml=up.length?up.map(u=>'<div class="up"><div class="d">'+fd(u.d)+'</div><div><div style="font-weight:700">'+esc(u.n)+'</div><div class="c"><i class="dot" style="background:'+COLORS[u.id]+'"></i>'+esc(u.c)+(u.dl?' · '+esc(u.dl):'')+'</div></div></div>').join('')
     :'<div class="empty">Nothing with a due date in the next two weeks.</div>';
   const gpaRows=S.courses.map(c=>{
-    const cur=courseRes(c,'cur'),pr=courseRes(c,'proj'), pick=S.gpaPick[c.id]||'proj';
-    const opts='<option value="proj"'+(pick==='proj'?' selected':'')+'>Projected</option>'+LETTERS.map(L=>'<option value="'+L+'"'+(pick===L?' selected':'')+'>'+L+'</option>').join('');
+    const cur=courseRes(c,'cur'),wi=courseRes(c,'whatif'), pick=S.gpaPick[c.id]||'whatif';
+    const opts='<option value="whatif"'+(pick==='whatif'?' selected':'')+'>What-if</option><option value="proj"'+(pick==='proj'?' selected':'')+'>Projected</option>'+LETTERS.map(L=>'<option value="'+L+'"'+(pick===L?' selected':'')+'>'+L+'</option>').join('');
     return '<tr><td><i class="dot" style="background:'+COLORS[c.id]+'"></i>'+esc(c.name)+'</td><td><input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="–" aria-label="Credits for '+esc(c.name)+'"></td>'
-      +'<td class="r">'+letterOf(c,cur.pct)+'</td><td class="r">'+letterOf(c,pr.pct)+'</td><td class="r"><select data-f="pick" data-c="'+c.id+'" aria-label="Letter to use for '+esc(c.name)+'">'+opts+'</select></td></tr>';
+      +'<td class="r">'+letterOf(c,cur.pct)+'</td><td class="r">'+letterOf(c,wi.pct)+'</td><td class="r"><select data-f="pick" data-c="'+c.id+'" aria-label="Letter to use for '+esc(c.name)+'">'+opts+'</select></td></tr>';
   }).join('');
   const cards=PRIOR.map(function(s,si){
     const scr=s.c.reduce((a,x)=>a+x[1],0), sqp=s.c.reduce((a,x)=>a+x[1]*x[2],0);
     let cr=0,qp=0; PRIOR.slice(0,si+1).forEach(t=>t.c.forEach(x=>{cr+=x[1];qp+=x[1]*x[2];}));
     return '<section class="card sem"><div class="semtop" style="--hd:'+SEMCOL[si][0]+';--hf:'+SEMCOL[si][1]+'"><h3>'+esc(s.t)+'</h3><div class="g">'+g2(sqp/scr)+'<small>'+scr+' credits</small></div></div><div class="semb">'
-      +s.c.map(x=>'<div class="cr"><span class="n">'+esc(x[0])+'</span><span class="m">'+x[1]+' cr</span><span class="m">'+(OLD_PCT[x[0]]!=null?f3(OLD_PCT[x[0]])+'%':'')+'</span><span class="gg">'+(LETTER_OF_GPA[String(x[2])]||x[2])+'</span></div>').join('')
+      +s.c.map(x=>pastRow(x,(LETTER_OF_GPA[String(x[2])]||x[2]),x[1]+' cr')).join('')
+      +(s.x||[]).map(n=>pastRow([n],'–','no credit')).join('')
       +'<div class="semnote">Cumulative after this semester: <b>'+g2(qp/cr)+'</b>'+((OLD_X[si]||[]).length?'<br>Not in GPA (0.00 in your sheet): '+OLD_X[si].map(esc).join(', '):'')+'</div></div></section>';
   }).join('');
   const banner=anyScore?'':'<div class="banner"><b>Start with what you already have.</b> Upload a grade file, or open a class and fill in the Earned column. <label class="btn pri" style="cursor:pointer;margin-left:8px">Upload grade file<input type="file" id="bkfile2" accept=".json,application/json" hidden></label></div>';
   return '<h1 class="page-h">Fall 2026</h1><p class="lede">Junior year, first semester. Tap a class to enter scores and try what-ifs. Everything you change saves on its own.</p>'
     +'<div id="heroBox">'+heroHtml()+'</div>'+banner
-    +'<div class="sechead" id="classes"><h2>This semester</h2><p>Grade so far, and where it lands if the rest goes at the level you set</p></div>'
+    +'<div class="sechead" id="classes"><h2>This semester</h2><p>Grade so far, and your what-if final</p></div>'
     +'<div class="tiles">'+tiles+'</div>'
     +'<div class="sechead"><h2>Coming up</h2><p>Next two weeks</p></div><div class="card panel">'+upHtml+'</div>'
-    +'<div class="sechead" id="gpa"><h2>GPA planner</h2><p>Add credits, then pick Projected or a letter for each class</p></div>'
-    +'<div id="gpasum"></div><div class="card panel scroll"><table><thead><tr><th>Class</th><th>Credits</th><th class="r">Now</th><th class="r">Projected</th><th class="r">What-if letter</th></tr></thead><tbody>'+gpaRows+'</tbody></table></div>'
-    +(PRIOR.length?'<div class="sechead" id="history"><h2>Past semesters</h2><p>Earlier semesters</p></div>'
+    +'<div class="sechead" id="gpa"><h2>GPA planner</h2><p>Add credits, then use the what-if grade or pick a letter for each class</p></div>'
+    +'<div id="gpasum"></div><div class="card panel scroll"><table><thead><tr><th>Class</th><th>Credits</th><th class="r">Now</th><th class="r">What-if</th><th class="r">Letter to use</th></tr></thead><tbody>'+gpaRows+'</tbody></table></div>'
+    +(PRIOR.length?'<div class="sechead" id="history"><h2>Past semesters</h2><p>Tap a class to see its categories and every score</p></div>'
     +'<div class="semgrid">'+cards+'</div>'
     +'<p class="semnote" style="margin-top:16px">GPA is weighted by credits.</p>':'')
+    +'<div id="projbox">'+projHomeHtml()+'</div>'
     +backupHtml();
 }
 
@@ -696,17 +759,23 @@ function courseView(c){
     +'<section class="cband"><header class="chead"><div><h1>'+esc(c.name)+'</h1><p>'+esc(c.code)+'</p></div>'
     +'<label class="fld">Credits <input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="–"></label></header>'
     +'<div id="sum"></div></section>'
-    +'<section class="card csum"><div class="fillbox"><label for="fill"><span>Assume the rest of your work scores</span><b id="fillv">'+c.fill+'%</b></label>'
+    +ec+wn+cats
+    +'<section class="card csum" id="projcard"><h2 class="projh">Projected final</h2><p class="projp">Your what-ifs, plus the rest of the work scoring at the level below. This is separate from the what-if final at the top.</p><div id="projsum"></div>'
+    +'<div class="fillbox"><label for="fill"><span>Assume the rest of your work scores</span><b id="fillv">'+c.fill+'%</b></label>'
     +'<input type="range" id="fill" min="0" max="110" step="1" value="'+c.fill+'" data-f="fill" data-c="'+c.id+'"></div>'
     +'<div class="need" id="need"></div></section>'
-    +ec+wn+cats+notes+'</div>';
+    +notes+'</div>';
+}
+function projHtml(c){
+  const pr=courseRes(c,'proj');
+  return '<div class="projres"><span class="l">'+letterOf(c,pr.pct)+'</span><span class="p">'+pctS(pr.pct)+'</span><span class="h">projected final'+(c.scaleAssumed?' · assumed +/− scale':'')+'</span></div>';
 }
 function sumHtml(c){
-  const cur=courseRes(c,'cur'), pr=courseRes(c,'proj');
+  const cur=courseRes(c,'cur'), wi=courseRes(c,'whatif');
   const as=c.scaleAssumed?' · assumed +/− scale':'';
   return '<div class="gblocks">'
     +'<div><div class="glabel">Graded so far</div><div class="gletter">'+letterOf(c,cur.pct)+'</div><div class="gpct">'+pctS(cur.pct)+'</div><div class="ghint">'+Math.round(cur.progress*100)+'% of the grade is in</div></div>'
-    +'<div><div class="glabel">Projected final</div><div class="gletter">'+letterOf(c,pr.pct)+'</div><div class="gpct">'+pctS(pr.pct)+'</div><div class="ghint">your what-ifs plus the slider'+as+'</div></div></div>'
+    +'<div><div class="glabel">What-if final</div><div class="gletter">'+letterOf(c,wi.pct)+'</div><div class="gpct">'+pctS(wi.pct)+'</div><div class="ghint">what you’ve earned plus your what-if points'+as+'</div></div></div>'
     +'<div class="track" title="Share of the grade that has a score"><i style="width:'+Math.round(cur.progress*100)+'%"></i></div>';
 }
 
@@ -721,10 +790,12 @@ function refresh(){
   if(view==='home'){
     const h=$('#heroBox'); if(h) h.innerHTML=heroHtml();
     const g=$('#gpasum'); if(g) g.innerHTML=gpaSumHtml();
+    const pb=$('#projbox'); if(pb) pb.innerHTML=projHomeHtml();
     return;
   }
   const c=getC(view); if(!c) return;
   $('#sum').innerHTML=sumHtml(c);
+  $('#projsum').innerHTML=projHtml(c);
   $('#need').innerHTML=needHtml(c);
   $$('.cpct').forEach(el=>{
     const k=c.cats[+el.dataset.k]; const r=catRes(k,'cur',null);
