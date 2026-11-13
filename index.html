@@ -226,9 +226,15 @@ const LETTERS=['A+','A','A-','B+','B','B-','C+','C','C-','D+','D','D-','F'];
 const GPAOF={'A+':4,'A':4,'A-':3.75,'B+':3.25,'B':3,'B-':2.75,'C+':2.25,'C':2,'C-':1.75,'D+':1.25,'D':1,'D-':0.75,'F':0};
 
 /* ---------- earlier semesters ---------- */
-const PRIOR=[];
-const PRIOR_CR=PRIOR.reduce((a,s)=>a+s.c.reduce((b,x)=>b+x[1],0),0);
-const PRIOR_QP=PRIOR.reduce((a,s)=>a+s.c.reduce((b,x)=>b+x[1]*x[2],0),0);
+let PRIOR=[], PRIOR_CR=0, PRIOR_QP=0, OLD_PCT={}, OLD_X=[];
+function setHistory(src){
+  const ok=a=>Array.isArray(a)&&a.every(t=>t&&Array.isArray(t.c));
+  PRIOR=(src&&ok(src.prior))?src.prior:[];
+  OLD_PCT=(src&&src.oldPct&&typeof src.oldPct==='object')?src.oldPct:{};
+  OLD_X=(src&&Array.isArray(src.oldX))?src.oldX:[];
+  PRIOR_CR=PRIOR.reduce((a,s)=>a+s.c.reduce((b,x)=>b+x[1],0),0);
+  PRIOR_QP=PRIOR.reduce((a,s)=>a+s.c.reduce((b,x)=>b+x[1]*x[2],0),0);
+}
 
 /* ---------- course definitions ---------- */
 const I=(n,p,d,dl,opt)=>({n:n,p:p,e:null,w:null,d:d||null,dl:dl||'',opt:!!opt});
@@ -335,6 +341,7 @@ let S=null, view='home', dbDoc=null, wipeArmed=false;
 
 function loadMerged(saved){
   const D=defaults();
+  setHistory(saved); D.prior=PRIOR; D.oldPct=OLD_PCT; D.oldX=OLD_X;
   if(!saved||!saved.courses) return D;
   D.gpaPick=saved.gpaPick||{};
   D.ts=saved.ts||0;
@@ -495,8 +502,6 @@ function defaults(){
 }
 
 
-const OLD_PCT={};
-const OLD_X=[];
 
 function ruleText(k){
   if(k.rule==='avg') return k.items.length>1?'Each item counts equally.':'';
@@ -538,7 +543,7 @@ function backupHtml(){
   return '<details><summary>Backup and reset</summary>'
     +'<p class="sub">Your changes save on this device automatically. Download a backup file now and then so you can restore it on another device or after clearing your browser data.</p>'
     +'<div class="addrow" style="padding-left:0"><button class="btn pri" data-act="download">Download backup file</button>'
-    +'<label class="btn" style="cursor:pointer">Restore from file<input type="file" id="bkfile" accept=".json,application/json" hidden></label>'
+    +'<label class="btn" style="cursor:pointer">Upload grade file<input type="file" id="bkfile" accept=".json,application/json" hidden></label>'
     +'<button class="btn" data-act="wipe" id="wipeBtn">Clear all scores</button></div>'
     +'<textarea id="bk" aria-label="Backup text" placeholder="Or paste backup text here"></textarea>'
     +'<div class="addrow" style="padding-left:0"><button class="btn" data-act="export">Show backup text</button><button class="btn" data-act="import">Restore from text</button></div>'
@@ -576,7 +581,7 @@ function save(){
 
 /* ---------- charts + home ---------- */
 function cumPoints(gp){
-  let cr=0,qp=0; const pts=[]; const lab=['Fr 1','Fr 2','So 1','So 2'];
+  let cr=0,qp=0; const pts=[]; const lab=PRIOR.map(t=>t.short||t.t);
   PRIOR.forEach(function(s,i){ s.c.forEach(x=>{cr+=x[1];qp+=x[1]*x[2];}); pts.push({l:lab[i],v:qp/cr}); });
   if(gp&&gp.cr) pts.push({l:'Jr 1 (proj.)',v:gp.cum,proj:true});
   return pts;
@@ -612,7 +617,7 @@ function heroHtml(){
     +(gp.cr?'<p class="sub">'+gp.cr+' credits counted</p>':'<div class="after">Add credits in the GPA section to project this semester.</div>')
     +'</div></section>';
   return '<section class="hero"><div class="hl"><div class="lab">Cumulative GPA</div><div class="gnum">'+g2(PRIOR_QP/PRIOR_CR)+'</div>'
-    +'<p class="sub">Through sophomore year · '+PRIOR_CR+' graded credits</p>'
+    +'<p class="sub">Past semesters · '+PRIOR_CR+' graded credits</p>'
     +(gp.cr?'<div class="after"><b>'+g2(gp.cum)+'</b> if this semester lands where it’s projected</div>':'<div class="after">Add credits in the GPA section to project this semester.</div>')
     +'</div><div class="hc">'+chartSvg(cumPoints(gp))+'</div></section>';
 }
@@ -654,9 +659,9 @@ function homeView(){
     let cr=0,qp=0; PRIOR.slice(0,si+1).forEach(t=>t.c.forEach(x=>{cr+=x[1];qp+=x[1]*x[2];}));
     return '<section class="card sem"><div class="semtop" style="--hd:'+SEMCOL[si][0]+';--hf:'+SEMCOL[si][1]+'"><h3>'+esc(s.t)+'</h3><div class="g">'+g2(sqp/scr)+'<small>'+scr+' credits</small></div></div><div class="semb">'
       +s.c.map(x=>'<div class="cr"><span class="n">'+esc(x[0])+'</span><span class="m">'+x[1]+' cr</span><span class="m">'+(OLD_PCT[x[0]]!=null?f3(OLD_PCT[x[0]])+'%':'')+'</span><span class="gg">'+(LETTER_OF_GPA[String(x[2])]||x[2])+'</span></div>').join('')
-      +'<div class="semnote">Cumulative after this semester: <b>'+g2(qp/cr)+'</b>'+(OLD_X[si].length?'<br>Not in GPA (0.00 in your sheet): '+OLD_X[si].map(esc).join(', '):'')+'</div></div></section>';
+      +'<div class="semnote">Cumulative after this semester: <b>'+g2(qp/cr)+'</b>'+((OLD_X[si]||[]).length?'<br>Not in GPA (0.00 in your sheet): '+OLD_X[si].map(esc).join(', '):'')+'</div></div></section>';
   }).join('');
-  const banner=anyScore?'':'<div class="banner"><b>Start with what you already have.</b> Open a class and fill in the Earned column for graded work.</div>';
+  const banner=anyScore?'':'<div class="banner"><b>Start with what you already have.</b> Upload a grade file, or open a class and fill in the Earned column. <label class="btn pri" style="cursor:pointer;margin-left:8px">Upload grade file<input type="file" id="bkfile2" accept=".json,application/json" hidden></label></div>';
   return '<h1 class="page-h">Fall 2026</h1><p class="lede">Junior year, first semester. Tap a class to enter scores and try what-ifs. Everything you change saves on its own.</p>'
     +'<div id="heroBox">'+heroHtml()+'</div>'+banner
     +'<div class="sechead" id="classes"><h2>This semester</h2><p>Grade so far, and where it lands if the rest goes at the level you set</p></div>'
@@ -765,7 +770,7 @@ document.addEventListener('click',function(ev){
   else if(a==='download'){ const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'}); const u=URL.createObjectURL(blob); const l=document.createElement('a'); l.href=u; l.download='grade-tracker-backup.json'; document.body.appendChild(l); l.click(); l.remove(); setTimeout(function(){URL.revokeObjectURL(u);},1000); }
   else if(a==='export'){ $('#bk').value=JSON.stringify(S); $('#bkmsg').textContent='Copy all of that text and keep it somewhere safe.'; }
   else if(a==='import'){
-    try{ const v=JSON.parse($('#bk').value); if(!v||!v.courses) throw new Error('x'); S=loadMerged(v); save(); render(); }
+    try{ const v=JSON.parse($('#bk').value); if(!v||!v.courses) throw new Error('x'); S=loadMerged(v); save(); render(); setStat('Grades loaded','ok'); }
     catch(e){ $('#bkmsg').textContent='That text isn’t a valid backup. Paste the full text you copied earlier.'; }
   }
   else if(a==='wipe'){
@@ -775,9 +780,9 @@ document.addEventListener('click',function(ev){
 });
 
 document.addEventListener('change',function(ev){
-  const t=ev.target; if(!(t&&t.id==='bkfile'&&t.files&&t.files[0])) return;
+  const t=ev.target; if(!(t&&(t.id==='bkfile'||t.id==='bkfile2')&&t.files&&t.files[0])) return;
   const r=new FileReader();
-  r.onload=function(){ try{ const v=JSON.parse(r.result); if(!v||!v.courses) throw new Error('x'); S=loadMerged(v); save(); render(); }catch(e){ const m=$('#bkmsg'); if(m) m.textContent='That file isn’t a valid backup.'; } };
+  r.onload=function(){ try{ const v=JSON.parse(r.result); if(!v||!v.courses) throw new Error('x'); S=loadMerged(v); save(); render(); setStat('Grades loaded','ok'); }catch(e){ const m=$('#bkmsg'); if(m) m.textContent='That file isn’t a valid grade file.'; alert('That file isn’t a valid grade file.'); } };
   r.readAsText(t.files[0]);
 });
 

@@ -15,6 +15,7 @@ The page starts with your classes but no scores. Anything you enter is saved in 
 
 - **Scores and what-ifs:** just type in the page. It saves on that device.
 - **New semester, new classes, design changes:** open the repo in Claude Code and ask it to edit `index.html`, then commit and push. GitHub Pages updates on its own.
-- **Moving to another device:** download a backup file on the old one, then use "Restore from file" on the new one.
+- **Loading your grades:** click "Upload grade file" and pick your grades `.json` file (scores and past semesters). Keep that file on your computer, never in this repo.
+- **Moving to another device:** click "Download backup file" on the old one, then "Upload grade file" on the new one.
 
 Note: saved scores live in each browser separately. This repo is public, so keep scores out of `index.html` and use backup files to move them between devices.
