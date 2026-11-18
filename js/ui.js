@@ -93,7 +93,7 @@ function pastRow(x,gg,cr){
 function projHomeHtml(){
   const b=gpaCalc('proj');
   const rows=S.courses.map(function(c){ const pr=courseRes(c,'proj');
-    return '<tr><td><i class="dot" style="background:'+COLORS[c.id]+'"></i>'+esc(c.name)+'</td><td class="r">'+c.fill+'%</td><td class="r">'+letterOf(c,pr.pct)+'</td><td class="r">'+pctS(pr.pct)+'</td></tr>'; }).join('');
+    return '<tr><td><i class="dot" data-cid="'+c.id+'" style="background:'+COLORS[c.id]+'"></i>'+esc(c.name)+'</td><td class="r">'+c.fill+'%</td><td class="r">'+letterOf(c,pr.pct)+'</td><td class="r">'+pctS(pr.pct)+'</td></tr>'; }).join('');
   const gp=b.cr?'<p class="semnote">Projected semester GPA <b>'+g2(b.sem)+'</b>'+(PRIOR_CR&&b.cum!=null?' · cumulative <b>'+g2(b.cum)+'</b>':'')+'</p>':'<p class="semnote">Add credits in the GPA planner to see a projected GPA.</p>';
   return '<div class="card panel scroll"><table><thead><tr><th>Class</th><th class="r">Rest scores</th><th class="r">Letter</th><th class="r">Percent</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+gp;
 }
@@ -149,7 +149,7 @@ function homeView(){
   const gpaRows=S.courses.map(c=>{
     const cur=courseRes(c,'cur'),wi=courseRes(c,'whatif'), pick=S.gpaPick[c.id]||'whatif';
     const opts='<option value="whatif"'+(pick==='whatif'?' selected':'')+'>What-if</option><option value="proj"'+(pick==='proj'?' selected':'')+'>Projected</option>'+LETTERS.map(L=>'<option value="'+L+'"'+(pick===L?' selected':'')+'>'+L+'</option>').join('');
-    return '<tr'+(c.noGpa?' style="opacity:.5" title="Not counted in GPA"':'')+'><td><i class="dot" style="background:'+COLORS[c.id]+'"></i>'+esc(c.name)+(c.noGpa?' <small style="color:var(--mut)">· not in GPA</small>':'')+'</td><td><input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="–" aria-label="Credits for '+esc(c.name)+'"></td>'
+    return '<tr'+(c.noGpa?' style="opacity:.5" title="Not counted in GPA"':'')+'><td><i class="dot" data-cid="'+c.id+'" style="background:'+COLORS[c.id]+'"></i>'+esc(c.name)+(c.noGpa?' <small style="color:var(--mut)">· not in GPA</small>':'')+'</td><td><input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="–" aria-label="Credits for '+esc(c.name)+'"></td>'
       +'<td class="r">'+letterOf(c,cur.pct)+'</td><td class="r">'+letterOf(c,wi.pct)+'</td><td class="r"><select data-f="pick" data-c="'+c.id+'" aria-label="Letter to use for '+esc(c.name)+'">'+opts+'</select></td></tr>';
   }).join('');
   const cards=PRIOR.map(function(s,si){
@@ -215,12 +215,12 @@ function courseView(c){
   const tot=c.cats.reduce((a,k)=>a+(k.w||0),0);
   const wn=(!c.pooled&&Math.abs(tot-100)>0.01)?'<div class="banner">Category weights add up to '+f1(tot)+'%, not 100%. Grades are scaled to the weights you’ve set.</div>':'';
   const cc='<div class="cc" aria-label="Class color">'+PALETTE.map(v=>'<button type="button" style="--c:'+v+'" class="'+(v.toLowerCase()===COLORS[c.id].toLowerCase()?'on':'')+'" data-id="'+c.id+'" data-v="'+v+'" aria-label="'+pname(v)+'" aria-pressed="'+(v.toLowerCase()===COLORS[c.id].toLowerCase())+'"></button>').join('')+'</div>';
-  if(gradesOff(c)) return '<div class="cpage" style="--c:'+COLORS[c.id]+';--fg:'+TILE[c.id]+'"><div class="cpbar"><div class="cpl"><button class="back" data-act="go" data-v="home">← All classes</button><button type="button" class="editlink'+(editing?' on':'')+'" data-act="edit" data-c="'+c.id+'">'+(editing?'Done editing':'✎ Edit')+'</button></div>'+cc+'</div>'
+  if(gradesOff(c)) return '<div class="cpage" data-id="'+c.id+'" style="--c:'+COLORS[c.id]+';--fg:'+TILE[c.id]+'"><div class="cpbar"><div class="cpl"><button class="back" data-act="go" data-v="home">← All classes</button><button type="button" class="editlink'+(editing?' on':'')+'" data-act="edit" data-c="'+c.id+'">'+(editing?'Done editing':'✎ Edit')+'</button></div>'+cc+'</div>'
     +'<section class="cband"><header class="chead"><div><h1>'+esc(c.name)+'</h1><p>'+esc(subOf(c))+'</p></div>'
     +'<div class="chctl"><label class="fld">Credits <input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="–"></label></div></header>'
     +'<p class="goff">Grades are off for this class. It isn’t counted in your GPA and its scores aren’t tracked. Turn grades back on under ✎ Edit.</p></section>'
     +(editing?editPanel(c):'')+notes+'</div>';
-  return '<div class="cpage" style="--c:'+COLORS[c.id]+';--fg:'+TILE[c.id]+'"><div class="cpbar"><div class="cpl"><button class="back" data-act="go" data-v="home">← All classes</button><button type="button" class="editlink'+(editing?' on':'')+'" data-act="edit" data-c="'+c.id+'">'+(editing?'Done editing':'✎ Edit')+'</button></div>'+cc+'</div>'
+  return '<div class="cpage" data-id="'+c.id+'" style="--c:'+COLORS[c.id]+';--fg:'+TILE[c.id]+'"><div class="cpbar"><div class="cpl"><button class="back" data-act="go" data-v="home">← All classes</button><button type="button" class="editlink'+(editing?' on':'')+'" data-act="edit" data-c="'+c.id+'">'+(editing?'Done editing':'✎ Edit')+'</button></div>'+cc+'</div>'
     +'<section class="cband"><header class="chead"><div><h1>'+esc(c.name)+'</h1><p>'+esc(subOf(c))+'</p></div>'
     +'<div class="chctl"><label class="fld">Credits <input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="–"></label></div></header>'
     +'<div id="sum"></div></section>'

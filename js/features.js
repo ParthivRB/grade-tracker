@@ -263,7 +263,7 @@ function calBody(){
   const arrow=d=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="'+(d<0?'M14.5 6 8.5 12l6 6':'M9.5 6l6 6-6 6')+'"/></svg>';
   const tb='<div class="caltb"><div class="calnav"><button type="button" class="tg" data-act="calwk" data-w="prev"'+(prevOff?' disabled':'')+' aria-label="Previous week">'+arrow(-1)+'</button><button type="button" class="tg" data-act="calwk" data-w="next"'+(nextOff?' disabled':'')+' aria-label="Next week">'+arrow(1)+'</button></div><div class="caltitle">'+wkLabel(calWk)+'<small>'+pd(calWk).getFullYear()+'</small></div>'
     +'<button type="button" class="btn sm" data-act="calwk" data-w="today">Today</button><button type="button" class="btn sm" data-act="offadd">＋ Day off</button><button type="button" class="btn pri sm" data-act="evadd">＋ Event</button></div>';
-  const legend=S.courses.length?'<div class="callg">'+S.courses.map(c=>{ const m=meetSum(c); return '<button type="button" class="lg" data-act="go" data-v="'+c.id+'"><i style="background:'+COLORS[c.id]+'"></i><div><b>'+esc(c.name)+'</b><small>'+(m.length?m.map(esc).join('<br>'):'No time set · add one under ✎ Edit')+'</small></div></button>'; }).join('')+'</div>':'';
+  const legend=S.courses.length?'<div class="callg">'+S.courses.map(c=>{ const m=meetSum(c); return '<button type="button" class="lg" data-act="go" data-v="'+c.id+'"><i data-cid="'+c.id+'" style="background:'+COLORS[c.id]+'"></i><div><b>'+esc(c.name)+'</b><small>'+(m.length?m.map(esc).join('<br>'):'No time set · add one under ✎ Edit')+'</small></div></button>'; }).join('')+'</div>':'';
   const offList='<section class="offs"><div class="offh"><h3>Days off</h3><div class="offact"><button type="button" class="btn sm" data-act="offus">Add US holidays</button><button type="button" class="btn pri sm" data-act="offadd">＋ Add</button></div></div>'
     +(offs.length?'<div class="offgrid">'+offs.slice().sort((a,b)=>a.start<b.start?-1:1).map(o=>{ const k=OFFK[o.kind], same=o.start===o.end, A=pd(o.start), B=pd(o.end), past=o.end<TODAY;
       const rng=same?DAYN[A.getDay()]+', '+MONN[A.getMonth()]+' '+A.getDate():MONN[A.getMonth()]+' '+A.getDate()+' – '+(A.getMonth()===B.getMonth()?'':MONN[B.getMonth()]+' ')+B.getDate(), n=dayDiff(o.start,o.end)+1;
@@ -471,6 +471,13 @@ function catEdit(c,k,ki){
   else if(r==='swap') extra='<span class="hint">Mark items “Optional” below. They replace your lowest regular score when higher.</span>';
   return '<div class="catedit"><label>Scoring <select data-f="catrule" '+base+'>'+op('avg','Average of scores')+op('sum','Total points')+op('best','Only the best N count')+op('cap','Capped points')+op('swap','Optional items replace lowest')+'</select></label>'+extra+del+'</div>';
 }
+/* ---------- live color painting (no re-render) ---------- */
+function paintColors(){
+  document.querySelectorAll('.cpage[data-id]').forEach(function(p){ const id=p.dataset.id; if(!COLORS[id]) return; p.style.setProperty('--c',COLORS[id]); p.style.setProperty('--fg',TILE[id]);
+    p.querySelectorAll('.cc button').forEach(function(b){ const on=b.dataset.v.toLowerCase()===COLORS[id].toLowerCase(); b.classList.toggle('on',on); b.setAttribute('aria-pressed',on?'true':'false'); }); });
+  document.querySelectorAll('.tw[data-id]').forEach(function(w){ const id=w.dataset.id, t=w.querySelector('.tile'); if(t&&COLORS[id]){ t.style.setProperty('--c',COLORS[id]); t.style.setProperty('--fg',TILE[id]); } });
+  document.querySelectorAll('[data-cid]').forEach(function(d){ const id=d.dataset.cid; if(COLORS[id]) d.style.background=COLORS[id]; });
+}
 /* ---------- accent picker ---------- */
 (function(){
   const btn=document.getElementById('accBtn'); const pop=document.createElement('div'); pop.className='pop'; pop.id='accPop'; pop.setAttribute('role','dialog'); pop.setAttribute('aria-label','Accent colors'); document.body.appendChild(pop);
@@ -488,7 +495,7 @@ function catEdit(c,k,ki){
   document.addEventListener('keydown',function(ev){ if(ev.key==='Escape'&&pop.classList.contains('open')){ set(false); btn.focus(); } });
   document.addEventListener('click',function(ev){
     const b=ev.target.closest('.cc button'); if(!b) return;
-    ACC.cls[b.dataset.id]=b.dataset.v; delete ACC.preset; saveAcc(); applyAcc(); render(true);
+    ACC.cls[b.dataset.id]=b.dataset.v; delete ACC.preset; saveAcc(); applyAcc(); paintColors();
   });
   pop.addEventListener('click',function(ev){
     ev.stopPropagation();
@@ -496,7 +503,7 @@ function catEdit(c,k,ki){
     if(k==='main'){ ACC.main=b.dataset.v; delete ACC.preset; }
     else if(k==='pre'){ const p=PRESETS[+b.dataset.i]; ACC={main:p.main,cls:{},preset:p.n}; const cols=Object.keys(p.cls).map(id=>p.cls[id]); if(cols.length) S.courses.forEach((c,i)=>{ ACC.cls[c.id]=cols[i%cols.length]; }); }
     else return;
-    saveAcc(); applyAcc(); build(); render();
+    saveAcc(); applyAcc(); build(); paintColors();
   });
 })();
 /* ---------- theme ---------- */
@@ -567,8 +574,8 @@ document.addEventListener('click',function(ev){
   if(a==='dismissbanner'){ LAY.bn=true; saveLay(); const bn=b.closest('.banner'); if(bn){ bn.classList.add('gone'); setTimeout(function(){ render(true); },320); } else render(true); return; }
   if(a==='secmove'){ moveSec(b.dataset.s,+b.dataset.d); return; }
   const c=b.dataset.c?getC(b.dataset.c):null;
-  if(a==='add'){ c.cats[+b.dataset.k].items.push(I('New item',(c.pooled?5:100))); save(); render(); }
-  else if(a==='addopt'){ c.cats[+b.dataset.k].items.push(I('Case study',100,null,'',true)); save(); render(); }
+  if(a==='add'){ c.cats[+b.dataset.k].items.push(I('New item',(c.pooled?5:100))); save(); render(true); }
+  else if(a==='addopt'){ c.cats[+b.dataset.k].items.push(I('Case study',100,null,'',true)); save(); render(true); }
   else if(a==='goal'){ c.target=b.dataset.l; save(); refresh(); }
   else if(a==='newclass'){ newClassModal(); }
   else if(a==='edit'){ editing=!editing; render(true); }

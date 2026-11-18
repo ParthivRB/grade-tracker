@@ -1271,3 +1271,8 @@ button:focus-visible,a:focus-visible,summary:focus-visible,[role=button]:focus-v
 .hasundo .savestat{opacity:0!important;pointer-events:none}
 .undobar span{flex:1;min-width:0}
 @media (max-width:720px){ .undobar{width:calc(100vw - 24px);max-width:460px;justify-content:space-between} }
+
+/* smooth color changes */
+.cband,.tile,.hero,.addsec span,.rchip i,.wibtn,.cc button,.dot,.lg i,.cmod i{transition-property:background-color,color,border-color,box-shadow,transform,opacity;transition-duration:.5s,.5s,.3s,.3s,.25s,.25s;transition-timing-function:cubic-bezier(.2,.7,.2,1)}
+.cathead h3::before{transition:background-color .5s cubic-bezier(.2,.7,.2,1)}
+.tr-line,.tr-area,.tr-dot{transition:stroke .5s ease,fill .5s ease}
