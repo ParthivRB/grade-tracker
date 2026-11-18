@@ -1,6 +1,6 @@
 # Tally
 
-One file: `index.html`. No build step, no accounts, no server. Everything you enter stays in your own browser.
+Plain HTML, CSS and JavaScript. No build step, no accounts, no server. Everything you enter stays in your own browser.
 
 ## Using it
 
@@ -22,16 +22,33 @@ It's an installable web app that also works offline.
 - **Android:** Chrome, then **Install app**.
 - **Mac or PC:** Chrome or Edge show an install icon in the address bar.
 
-## Sync your phone and computer
+## Move to another device
 
-Open **Sync across devices** at the bottom of the home page and follow the three steps. It keeps your data in a **private** GitHub repo that only you can see, using a fine-grained token limited to that one repo (Contents: read and write). Changes upload a couple of seconds after you make them, and other devices pull them when you open the app. If two devices edit at the same time, the newest edit wins. Nothing is sent anywhere until you connect, and the token is only stored in that browser.
+The simple way: open **Backup and reset**, tap **Save backup** (on a phone this opens the share sheet), send the file to yourself, then tap **Restore from file** on the other device.
+
+## Automatic sync (advanced)
+
+Open **Automatic sync (advanced)** at the bottom of the home page and follow the three steps. It keeps your data in a **private** GitHub repo that only you can see, using a fine-grained token limited to that one repo (Contents: read and write). Changes upload a couple of seconds after you make them, and other devices pull them when you open the app. If two devices edit at the same time, the newest edit wins. Nothing is sent anywhere until you connect, and the token is only stored in that browser.
 
 ## Backups
 
-Your data lives in this browser on this device. Use "Download backup file" now and then, and "Upload a grade file" on another device. Loading a file replaces what is saved in that browser.
+Your data lives in this browser on this device. Use **Save backup** now and then, and **Restore from file** on another device. Loading a file replaces what is saved in that browser.
 
 ## Put it online with GitHub Pages (free)
 
 1. Make a public repo on GitHub and upload `index.html` (plus the icon files).
 2. Settings, Pages, deploy from the `main` branch root.
 3. Keep your own scores out of a public repo. Use backup files for those.
+
+## Project layout
+
+- `index.html`: the page shell.
+- `styles.css`: all styles.
+- `js/core.js`: grade scales, data shape and the grade engine (no screen code).
+- `js/ui.js`: saving, home screen, sync, events, dialogs.
+- `js/features.js`: trends, undo, what-if popup, calendar, class editing, themes.
+- `js/tour.js`: first-run tour and setup.
+- `js/main.js`: privacy toggle and startup.
+- `tests/engine.test.js`: grade-math tests. Run `node tests/engine.test.js` (needs Node, nothing to install).
+
+Deleting a class, semester, section, item, event or day off shows a 10-second **Undo**.
