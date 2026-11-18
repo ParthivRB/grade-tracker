@@ -235,11 +235,14 @@ input[type=time]:focus,input[type=date]:focus{border-color:var(--blue);backgroun
 .chk2 input{width:20px;height:20px;accent-color:var(--blue)}
 @media (max-width:720px){
   .calgrid{grid-template-columns:32px repeat(var(--n),minmax(0,1fr));min-width:0}
-  .calscroll{padding:0 2px 12px}
+  .calscroll{padding:0 4px 16px}
+  .caltb{padding:18px 14px 12px}
+  .dh span{min-width:30px!important;height:30px!important}
   .cal .calhead{padding:16px 10px}
   .caltop,.calsum,.calprog,.wks{padding-left:6px;padding-right:6px}
   .calcard{border-radius:20px}
-  .tabs{display:none}
+  .tabs button[data-act=jump]{display:none}
+  .tabs button{padding:8px 10px}
   .ev{padding:5px 6px;border-radius:10px}
   .ev .nm{font-size:11px}
   .ev .tm{font-size:9.5px}
@@ -250,6 +253,87 @@ input[type=time]:focus,input[type=date]:focus{border-color:var(--blue);backgroun
   .due{font-size:9.5px;padding:3px 5px}
   .dlab{font-size:8px;padding-right:3px}
 }
+.calbtn{display:none}
+.tp{display:inline-block}
+.tpbtn{all:unset;cursor:pointer;box-sizing:border-box;padding:9px 14px;min-width:108px;text-align:center;border-radius:12px;background:var(--soft);font-weight:700;font-size:14px;color:var(--ink);border:2px solid transparent;transition:border-color .18s ease,background-color .18s ease}
+.tpbtn:hover{border-color:var(--line)}
+.tpbtn:focus-visible{border-color:var(--blue)}
+.tpbtn.empty{color:var(--mut);font-weight:600}
+.mrow .tpbtn{background:var(--card)}
+.tpop{position:fixed;z-index:300;width:288px;background:var(--elev);border:1px solid var(--line);border-radius:26px;padding:18px 16px 14px;box-shadow:0 30px 80px -20px rgba(0,0,0,.65),0 2px 6px rgba(0,0,0,.2);animation:tpin .18s cubic-bezier(.2,.8,.2,1)}
+@keyframes tpin{from{opacity:0;transform:translateY(6px) scale(.97)}to{opacity:1;transform:none}}
+.tpshow{text-align:center;font-family:var(--disp);font-weight:800;font-size:30px;letter-spacing:-0.05em;margin:0 0 14px;color:var(--ink)}
+.tpcols{display:grid;grid-template-columns:1fr 1fr 78px;gap:8px}
+.tpcol{position:relative;height:212px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;padding:84px 0;box-sizing:border-box;scrollbar-width:none;-webkit-mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent)}
+.tpcol::-webkit-scrollbar{display:none}
+.tpcol button{all:unset;cursor:pointer;flex:0 0 auto;height:40px;border-radius:13px;display:grid;place-items:center;font-weight:700;font-size:16px;color:var(--ink2);transition:background-color .12s ease,color .12s ease}
+.tpcol button:hover{background:var(--soft);color:var(--ink)}
+.tpcol button.on{background:var(--blue);color:#fff;box-shadow:0 8px 18px -8px var(--blue)}
+.tpcol.ampm{padding:0;justify-content:center;gap:8px;-webkit-mask-image:none;mask-image:none;overflow:visible}
+.tpcol.ampm button{height:52px;font-size:15px;background:var(--soft)}
+.tpcol.ampm button.on{background:var(--blue)}
+.tpfoot{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.tpclear{all:unset;cursor:pointer;color:var(--mut);font-weight:700;font-size:13px;padding:8px 6px}
+.tpclear:hover{color:var(--ink)}
+.cal .calhead{padding:clamp(22px,3.4vw,36px)}
+.cal .caltop{margin-bottom:24px}
+.calcard{position:relative;margin-top:24px;background:var(--card);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);overflow:hidden}
+.caltb{padding:24px 28px 18px;gap:12px}
+.calscroll{padding:0 24px 28px}
+.calscroll.dim .calgrid{opacity:.4}
+.calgrid{grid-template-columns:52px repeat(var(--n),minmax(0,1fr));min-width:calc(52px + var(--n)*110px)}
+.dh{padding:10px 0 14px}
+.dh b{font-size:11.5px;margin-bottom:8px}
+.dh span{min-width:42px;height:42px;font-size:20px}
+.dues{gap:6px;padding:2px 5px 14px}
+.due{padding:6px 10px;border-radius:10px;font-size:12px}
+.dlab{padding:8px 10px 0 0}
+.axis span{right:12px;font-size:11.5px}
+.axis span.f0{transform:none}
+.cdcol{background-image:linear-gradient(var(--line) 1px,transparent 1px)}
+.cdcol.today{background-color:color-mix(in srgb,var(--blue) 7%,transparent)}
+.ev{padding:12px 14px;border-radius:18px;gap:3px;background:linear-gradient(165deg,color-mix(in srgb,var(--c) 84%,#fff),var(--c));box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 12px 24px -14px var(--c);left:5px}
+.ev .nm{font-size:14.5px;letter-spacing:-0.02em}
+.ev .tm{font-size:12px;opacity:.82}
+.ev .lc{font-size:11.5px;opacity:.7;margin-top:1px}
+.ev.sm{padding:5px 12px}
+.ev:hover{transform:translateY(-2px) scale(1.01)}
+.calempty{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);text-align:center;max-width:360px;width:calc(100% - 48px);padding:28px 26px;border-radius:24px;background:var(--elev);border:1px solid var(--line);box-shadow:var(--shadow);z-index:6}
+.calempty svg{width:34px;height:34px;color:var(--blue);margin-bottom:10px}
+.calempty b{display:block;font-family:var(--disp);font-size:20px;letter-spacing:-0.04em;margin-bottom:6px}
+.calempty p{color:var(--mut);font-size:14px;line-height:1.5;margin-bottom:16px}
+.offs{margin-top:28px}
+.callg{margin-top:24px;gap:12px}
+.lg{padding:18px 20px;border-radius:22px;background:var(--card)}
+.lg i{width:14px;height:14px;margin-top:3px}
+.cdcol.offday{background-image:repeating-linear-gradient(135deg,color-mix(in srgb,var(--oc) 15%,transparent) 0 10px,color-mix(in srgb,var(--oc) 5%,transparent) 10px 20px);border-left-color:color-mix(in srgb,var(--oc) 50%,var(--line))}
+.offlab{position:absolute;top:10px;left:6px;right:6px;text-align:center;pointer-events:none}
+.offlab b{display:block;font-size:12px;line-height:1.2;color:var(--ink);letter-spacing:-0.01em}
+.offlab small{display:inline-block;margin-top:5px;font:800 9.5px "Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:99px;background:var(--oc);color:#111}
+.due.offchip{background:var(--c);color:#111;border-left-color:transparent}
+.dh.isoff span{box-shadow:inset 0 0 0 2px var(--line)}
+.wk.hasoff{position:relative}
+.wk.hasoff:after{content:"";position:absolute;right:4px;top:4px;width:6px;height:6px;border-radius:99px;background:#FF6FA8}
+.offs{margin-top:22px}
+.offh{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.offh h3{font-family:var(--disp);font-weight:800;letter-spacing:-0.04em;font-size:22px}
+.offact{display:flex;gap:8px;flex-wrap:wrap}
+.offgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px}
+.off{all:unset;cursor:pointer;box-sizing:border-box;display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:18px;background:var(--elev);border:1px solid var(--line);position:relative;overflow:hidden;transition:transform .18s ease,border-color .18s ease}
+.off:hover{transform:translateY(-2px);border-color:var(--c)}
+.off:before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:var(--c)}
+.off i{width:38px;height:38px;border-radius:12px;flex:0 0 auto;margin-left:6px;background:repeating-linear-gradient(135deg,var(--c) 0 5px,color-mix(in srgb,var(--c) 45%,transparent) 5px 10px)}
+.off div{flex:1;min-width:0}
+.off b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.off small{display:block;color:var(--mut);font-size:12.5px;margin-top:2px}
+.off span{font:800 10px "Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:99px;background:color-mix(in srgb,var(--c) 22%,transparent);color:var(--ink)}
+.off.past{opacity:.5}
+.kinds{display:flex;flex-wrap:wrap;gap:8px}
+.kd{cursor:pointer}
+.kd input{position:absolute;opacity:0;pointer-events:none}
+.kd span{display:inline-block;padding:8px 14px;border-radius:99px;background:var(--soft);font-weight:700;font-size:13px;color:var(--ink2);border:2px solid transparent;transition:all .15s ease}
+.kd input:checked+span{background:color-mix(in srgb,var(--c) 28%,transparent);border-color:var(--c);color:var(--ink)}
+.tabs button.on{color:var(--ink);background:var(--soft)}
 .semb{padding:8px 24px 20px}
 .sem.tr{margin-top:16px}
 .sem.tr .semtop{padding:14px 24px}
@@ -551,8 +635,9 @@ textarea{width:100%;min-height:120px;background:var(--soft);border:1px solid var
     <button data-act="go" data-v="home">Home</button>
     <button data-act="jump" data-t="classes">Classes</button>
     <button data-act="jump" data-t="gpa">GPA</button>
+    <button data-act="go" data-v="cal" id="calTab">Calendar</button>
   </nav>
-  <button class="tg" data-act="go" data-v="cal" aria-label="Calendar" title="Calendar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="4"/><path d="M8 3v3.5M16 3v3.5M3.5 10h17"/></svg></button>
+  <button class="tg calbtn" data-act="go" data-v="cal" aria-label="Calendar" title="Calendar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="4"/><path d="M8 3v3.5M16 3v3.5M3.5 10h17"/></svg></button>
   <button class="tg" id="accBtn" aria-label="Accent colors" title="Accent colors" aria-expanded="false" aria-controls="accPop"><span class="dotc"></span></button>
   <button class="tg" id="themeBtn" aria-label="Toggle dark mode" title="Toggle dark mode"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg><svg class="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1z"/></svg></button></div>
 </div></header><main><div class="wrap" id="main"></div></main><div id="saveStat" class="savestat" role="status" aria-live="polite"></div><script id="saved" type="application/json">null</script><script id="app-js">
@@ -731,6 +816,9 @@ function normMeet(m){
   m=m||{}; const ds=(Array.isArray(m.days)?m.days:[]).map(d=>typeof d==='number'?d:DM[String(d).toLowerCase().slice(0,2)]).filter(d=>d>=0&&d<=6);
   return {days:Array.from(new Set(ds)).sort((a,b)=>a-b),st:normT(m.st!=null?m.st:m.start),en:normT(m.en!=null?m.en:m.end),loc:String(m.loc!=null?m.loc:(m.location||''))};
 }
+const OFFK={holiday:['Holiday','#FF6FA8'],break:['Break','#2DD4FF'],dayoff:['Day off','#FFC233'],noclass:['No class','#FF7A59']};
+const isD=x=>/^\d{4}-\d{2}-\d{2}$/.test(x||'');
+function normOff(o){ o=o||{}; const a=isD(o.start)?o.start:TODAY; let b=isD(o.end)?o.end:a; if(b<a) b=a; return {id:o.id||uid(),t:String(o.t||'Day off'),kind:OFFK[o.kind]?o.kind:'dayoff',start:a,end:b}; }
 function normEvent(e){
   e=e||{}; return {id:e.id||uid(),t:String(e.t||e.title||'Event'),date:/^\d{4}-\d{2}-\d{2}$/.test(e.date||'')?e.date:TODAY,allDay:!!e.allDay,st:normT(e.st),en:normT(e.en),loc:String(e.loc||''),note:String(e.note||''),color:/^#[0-9a-f]{6}$/i.test(e.color||'')?e.color:'#FF7A59',rep:['none','daily','weekly','biweekly','monthly'].includes(e.rep)?e.rep:'none',until:/^\d{4}-\d{2}-\d{2}$/.test(e.until||'')?e.until:''};
 }
@@ -775,7 +863,7 @@ function fromSimple(src){
 function loadAny(src){
   if(src&&(Array.isArray(src.semesters)||Array.isArray(src.earlier))&&!src.sems&&!src.courses){ const w=fromSimple(src); setHistory(w); return w; }
   if(src&&Array.isArray(src.sems)){
-    const w={v:3,active:src.active,sems:src.sems.map(sm=>({id:sm.id||uid(),name:sm.name||'Semester',short:sm.short||'',done:!!sm.done,start:/^\d{4}-\d{2}-\d{2}$/.test(sm.start||'')?sm.start:'',end:/^\d{4}-\d{2}-\d{2}$/.test(sm.end||'')?sm.end:'',events:(sm.events||[]).map(normEvent),gpaPick:sm.gpaPick||{},courses:(sm.courses||[]).map(normCourse)})),ts:src.ts||0,base:src.base||null,transfer:(src.transfer>0?+src.transfer:0)};
+    const w={v:3,active:src.active,sems:src.sems.map(sm=>({id:sm.id||uid(),name:sm.name||'Semester',short:sm.short||'',done:!!sm.done,start:/^\d{4}-\d{2}-\d{2}$/.test(sm.start||'')?sm.start:'',end:/^\d{4}-\d{2}-\d{2}$/.test(sm.end||'')?sm.end:'',events:(sm.events||[]).map(normEvent),off:(sm.off||[]).map(normOff),gpaPick:sm.gpaPick||{},courses:(sm.courses||[]).map(normCourse)})),ts:src.ts||0,base:src.base||null,transfer:(src.transfer>0?+src.transfer:0)};
     if(!w.sems.length){ const e=emptyW(); w.sems=e.sems; w.active=e.active; }
     if(!w.sems.some(x=>x.id===w.active)) w.active=w.sems[0].id;
     setHistory(src); w.prior=PRIOR; w.oldPct=OLD_PCT; w.oldX=OLD_X; w.history=HIST;
@@ -1376,10 +1464,12 @@ function updateProj(c){
 /* ---------- render + refresh ---------- */
 function render(quiet){
   const m=$('#main');
+  const ct=document.getElementById('calTab'); if(ct) ct.classList.toggle('on',view==='cal');
   if(view==='cal') m.innerHTML=calView();
   else if(view==='home'||!getC(view)){ view='home'; m.innerHTML=homeView(); }
   else m.innerHTML=courseView(getC(view));
   if(!REDUCED&&!quiet){ m.classList.remove('enter'); void m.offsetWidth; m.classList.add('enter'); clearTimeout(m._et); m._et=setTimeout(function(){ m.classList.remove('enter'); },900); }
+  if(view==='cal') calRedraw();
   refresh();
 }
 function refresh(){
@@ -1668,7 +1758,7 @@ function setActive(id){
   W.active=id; S=W.sems.find(x=>x.id===id); editing=false; view='home'; refreshPrior(); applyAcc(); save(); setHash(); render(); window.scrollTo(0,0);
 }
 function addSem(name,copy){
-  const sm={id:uid(),name:name,done:false,start:'',end:'',events:[],courses:[],gpaPick:{}};
+  const sm={id:uid(),name:name,done:false,start:'',end:'',events:[],off:[],courses:[],gpaPick:{}};
   if(copy) sm.courses=S.courses.map(function(c){
     const n=JSON.parse(JSON.stringify(c)); n.id=uid(); n.color=ACC.cls[c.id]||c.color; delete n.cuts; if(c.cuts) n.cuts=c.cuts.map(r=>r.slice());
     n.cats.forEach(k=>k.items.forEach(it=>{ it.e=null; it.w=null; it.d=null; it.dl=''; }));
@@ -1727,7 +1817,7 @@ function newClassModal(){
     });
 }
 /* ---------- calendar ---------- */
-const DAYN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MONN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], CAL_RH=58;
+const DAYN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MONN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], CAL_RH=76;
 let calWk=null;
 const pd=i=>new Date(i+'T12:00:00');
 const isoD=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
@@ -1749,15 +1839,16 @@ function meetSum(c){ return c.meets.filter(m=>m.days.length&&m.st&&m.en).map(m=>
 function calView(){
   return '<div class="cal"><div class="cpbar"><button class="back" data-act="go" data-v="home">← All classes</button></div>'
     +'<h1 class="page-h">Calendar</h1>'
-    +'<section class="card calhead"><div class="caltop"><div class="calname">'+esc(S.name)+'</div><div class="caldates"><label>Starts<input type="date" data-f="semstart" value="'+esc(S.start||'')+'" aria-label="Semester start"></label><label>Ends<input type="date" data-f="semend" value="'+esc(S.end||'')+'" aria-label="Semester end"></label></div></div><div id="calBody">'+calBody()+'</div></section></div>';
+    +'<section class="card calhead"><div class="caltop"><div class="calname">'+esc(S.name)+'</div><div class="caldates"><label>Starts<input type="date" data-f="semstart" value="'+esc(S.start||'')+'" aria-label="Semester start"></label><label>Ends<input type="date" data-f="semend" value="'+esc(S.end||'')+'" aria-label="Semester end"></label></div></div><div id="calSum"></div></section><div id="calBody"></div></div>';
 }
-function calRedraw(){ const b=document.getElementById('calBody'); if(b&&view==='cal') b.innerHTML=calBody(); }
+function calRedraw(){ const b=document.getElementById('calBody'), u=document.getElementById('calSum'); if(b&&u&&view==='cal'){ const p=calBody(); u.innerHTML=p.sum; b.innerHTML=p.rest; } }
 function calBody(){
   const st=S.start||'', en=S.end||'', okR=st&&en&&en>=st;
   const w0=okR?mondayOf(st):null, w1=okR?mondayOf(en):null;
   const curW=mondayOf(TODAY);
   if(!calWk){ let r=TODAY; if(okR){ if(r<st) r=st; if(r>en) r=en; } calWk=mondayOf(r); }
   if(okR){ if(calWk<w0) calWk=w0; if(calWk>w1) calWk=w1; }
+  const offs=S.off||[];
   const weeks=[]; if(okR&&dayDiff(w0,w1)<=7*40) for(let w=w0;w<=w1;w=addD(w,7)) weeks.push(w);
   // summary
   let sum;
@@ -1765,7 +1856,7 @@ function calBody(){
     const k=weeks.indexOf(calWk)+1, tot=weeks.length, span=Math.max(1,dayDiff(st,en)), done=Math.min(1,Math.max(0,dayDiff(st,TODAY)/span));
     const note=TODAY<st?'Starts in '+dayDiff(TODAY,st)+' day'+(dayDiff(TODAY,st)===1?'':'s'):TODAY>en?'Semester finished':dayDiff(TODAY,en)+' day'+(dayDiff(TODAY,en)===1?'':'s')+' left';
     sum='<div class="calsum"><div class="calwk">Week '+k+'<small>of '+tot+'</small></div><div class="calnote">'+note+'</div></div><div class="calprog"><i style="width:'+(done*100).toFixed(1)+'%"></i></div>'
-      +(weeks.length?'<div class="wks">'+weeks.map((w,i)=>'<button type="button" class="wk'+(w===calWk?' on':'')+(w===curW?' now':'')+'" data-act="calwk" data-w="'+w+'" aria-label="Week '+(i+1)+', '+wkLabel(w)+'" title="'+wkLabel(w)+'">'+(i+1)+'</button>').join('')+'</div>':'');
+      +(weeks.length?'<div class="wks">'+weeks.map((w,i)=>'<button type="button" class="wk'+(w===calWk?' on':'')+(w===curW?' now':'')+(offs.some(o=>o.end>=w&&o.start<=addD(w,6))?' hasoff':'')+'" data-act="calwk" data-w="'+w+'" aria-label="Week '+(i+1)+', '+wkLabel(w)+'" title="'+wkLabel(w)+'">'+(i+1)+'</button>').join('')+'</div>':'');
   } else sum='<div class="calhint">Set your semester’s first and last day to see week numbers and your progress.</div>';
   // events
   const meets=[]; S.courses.forEach(c=>c.meets.forEach(m=>{ const a=tMin(m.st), b=tMin(m.en); if(m.days.length&&a!=null&&b!=null&&b>a) meets.push({c:c,m:m,a:a,b:b}); }));
@@ -1775,8 +1866,9 @@ function calBody(){
   const wkend=meets.some(x=>x.m.days.includes(0)||x.m.days.includes(6))||evs.some(e=>{ for(let i=5;i<7;i++) if(evOn(e,addD(calWk,i))) return true; return false; });
   const nd=wkend?7:5, days=[]; for(let i=0;i<nd;i++) days.push(addD(calWk,i));
   const inSem=d=>!okR||(d>=st&&d<=en);
+  const offOn=d=>offs.find(o=>d>=o.start&&d<=o.end);
   const dayEvents=days.map(d=>{
-    const L=[]; if(inSem(d)) meets.forEach(x=>{ if(x.m.days.includes(pd(d).getDay())) L.push({a:x.a,b:x.b,col:COLORS[x.c.id],fg:TILE[x.c.id],t:x.c.name,loc:x.m.loc,go:'go',id:x.c.id}); });
+    const L=[], offH=offOn(d); if(inSem(d)&&!offH) meets.forEach(x=>{ if(x.m.days.includes(pd(d).getDay())) L.push({a:x.a,b:x.b,col:COLORS[x.c.id],fg:TILE[x.c.id],t:x.c.name,loc:x.m.loc,go:'go',id:x.c.id}); });
     const allDay=[];
     evs.forEach(e=>{ if(!evOn(e,d)) return; if(e.allDay||tMin(e.st)==null) allDay.push(e); else { const a=tMin(e.st); let b=tMin(e.en); if(b==null||b<=a) b=a+60; L.push({a:a,b:b,col:e.color,fg:fgFor(e.color),t:e.t,loc:e.loc,go:'evedit',id:e.id}); } });
     L.sort((x,y)=>x.a-y.a||y.b-x.b);
@@ -1784,24 +1876,25 @@ function calBody(){
     const flush=()=>{ const lanes=[]; cluster.forEach(x=>{ let l=0; while(lanes[l]!==undefined&&lanes[l]>x.a) l++; lanes[l]=x.b; x.lane=l; }); const n=lanes.length; cluster.forEach(x=>{ x.n=n; out.push(x); }); cluster=[]; };
     L.forEach(x=>{ if(cluster.length&&x.a>=cend){ flush(); cend=-1; } cluster.push(x); cend=Math.max(cend,x.b); }); if(cluster.length) flush();
     const dues=[]; S.courses.forEach(c=>c.cats.forEach(k=>k.items.forEach(it=>{ if(it.d===d&&!it.opt) dues.push({c:c,it:it}); })));
-    return {d:d,blocks:out,allDay:allDay,dues:dues};
+    return {d:d,blocks:out,allDay:allDay,dues:dues,off:offH};
   });
-  const hasTop=dayEvents.some(x=>x.allDay.length||x.dues.length);
+  const hasTop=dayEvents.some(x=>x.allDay.length||x.dues.length||x.off);
   const nowM=(new Date()).getHours()*60+(new Date()).getMinutes();
   let g='<div class="calgrid" style="--n:'+nd+';--H:'+H+'px;--rh:'+CAL_RH+'px">';
-  g+='<div></div>'+dayEvents.map(x=>{ const d=pd(x.d); return '<div class="dh'+(x.d===TODAY?' today':'')+(inSem(x.d)?'':' off')+'"><b>'+DAYN[d.getDay()]+'</b><span>'+d.getDate()+'</span></div>'; }).join('');
+  g+='<div></div>'+dayEvents.map(x=>{ const d=pd(x.d); return '<div class="dh'+(x.d===TODAY?' today':'')+(inSem(x.d)?'':' off')+(x.off?' isoff':'')+'"><b>'+DAYN[d.getDay()]+'</b><span>'+d.getDate()+'</span></div>'; }).join('');
   if(hasTop){
-    g+='<div class="dlab">Due</div>'+dayEvents.map(x=>'<div class="dues">'+x.allDay.map(e=>'<button type="button" class="due ev2" style="--c:'+e.color+'" data-act="evedit" data-id="'+e.id+'" title="'+esc(e.t)+'">'+esc(e.t)+'</button>').join('')
+    g+='<div class="dlab">Due</div>'+dayEvents.map(x=>'<div class="dues">'+(x.off?'<button type="button" class="due offchip" style="--c:'+OFFK[x.off.kind][1]+'" data-act="offedit" data-id="'+x.off.id+'" title="'+esc(x.off.t)+'">'+esc(x.off.t)+'</button>':'')+x.allDay.map(e=>'<button type="button" class="due ev2" style="--c:'+e.color+'" data-act="evedit" data-id="'+e.id+'" title="'+esc(e.t)+'">'+esc(e.t)+'</button>').join('')
       +x.dues.map(u=>'<button type="button" class="due'+(u.it.e!=null?' dn':'')+'" style="--c:'+COLORS[u.c.id]+'" data-act="go" data-v="'+u.c.id+'" title="'+esc(u.c.name+' · '+u.it.n)+'">'+esc(u.it.n)+'</button>').join('')+'</div>').join('');
   }
-  let ax=''; for(let h=h0;h<=h1;h++) ax+='<span style="top:'+((h-h0)*CAL_RH)+'px">'+(h===h0||h===h1?'':fmtT(h*60,true).replace(':00',''))+'</span>';
+  let ax=''; for(let h=h0;h<=h1;h++) ax+='<span'+(h===h0?' class="f0"':'')+' style="top:'+((h-h0)*CAL_RH)+'px">'+(h===h1?'':fmtT(h*60,true).replace(':00',''))+'</span>';
   g+='<div class="axis">'+ax+'</div>';
   dayEvents.forEach(x=>{
-    g+='<div class="cdcol'+(x.d===TODAY?' today':'')+(inSem(x.d)?'':' off')+'" data-act="evnew" data-date="'+x.d+'" data-h0="'+h0+'">';
+    g+='<div class="cdcol'+(x.d===TODAY?' today':'')+(inSem(x.d)?'':' off')+(x.off?' offday':'')+'"'+(x.off?' style="--oc:'+OFFK[x.off.kind][1]+'"':'')+' data-act="evnew" data-date="'+x.d+'" data-h0="'+h0+'">';
     x.blocks.forEach(b=>{
       const top=(b.a/60-h0)*CAL_RH, ht=Math.max(26,(b.b-b.a)/60*CAL_RH-3), w=100/b.n;
       g+='<button type="button" class="ev'+(ht<44?' sm':'')+'" style="--c:'+b.col+';--fg:'+b.fg+';top:'+top.toFixed(1)+'px;height:'+ht.toFixed(1)+'px;left:calc('+(b.lane*w).toFixed(2)+'% + 3px);width:calc('+w.toFixed(2)+'% - 6px)" data-act="'+b.go+'" data-'+(b.go==='go'?'v':'id')+'="'+b.id+'"><span class="nm">'+esc(b.t)+'</span><span class="tm">'+fmtR(b.a,b.b)+'</span>'+(b.loc?'<span class="lc">'+esc(b.loc)+'</span>':'')+'</button>';
     });
+    if(x.off) g+='<div class="offlab"><b>'+esc(x.off.t)+'</b><small>'+OFFK[x.off.kind][0]+'</small></div>';
     if(x.d===TODAY&&nowM>=h0*60&&nowM<=h1*60) g+='<div class="nowl" style="top:'+((nowM/60-h0)*CAL_RH).toFixed(1)+'px"></div>';
     g+='</div>';
   });
@@ -1810,16 +1903,48 @@ function calBody(){
   const prevOff=okR&&calWk<=w0, nextOff=okR&&calWk>=w1;
   const arrow=d=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="'+(d<0?'M14.5 6 8.5 12l6 6':'M9.5 6l6 6-6 6')+'"/></svg>';
   const tb='<div class="caltb"><div class="calnav"><button type="button" class="tg" data-act="calwk" data-w="prev"'+(prevOff?' disabled':'')+' aria-label="Previous week">'+arrow(-1)+'</button><button type="button" class="tg" data-act="calwk" data-w="next"'+(nextOff?' disabled':'')+' aria-label="Next week">'+arrow(1)+'</button></div><div class="caltitle">'+wkLabel(calWk)+'<small>'+pd(calWk).getFullYear()+'</small></div>'
-    +'<button type="button" class="btn sm" data-act="calwk" data-w="today">Today</button><button type="button" class="btn pri sm" data-act="evadd">＋ Event</button></div>';
+    +'<button type="button" class="btn sm" data-act="calwk" data-w="today">Today</button><button type="button" class="btn sm" data-act="offadd">＋ Day off</button><button type="button" class="btn pri sm" data-act="evadd">＋ Event</button></div>';
   const legend=S.courses.length?'<div class="callg">'+S.courses.map(c=>{ const m=meetSum(c); return '<button type="button" class="lg" data-act="go" data-v="'+c.id+'"><i style="background:'+COLORS[c.id]+'"></i><div><b>'+esc(c.name)+'</b><small>'+(m.length?m.map(esc).join('<br>'):'No time set · add one under ✎ Edit')+'</small></div></button>'; }).join('')+'</div>':'';
-  return sum+'<div class="calcard">'+tb+(any?'':'<div class="calhint pad">Add class times in each class’s settings (✎ Edit), or tap the grid to add an event.</div>')+'<div class="calscroll">'+g+'</div></div>'+legend;
+  const offList='<section class="offs"><div class="offh"><h3>Days off</h3><div class="offact"><button type="button" class="btn sm" data-act="offus">Add US holidays</button><button type="button" class="btn pri sm" data-act="offadd">＋ Add</button></div></div>'
+    +(offs.length?'<div class="offgrid">'+offs.slice().sort((a,b)=>a.start<b.start?-1:1).map(o=>{ const k=OFFK[o.kind], same=o.start===o.end, A=pd(o.start), B=pd(o.end), past=o.end<TODAY;
+      const rng=same?DAYN[A.getDay()]+', '+MONN[A.getMonth()]+' '+A.getDate():MONN[A.getMonth()]+' '+A.getDate()+' – '+(A.getMonth()===B.getMonth()?'':MONN[B.getMonth()]+' ')+B.getDate(), n=dayDiff(o.start,o.end)+1;
+      return '<button type="button" class="off'+(past?' past':'')+'" style="--c:'+k[1]+'" data-act="offedit" data-id="'+o.id+'"><i></i><div><b>'+esc(o.t)+'</b><small>'+rng+(n>1?' · '+n+' days':'')+'</small></div><span>'+k[0]+'</span></button>'; }).join('')+'</div>'
+      :'<p class="calhint">Add holidays, breaks and days off. Classes are hidden on those days.</p>')+'</section>';
+  const empty=any?'':'<div class="calempty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="4"/><path d="M8 3v3.5M16 3v3.5M3.5 10h17"/></svg><b>Nothing scheduled yet</b><p>Add when each class meets under ✎ Edit on the class page, or add your own event.</p><button type="button" class="btn pri" data-act="evadd">＋ Add an event</button></div>';
+  return {sum:sum,rest:'<div class="calcard">'+tb+'<div class="calscroll'+(any?'':' dim')+'">'+g+'</div>'+empty+'</div>'+offList+legend};
+}
+function offModal(e,edit){
+  const v=Object.assign({t:'',kind:'holiday',start:TODAY,end:''},e||{});
+  const body='<label class="f">Name<input type="text" name="t" value="'+esc(v.t)+'" placeholder="Thanksgiving break, Spring recess…" required></label>'
+    +'<div class="f"><span>Type</span><div class="kinds">'+Object.keys(OFFK).map(k=>'<label class="kd" style="--c:'+OFFK[k][1]+'"><input type="radio" name="kind" value="'+k+'"'+(v.kind===k?' checked':'')+'><span>'+OFFK[k][0]+'</span></label>').join('')+'</div></div>'
+    +'<div class="two"><label class="f">First day<input type="date" name="start" value="'+v.start+'" required></label><label class="f">Last day<input type="date" name="end" value="'+(v.end&&v.end!==v.start?v.end:'')+'"></label></div>'
+    +'<span class="hint">Leave the last day empty for a single day. Classes won’t show on these days.</span>'
+    +(edit?'<div><button type="button" class="btn danger sm" data-act="offdel" data-id="'+v.id+'">Delete</button></div>':'');
+  openModal(edit?'Edit day off':'Add a day off',body,edit?'Save':'Add',function(f){
+    const no=normOff({id:edit?v.id:null,t:(f.t||'').trim()||'Day off',kind:f.kind,start:f.start,end:f.end||f.start});
+    S.off=S.off||[]; const i=S.off.findIndex(x=>x.id===no.id); if(i>=0) S.off[i]=no; else S.off.push(no);
+    calWk=mondayOf(no.start); save(); render(true);
+  });
+}
+function nthDow(y,m,dow,n){ const d=new Date(y,m,1); const first=(dow-d.getDay()+7)%7; return isoD(new Date(y,m,1+first+7*(n-1))); }
+function lastDow(y,m,dow){ const d=new Date(y,m+1,0); return isoD(new Date(y,m,d.getDate()-((d.getDay()-dow+7)%7))); }
+function addUSHolidays(){
+  const st=S.start, en=S.end; if(!(st&&en&&en>=st)){ alert('Set your semester’s first and last day first, then I can add the holidays that fall inside it.'); return; }
+  const out=[]; const y0=pd(st).getFullYear(), y1=pd(en).getFullYear();
+  for(let y=y0;y<=y1;y++){
+    const th=nthDow(y,10,4,4);
+    [['New Year’s Day',y+'-01-01',y+'-01-01'],['Martin Luther King Jr. Day',nthDow(y,0,1,3)],['Presidents’ Day',nthDow(y,1,1,3)],['Memorial Day',lastDow(y,4,1)],['Juneteenth',y+'-06-19'],['Independence Day',y+'-07-04'],['Labor Day',nthDow(y,8,1,1)],['Indigenous Peoples’ Day',nthDow(y,9,1,2)],['Veterans Day',y+'-11-11'],['Thanksgiving',th,addD(th,1)],['Christmas Day',y+'-12-25']].forEach(h=>out.push({t:h[0],kind:'holiday',start:h[1],end:h[2]||h[1]}));
+  }
+  S.off=S.off||[]; let n=0;
+  out.forEach(h=>{ if(h.end<st||h.start>en) return; if(S.off.some(o=>o.t===h.t&&o.start===h.start)) return; S.off.push(normOff(h)); n++; });
+  save(); calRedraw(); setStat(n?'Added '+n+' holiday'+(n===1?'':'s'):'Those holidays are already added','ok');
 }
 function evModal(e,edit){
   const v=Object.assign({t:'',date:TODAY,allDay:false,st:'09:00',en:'10:00',loc:'',note:'',color:'#FF7A59',rep:'none',until:''},e||{});
   const ro=(val,l)=>'<option value="'+val+'"'+(v.rep===val?' selected':'')+'>'+l+'</option>';
   const body='<label class="f">Title<input type="text" name="t" value="'+esc(v.t)+'" placeholder="Study group, office hours, exam…" required></label>'
     +'<div class="two"><label class="f">Date<input type="date" name="date" value="'+v.date+'" required></label><label class="f chk2"><span>All day</span><input type="checkbox" name="allDay" id="evAll"'+(v.allDay?' checked':'')+'></label></div>'
-    +'<div class="two" id="evTimes"'+(v.allDay?' style="display:none"':'')+'><label class="f">Starts<input type="time" name="st" value="'+v.st+'"></label><label class="f">Ends<input type="time" name="en" value="'+v.en+'"></label></div>'
+    +'<div class="two" id="evTimes"'+(v.allDay?' style="display:none"':'')+'><div class="f"><span>Starts</span>'+timeField('name="st"',v.st,'Start time')+'</div><div class="f"><span>Ends</span>'+timeField('name="en"',v.en,'End time')+'</div></div>'
     +'<label class="f">Location<input type="text" name="loc" value="'+esc(v.loc)+'" placeholder="Optional"></label>'
     +'<div class="two"><label class="f">Repeats<select name="rep">'+ro('none','Does not repeat')+ro('daily','Every day')+ro('weekly','Every week')+ro('biweekly','Every 2 weeks')+ro('monthly','Every month')+'</select></label><label class="f">Until<input type="date" name="until" value="'+v.until+'"></label></div>'
     +'<div class="f"><span>Color</span><div class="evcs">'+PALETTE.map(p=>'<label class="evc"><input type="radio" name="color" value="'+p+'"'+(p.toLowerCase()===v.color.toLowerCase()?' checked':'')+'><i style="background:'+p+'"></i></label>').join('')+'</div></div>'
@@ -1850,10 +1975,48 @@ function editPanel(c){
     +'<label class="f">Notes<textarea data-f="cnotes" data-c="'+c.id+'" placeholder="Syllabus notes, one per line">'+esc(c.notes.join('\n'))+'</textarea></label>'
     +'<div class="editact"><button type="button" class="btn danger" data-act="delclass" data-c="'+c.id+'">Delete class</button></div></section>';
 }
+function timeField(attrs,val,label){ return '<span class="tp"><input type="hidden" '+attrs+' value="'+esc(val||'')+'"><button type="button" class="tpbtn'+(val?'':' empty')+'" data-tp aria-label="'+label+'">'+(val?fmtT(tMin(val)):'Set time')+'</button></span>'; }
+let tpEl=null;
+function tpClose(){ if(tpEl){ tpEl.remove(); tpEl=null; } }
+function tpOpen(btn){
+  tpClose(); const inp=btn.parentNode.querySelector('input'); if(!inp) return;
+  let m=tMin(inp.value); if(m==null) m=540;
+  const el=document.createElement('div'); el.className='tpop'; el.setAttribute('role','dialog'); el.setAttribute('aria-label','Pick a time'); document.body.appendChild(el); tpEl=el;
+  function apply(){ inp.value=minT(m); btn.textContent=fmtT(m); btn.classList.remove('empty'); inp.dispatchEvent(new Event('input',{bubbles:true})); }
+  function draw(first){
+    const h=Math.floor(m/60), mm=m%60, pm=h>=12, h12=h%12||12;
+    const mins=[]; for(let i=0;i<60;i+=5) mins.push(i); if(!mins.includes(mm)){ mins.push(mm); mins.sort((a,b)=>a-b); }
+    el.innerHTML='<div class="tpshow">'+fmtT(m)+'</div><div class="tpcols">'
+      +'<div class="tpcol" data-c="h">'+[1,2,3,4,5,6,7,8,9,10,11,12].map(x=>'<button type="button" data-k="h" data-v="'+x+'"'+(x===h12?' class="on"':'')+'>'+x+'</button>').join('')+'</div>'
+      +'<div class="tpcol" data-c="m">'+mins.map(x=>'<button type="button" data-k="m" data-v="'+x+'"'+(x===mm?' class="on"':'')+'>'+String(x).padStart(2,'0')+'</button>').join('')+'</div>'
+      +'<div class="tpcol ampm"><button type="button" data-k="p" data-v="0"'+(pm?'':' class="on"')+'>AM</button><button type="button" data-k="p" data-v="1"'+(pm?' class="on"':'')+'>PM</button></div></div>'
+      +'<div class="tpfoot"><button type="button" class="tpclear" data-k="x">Clear</button><button type="button" class="btn pri sm" data-k="d">Done</button></div>';
+    el.querySelectorAll('.tpcol[data-c]').forEach(function(col){ const on=col.querySelector('.on'); if(on) col.scrollTop=on.offsetTop-col.clientHeight/2+on.offsetHeight/2; });
+  }
+  el.addEventListener('click',function(ev){
+    const b=ev.target.closest('button[data-k]'); if(!b) return; const k=b.dataset.k, v=+b.dataset.v;
+    const h=Math.floor(m/60), mm=m%60, pm=h>=12;
+    if(k==='h') m=((v%12)+(pm?12:0))*60+mm;
+    else if(k==='m') m=h*60+v;
+    else if(k==='p') m=((h%12)+(v?12:0))*60+mm;
+    else if(k==='x'){ inp.value=''; btn.textContent='Set time'; btn.classList.add('empty'); inp.dispatchEvent(new Event('input',{bubbles:true})); tpClose(); return; }
+    else { tpClose(); return; }
+    apply(); draw();
+  });
+  if(!inp.value) apply();
+  draw(true);
+  const r=btn.getBoundingClientRect(), w=288, hgt=el.offsetHeight;
+  let left=Math.min(Math.max(8,r.left+r.width/2-w/2),innerWidth-w-8), top=r.bottom+8; if(top+hgt>innerHeight-8) top=Math.max(8,r.top-hgt-8);
+  el.style.left=left+'px'; el.style.top=top+'px';
+  el.querySelectorAll('.tpcol[data-c]').forEach(function(col){ const on=col.querySelector('.on'); if(on) col.scrollTop=on.offsetTop-col.clientHeight/2+on.offsetHeight/2; });
+}
+document.addEventListener('click',function(ev){ const t=ev.target.closest&&ev.target.closest('[data-tp]'); if(t){ ev.preventDefault(); ev.stopPropagation(); tpOpen(t); return; } if(tpEl&&!tpEl.contains(ev.target)) tpClose(); },true);
+document.addEventListener('keydown',function(ev){ if(ev.key==='Escape') tpClose(); });
+window.addEventListener('resize',tpClose);
 const DCH=[[1,'M'],[2,'T'],[3,'W'],[4,'T'],[5,'F'],[6,'S'],[0,'S']];
 function meetsEdit(c){
   const rows=c.meets.map((m,i)=>'<div class="mrow"><div class="dchips">'+DCH.map(d=>'<button type="button" class="'+(m.days.includes(d[0])?'on':'')+'" data-act="mday" data-c="'+c.id+'" data-mi="'+i+'" data-d="'+d[0]+'" aria-pressed="'+m.days.includes(d[0])+'" aria-label="'+DAYN[d[0]]+'">'+d[1]+'</button>').join('')+'</div>'
-    +'<div class="mtimes"><input type="time" data-f="mst" data-c="'+c.id+'" data-mi="'+i+'" value="'+m.st+'" aria-label="Start time"><span>to</span><input type="time" data-f="men" data-c="'+c.id+'" data-mi="'+i+'" value="'+m.en+'" aria-label="End time"></div>'
+    +'<div class="mtimes">'+timeField('data-f="mst" data-c="'+c.id+'" data-mi="'+i+'"',m.st,'Start time')+'<span>to</span>'+timeField('data-f="men" data-c="'+c.id+'" data-mi="'+i+'"',m.en,'End time')+'</div>'
     +'<input type="text" class="mloc" data-f="mloc" data-c="'+c.id+'" data-mi="'+i+'" value="'+esc(m.loc)+'" placeholder="Room (optional)" aria-label="Room">'
     +'<button type="button" class="mdel" data-act="mdel" data-c="'+c.id+'" data-mi="'+i+'" aria-label="Remove this time" title="Remove">×</button></div>').join('');
   return '<div class="f meets"><span>Class times</span>'+rows+'<div><button type="button" class="btn sm" data-act="madd" data-c="'+c.id+'">＋ '+(c.meets.length?'Add another time':'Add a time')+'</button></div><span class="hint">Shows in the calendar, which you open with the calendar icon at the top.</span></div>';
@@ -1919,6 +2082,10 @@ document.addEventListener('click',function(ev){
   if(a==='mdel'){ const c=getC(b.dataset.c); if(c){ c.meets.splice(+b.dataset.mi,1); save(); render(true); } return; }
   if(a==='calwk'){ const w=b.dataset.w; if(w==='prev') calWk=addD(calWk,-7); else if(w==='next') calWk=addD(calWk,7); else if(w==='today') calWk=null; else calWk=w; calRedraw(); return; }
   if(a==='evnew'){ const r=b.getBoundingClientRect(), mins=Math.round(((ev.clientY-r.top)/CAL_RH*60+(+b.dataset.h0)*60)/30)*30; evModal({date:b.dataset.date,st:minT(mins),en:minT(mins+60)}); return; }
+  if(a==='offadd'){ offModal({start:b.dataset.date||calWk||TODAY}); return; }
+  if(a==='offedit'){ const o=(S.off||[]).find(x=>x.id===b.dataset.id); if(o) offModal(o,true); return; }
+  if(a==='offdel'){ S.off=(S.off||[]).filter(x=>x.id!==b.dataset.id); closeModal(); save(); calRedraw(); return; }
+  if(a==='offus'){ addUSHolidays(); return; }
   if(a==='evadd'){ evModal({date:b.dataset.date||calWk||TODAY}); return; }
   if(a==='evedit'){ const e=(S.events||[]).find(x=>x.id===b.dataset.id); if(e) evModal(e,true); return; }
   if(a==='evdel'){ S.events=(S.events||[]).filter(x=>x.id!==b.dataset.id); closeModal(); save(); calRedraw(); return; }
