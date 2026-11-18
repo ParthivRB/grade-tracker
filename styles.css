@@ -1225,10 +1225,13 @@ button.rpct:hover{transform:translateY(-1px);box-shadow:0 0 0 2px var(--c)}
 .trendc svg{width:100%;height:auto;display:block}
 .trendc svg text{fill:var(--mut);font-size:11.5px;font-weight:600}
 .trendc svg .tr-v{fill:var(--ink);font-weight:800;font-size:13px}
-.tr-line{fill:none;stroke:var(--c,var(--blue));stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:2000;stroke-dashoffset:2000;animation:trdraw 1.1s .1s cubic-bezier(.2,.7,.2,1) forwards}
+.tr-line{fill:none;stroke:var(--c,var(--blue));stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:2000;stroke-dashoffset:2000;animation:trdraw 1.1s .1s cubic-bezier(.2,.7,.2,1) forwards}
 @keyframes trdraw{to{stroke-dashoffset:0}}
 .tr-area{fill:var(--c,var(--blue));opacity:.1;stroke:none}
-.tr-dot{fill:var(--card);stroke:var(--c,var(--blue));stroke-width:3}
+.tr-dot{fill:var(--card);stroke:var(--c,var(--blue));stroke-width:2;pointer-events:none}
+.tr-dot.end{fill:var(--c,var(--blue))}
+.tr-hit{fill:transparent;cursor:default}
+.tr-hit:hover+.tr-dot{r:5}
 .trnone{color:var(--mut);padding:8px 0 14px;font-size:14px}
 .cmp{display:grid;gap:12px;padding:20px 22px}
 .cmpr{display:grid;grid-template-columns:minmax(110px,190px) 1fr 52px;align-items:center;gap:14px}

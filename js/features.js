@@ -11,17 +11,34 @@ function trendPoints(c){
   });
   return pts;
 }
+function smoothPath(P){
+  const n=P.length; if(n<2) return '';
+  if(n===2) return 'M'+P[0][0].toFixed(1)+' '+P[0][1].toFixed(1)+' L'+P[1][0].toFixed(1)+' '+P[1][1].toFixed(1);
+  const dx=[],m=[],t=new Array(n);
+  for(let i=0;i<n-1;i++){ dx.push(P[i+1][0]-P[i][0]); m.push((P[i+1][1]-P[i][1])/(dx[i]||1)); }
+  t[0]=m[0]; t[n-1]=m[n-2];
+  for(let i=1;i<n-1;i++){ t[i]=(m[i-1]*m[i]<=0)?0:(m[i-1]+m[i])/2; }
+  for(let i=0;i<n-1;i++){ if(m[i]===0){ t[i]=0; t[i+1]=0; continue; } const a=t[i]/m[i], b=t[i+1]/m[i], h=Math.hypot(a,b); if(h>3){ const k=3/h; t[i]=k*a*m[i]; t[i+1]=k*b*m[i]; } }
+  let d='M'+P[0][0].toFixed(1)+' '+P[0][1].toFixed(1);
+  for(let i=0;i<n-1;i++){ const h=dx[i]/3; d+=' C'+(P[i][0]+h).toFixed(1)+' '+(P[i][1]+t[i]*h).toFixed(1)+' '+(P[i+1][0]-h).toFixed(1)+' '+(P[i+1][1]-t[i+1]*h).toFixed(1)+' '+P[i+1][0].toFixed(1)+' '+P[i+1][1].toFixed(1); }
+  return d;
+}
 function trendSvg(pts){
   const W=640,H=210,pl=44,pr=16,pt=22,pb=34;
   let lo=Math.min.apply(null,pts.map(p=>p.v)), hi=Math.max.apply(null,pts.map(p=>p.v));
   lo=Math.max(0,Math.floor(lo/5)*5-5); hi=Math.min(110,Math.ceil(hi/5)*5+5); if(hi-lo<10){ hi=lo+10; }
   const X=i=>pl+(pts.length>1?i*(W-pl-pr)/(pts.length-1):(W-pl-pr)/2), Y=v=>pt+(hi-v)/(hi-lo)*(H-pt-pb);
   let g=''; [lo,(lo+hi)/2,hi].forEach(v=>{ g+='<line class="ch-grid" x1="'+pl+'" x2="'+(W-pr)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'"/><text x="'+(pl-8)+'" y="'+(Y(v)+4).toFixed(1)+'" text-anchor="end">'+Math.round(v)+'%</text>'; });
-  const line=pts.map((p,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(p.v).toFixed(1)).join(' ');
+  const xy=pts.map((p,i)=>[X(i),Y(p.v)]), line=smoothPath(xy);
   const base=(H-pb).toFixed(1);
   let s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Grade over time">'+g
     +'<path class="tr-area" d="'+line+' L'+X(pts.length-1).toFixed(1)+' '+base+' L'+X(0).toFixed(1)+' '+base+' Z"/><path class="tr-line" d="'+line+'"/>';
-  pts.forEach((p,i)=>{ s+='<circle class="tr-dot" cx="'+X(i).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="5"><title>'+esc(p.n)+': '+f1(p.v)+'%</title></circle>'; });
+  const few=pts.length<=14;
+  pts.forEach((p,i)=>{
+    const x=X(i).toFixed(1), y=Y(p.v).toFixed(1), last=i===pts.length-1;
+    s+='<circle class="tr-hit" cx="'+x+'" cy="'+y+'" r="'+(few?9:Math.max(4,(W-pl-pr)/pts.length/2))+'"><title>'+esc(p.n)+': '+f1(p.v)+'%</title></circle>';
+    if(few||last) s+='<circle class="tr-dot'+(last?' end':'')+'" cx="'+x+'" cy="'+y+'" r="'+(last?4.5:3)+'"/>';
+  });
   s+='<text class="tr-v" x="'+X(pts.length-1).toFixed(1)+'" y="'+(Y(pts[pts.length-1].v)-12).toFixed(1)+'" text-anchor="end">'+f1(pts[pts.length-1].v)+'%</text>';
   const lab=(i,anc)=>'<text x="'+X(i).toFixed(1)+'" y="'+(H-10)+'" text-anchor="'+anc+'">'+esc(String(pts[i].n).slice(0,14))+'</text>';
   s+=lab(0,'start')+(pts.length>1?lab(pts.length-1,'end'):'');
