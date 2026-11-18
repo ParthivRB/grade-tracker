@@ -156,6 +156,100 @@ td select{width:116px}
 .semtop h3{font-size:17px;font-weight:800;letter-spacing:-0.02em}
 .semtop .g{font-family:var(--disp);font-size:28px;font-weight:800;letter-spacing:-0.05em;line-height:1;text-align:right}
 .semtop .g small{display:block;font:600 12px "Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:0;margin-top:6px;opacity:.85}
+input[type=time],input[type=date]{background:var(--soft);border:2px solid transparent;border-radius:12px;padding:7px 10px;color:var(--ink);font:inherit;min-width:0;transition:border-color .18s ease,background-color .18s ease}
+input[type=time]:hover,input[type=date]:hover{border-color:var(--line)}
+input[type=time]:focus,input[type=date]:focus{border-color:var(--blue);background:var(--elev);outline:0}
+.meets{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.mrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:12px;border-radius:18px;background:var(--soft);width:100%}
+.mrow input{background:var(--card)}
+.mrow .mloc{flex:1 1 130px;width:auto}
+.dchips{display:flex;gap:4px}
+.dchips button{all:unset;cursor:pointer;width:32px;height:32px;border-radius:99px;display:grid;place-items:center;font:700 12px "Plus Jakarta Sans",system-ui,sans-serif;background:var(--card);color:var(--mut);transition:background-color .15s ease,color .15s ease,transform .15s ease}
+.dchips button:hover{transform:scale(1.08)}
+.dchips button.on{background:var(--blue);color:#fff}
+.mtimes{display:flex;align-items:center;gap:6px;color:var(--mut);font-size:13px}
+.mdel{all:unset;cursor:pointer;width:28px;height:28px;border-radius:99px;display:grid;place-items:center;color:var(--mut);font-size:18px}
+.mdel:hover{background:var(--line);color:var(--ink)}
+.cal .calhead{padding:clamp(18px,3vw,28px);margin-top:18px}
+.caltop{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.calname{font-weight:700;color:var(--mut)}
+.caldates{display:flex;gap:10px;flex-wrap:wrap}
+.caldates label{display:flex;flex-direction:column;gap:4px;font-size:11px;font-weight:700;color:var(--mut);letter-spacing:.06em;text-transform:uppercase}
+.calsum{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.calwk{font-family:var(--disp);font-size:clamp(34px,6vw,54px);font-weight:800;letter-spacing:-0.05em;line-height:1}
+.calwk small{font:600 15px "Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:0;color:var(--mut);margin-left:10px}
+.calnote{font-weight:700;color:var(--blue);background:var(--blue-soft);padding:6px 14px;border-radius:99px;font-size:13px}
+.calprog{height:8px;border-radius:99px;background:var(--soft);overflow:hidden;margin-top:16px}
+.calprog i{display:block;height:100%;border-radius:99px;background:var(--blue);transition:width .6s cubic-bezier(.2,.7,.2,1)}
+.wks{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
+.wk{all:unset;cursor:pointer;min-width:32px;height:32px;box-sizing:border-box;padding:0 4px;border-radius:11px;display:grid;place-items:center;background:var(--soft);color:var(--mut);font:700 12px "Plus Jakarta Sans",system-ui,sans-serif;transition:background-color .15s ease,color .15s ease,transform .15s ease}
+.wk:hover{transform:translateY(-1px);color:var(--ink)}
+.wk.now{box-shadow:inset 0 0 0 2px var(--blue)}
+.wk.on{background:var(--blue);color:#fff}
+.calhint{color:var(--mut);font-size:14px}
+.calhint.pad{padding:4px 22px 0}
+.calcard{margin-top:22px;background:var(--elev);border:1px solid var(--line);border-radius:24px;overflow:hidden}
+.caltb{display:flex;align-items:center;gap:10px;padding:16px 18px 10px;flex-wrap:wrap}
+.calnav{display:flex;gap:6px}
+.calnav .tg{width:36px;height:36px}
+.calnav .tg:disabled{opacity:.35;cursor:default;transform:none}
+.caltitle{flex:1;font-family:var(--disp);font-weight:800;letter-spacing:-0.04em;font-size:clamp(18px,3vw,24px);min-width:140px}
+.caltitle small{font:600 13px "Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:0;color:var(--mut);margin-left:8px}
+.calscroll{overflow-x:auto;padding:0 12px 16px}
+.calgrid{display:grid;grid-template-columns:44px repeat(var(--n),minmax(0,1fr));min-width:calc(44px + var(--n)*92px)}
+.dh{text-align:center;padding:6px 0 10px}
+.dh b{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-bottom:4px}
+.dh span{display:inline-grid;place-items:center;min-width:36px;height:36px;border-radius:99px;font:800 18px var(--disp);letter-spacing:-0.04em}
+.dh.today span{background:var(--blue);color:#fff}
+.dh.off{opacity:.4}
+.dlab{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);padding:6px 6px 0 0;text-align:right}
+.dues{display:flex;flex-direction:column;gap:4px;padding:2px 3px 10px;min-width:0}
+.due{all:unset;cursor:pointer;box-sizing:border-box;font:700 11px "Plus Jakarta Sans",system-ui,sans-serif;padding:4px 8px;border-radius:8px;border-left:3px solid var(--c);background:color-mix(in srgb,var(--c) 20%,transparent);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.due.ev2{background:var(--c);color:#111;border-left-color:transparent}
+.due.dn{opacity:.5;text-decoration:line-through}
+.axis{position:relative;height:var(--H)}
+.axis span{position:absolute;right:8px;transform:translateY(-50%);font-size:11px;font-weight:600;color:var(--mut)}
+.cdcol{position:relative;height:var(--H);border-left:1px solid var(--line);background-image:linear-gradient(var(--line) 1px,transparent 1px);background-size:100% var(--rh);cursor:copy;transition:background-color .2s ease}
+.cdcol.today{background-color:var(--blue-soft)}
+.cdcol.off{opacity:.45}
+.ev{all:unset;box-sizing:border-box;position:absolute;display:flex;flex-direction:column;gap:2px;overflow:hidden;cursor:pointer;padding:8px 10px;border-radius:14px;background:var(--c);color:var(--fg);box-shadow:0 6px 16px -8px rgba(0,0,0,.55);transition:transform .18s ease,box-shadow .18s ease;z-index:1}
+.ev:hover{transform:translateY(-2px);box-shadow:0 12px 22px -10px rgba(0,0,0,.6);z-index:3}
+.ev .nm{font-weight:800;font-size:13px;line-height:1.15;letter-spacing:-0.01em}
+.ev .tm,.ev .lc{font-size:11.5px;font-weight:600;opacity:.78;line-height:1.2}
+.ev.sm{flex-direction:row;align-items:center;gap:8px;padding:4px 10px}
+.ev.sm .tm,.ev.sm .lc{display:none}
+.nowl{position:absolute;left:-1px;right:0;height:2px;background:#FF4D5E;z-index:4;pointer-events:none}
+.nowl:before{content:"";position:absolute;left:-4px;top:-3px;width:8px;height:8px;border-radius:99px;background:#FF4D5E}
+.callg{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-top:16px}
+.lg{all:unset;cursor:pointer;box-sizing:border-box;display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:18px;background:var(--elev);border:1px solid var(--line);transition:transform .18s ease,border-color .18s ease}
+.lg:hover{transform:translateY(-2px);border-color:var(--mut)}
+.lg i{width:12px;height:12px;border-radius:99px;margin-top:4px;flex:0 0 auto}
+.lg b{display:block;font-size:14px}
+.lg small{display:block;color:var(--mut);font-size:12.5px;margin-top:3px;line-height:1.4}
+.evcs{display:flex;flex-wrap:wrap;gap:8px}
+.evc{cursor:pointer;display:block}
+.evc input{position:absolute;opacity:0;pointer-events:none}
+.evc i{display:block;width:28px;height:28px;border-radius:99px;transition:transform .15s ease,box-shadow .15s ease}
+.evc input:checked+i{box-shadow:0 0 0 3px var(--elev),0 0 0 5px var(--ink);transform:scale(1.05)}
+.chk2{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+.chk2 input{width:20px;height:20px;accent-color:var(--blue)}
+@media (max-width:720px){
+  .calgrid{grid-template-columns:32px repeat(var(--n),minmax(0,1fr));min-width:0}
+  .calscroll{padding:0 2px 12px}
+  .cal .calhead{padding:16px 10px}
+  .caltop,.calsum,.calprog,.wks{padding-left:6px;padding-right:6px}
+  .calcard{border-radius:20px}
+  .tabs{display:none}
+  .ev{padding:5px 6px;border-radius:10px}
+  .ev .nm{font-size:11px}
+  .ev .tm{font-size:9.5px}
+  .ev .lc{display:none}
+  .dh span{min-width:28px;height:28px;font-size:14px}
+  .dh b{font-size:9px}
+  .axis span{right:4px;font-size:9.5px}
+  .due{font-size:9.5px;padding:3px 5px}
+  .dlab{font-size:8px;padding-right:3px}
+}
 .semb{padding:8px 24px 20px}
 .sem.tr{margin-top:16px}
 .sem.tr .semtop{padding:14px 24px}
@@ -458,6 +552,7 @@ textarea{width:100%;min-height:120px;background:var(--soft);border:1px solid var
     <button data-act="jump" data-t="classes">Classes</button>
     <button data-act="jump" data-t="gpa">GPA</button>
   </nav>
+  <button class="tg" data-act="go" data-v="cal" aria-label="Calendar" title="Calendar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="4"/><path d="M8 3v3.5M16 3v3.5M3.5 10h17"/></svg></button>
   <button class="tg" id="accBtn" aria-label="Accent colors" title="Accent colors" aria-expanded="false" aria-controls="accPop"><span class="dotc"></span></button>
   <button class="tg" id="themeBtn" aria-label="Toggle dark mode" title="Toggle dark mode"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg><svg class="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1z"/></svg></button></div>
 </div></header><main><div class="wrap" id="main"></div></main><div id="saveStat" class="savestat" role="status" aria-live="polite"></div><script id="saved" type="application/json">null</script><script id="app-js">
@@ -630,7 +725,17 @@ function loadMerged(saved){
 const uid=()=>'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const subOf=c=>[c.code,c.prof].filter(Boolean).join(' · ');
 function normItem(it){ return {n:String(it.n==null?'':it.n),p:(typeof it.p==='number'?it.p:100),e:(typeof it.e==='number'?it.e:null),w:(typeof it.w==='number'?it.w:null),d:it.d||null,dl:it.dl||'',opt:!!it.opt,rp:!!it.rp}; }
+const DM={su:0,mo:1,tu:2,we:3,th:4,fr:5,sa:6,m:1,w:3,f:5,r:4};
+function normT(x){ const m=String(x==null?'':x).trim().match(/^(\d{1,2})(?::?(\d{2}))?\s*(am|pm)?$/i); if(!m) return ''; let h=+m[1]; const mi=+(m[2]||0), ap=(m[3]||'').toLowerCase(); if(ap==='pm'&&h<12) h+=12; if(ap==='am'&&h===12) h=0; if(h>23||mi>59) return ''; return String(h).padStart(2,'0')+':'+String(mi).padStart(2,'0'); }
+function normMeet(m){
+  m=m||{}; const ds=(Array.isArray(m.days)?m.days:[]).map(d=>typeof d==='number'?d:DM[String(d).toLowerCase().slice(0,2)]).filter(d=>d>=0&&d<=6);
+  return {days:Array.from(new Set(ds)).sort((a,b)=>a-b),st:normT(m.st!=null?m.st:m.start),en:normT(m.en!=null?m.en:m.end),loc:String(m.loc!=null?m.loc:(m.location||''))};
+}
+function normEvent(e){
+  e=e||{}; return {id:e.id||uid(),t:String(e.t||e.title||'Event'),date:/^\d{4}-\d{2}-\d{2}$/.test(e.date||'')?e.date:TODAY,allDay:!!e.allDay,st:normT(e.st),en:normT(e.en),loc:String(e.loc||''),note:String(e.note||''),color:/^#[0-9a-f]{6}$/i.test(e.color||'')?e.color:'#FF7A59',rep:['none','daily','weekly','biweekly','monthly'].includes(e.rep)?e.rep:'none',until:/^\d{4}-\d{2}-\d{2}$/.test(e.until||'')?e.until:''};
+}
 function normCourse(c){
+  c.meets=(Array.isArray(c.meets)?c.meets:[]).map(normMeet);
   c.id=c.id||uid(); c.name=c.name||'Untitled class'; c.code=c.code||''; c.prof=c.prof||''; if(c.credits===undefined) c.credits=null;
   c.scale=c.scale||'std'; c.pooled=!!c.pooled; c.lenience=c.lenience||0; c.fill=(typeof c.fill==='number')?c.fill:90; c.target=c.target||'A';
   c.ec=ecShape(c.ec||{}); c.notes=Array.isArray(c.notes)?c.notes:[]; c.cats=Array.isArray(c.cats)?c.cats:[];
@@ -652,11 +757,12 @@ function fromSimple(src){
         items:(k.items||[]).map(it=>({n:it.name,p:it.outOf,e:it.earned,w:null,d:it.due||null,dl:'',opt:!!it.optional,rp:!!it.replacesLowest}))
       }));
       const c={name:cl.name,code:cl.code||'',prof:cl.professor||cl.prof||'',credits:typeof cl.credits==='number'?cl.credits:null,scale:String(cl.scale||'').toLowerCase()==='plain'?'plain':'std',pooled:!!cl.totalPointsGrading,cats:cats,notes:Array.isArray(cl.notes)?cl.notes:[]};
+      if(Array.isArray(cl.meetings)) c.meets=cl.meetings.map(normMeet);
       if(Array.isArray(cl.cutoffs)&&cl.cutoffs.length) c.cuts=cl.cutoffs.map(x=>[x.min,x.letter,typeof x.gpa==='number'?x.gpa:(GPAOF[x.letter]||0)]).sort((a,b)=>b[0]-a[0]);
       if(cl.extraCredit){ const e=cl.extraCredit; c.ec={label:e.label||'Extra credit',pts:{e:e.points==null?null:e.points},pct:{e:e.percent==null?null:e.percent},total:e.totalPoints}; }
       return normCourse(c);
     });
-    const id=uid(); w.sems.push({id:id,name:sm.name||'Semester',done:!!sm.finished,gpaPick:{},courses:courses}); if(sm.current) w.active=id;
+    const id=uid(); w.sems.push({id:id,name:sm.name||'Semester',done:!!sm.finished,start:/^\d{4}-\d{2}-\d{2}$/.test(sm.startDate||'')?sm.startDate:'',end:/^\d{4}-\d{2}-\d{2}$/.test(sm.endDate||'')?sm.endDate:'',events:[],gpaPick:{},courses:courses}); if(sm.current) w.active=id;
   });
   (src.earlier||[]).forEach(t=>{
     const c=(t.classes||[]).map(x=>[x.name||'Class',+x.credits||0,gp(x.grade!=null?x.grade:x.gpa)]).filter(x=>x[2]!=null&&x[1]>0);
@@ -669,7 +775,7 @@ function fromSimple(src){
 function loadAny(src){
   if(src&&(Array.isArray(src.semesters)||Array.isArray(src.earlier))&&!src.sems&&!src.courses){ const w=fromSimple(src); setHistory(w); return w; }
   if(src&&Array.isArray(src.sems)){
-    const w={v:3,active:src.active,sems:src.sems.map(sm=>({id:sm.id||uid(),name:sm.name||'Semester',short:sm.short||'',done:!!sm.done,gpaPick:sm.gpaPick||{},courses:(sm.courses||[]).map(normCourse)})),ts:src.ts||0,base:src.base||null,transfer:(src.transfer>0?+src.transfer:0)};
+    const w={v:3,active:src.active,sems:src.sems.map(sm=>({id:sm.id||uid(),name:sm.name||'Semester',short:sm.short||'',done:!!sm.done,start:/^\d{4}-\d{2}-\d{2}$/.test(sm.start||'')?sm.start:'',end:/^\d{4}-\d{2}-\d{2}$/.test(sm.end||'')?sm.end:'',events:(sm.events||[]).map(normEvent),gpaPick:sm.gpaPick||{},courses:(sm.courses||[]).map(normCourse)})),ts:src.ts||0,base:src.base||null,transfer:(src.transfer>0?+src.transfer:0)};
     if(!w.sems.length){ const e=emptyW(); w.sems=e.sems; w.active=e.active; }
     if(!w.sems.some(x=>x.id===w.active)) w.active=w.sems[0].id;
     setHistory(src); w.prior=PRIOR; w.oldPct=OLD_PCT; w.oldX=OLD_X; w.history=HIST;
@@ -1270,7 +1376,8 @@ function updateProj(c){
 /* ---------- render + refresh ---------- */
 function render(quiet){
   const m=$('#main');
-  if(view==='home'||!getC(view)){ view='home'; m.innerHTML=homeView(); }
+  if(view==='cal') m.innerHTML=calView();
+  else if(view==='home'||!getC(view)){ view='home'; m.innerHTML=homeView(); }
   else m.innerHTML=courseView(getC(view));
   if(!REDUCED&&!quiet){ m.classList.remove('enter'); void m.offsetWidth; m.classList.add('enter'); clearTimeout(m._et); m._et=setTimeout(function(){ m.classList.remove('enter'); },900); }
   refresh();
@@ -1339,7 +1446,7 @@ async function pushRemote(cfg,sha){
 function adoptRemote(v){
   const keep=view; W=loadAny(v); W.ts=v.ts||0; S=W.sems.find(x=>x.id===W.active)||W.sems[0]; W.active=S.id;
   refreshPrior(); syncColors(); try{ localStorage.setItem(KEY3,JSON.stringify(W)); }catch(e){}
-  if(keep!=='home'&&!getC(keep)) view='home'; editing=false; render(true);
+  if(keep!=='home'&&keep!=='cal'&&!getC(keep)) view='home'; editing=false; render(true);
 }
 let syncBusy=false, syncAgain=false, syncT=null;
 function syncStatus(t,warn,busy){ const m=document.getElementById('syncmsg'); if(m) m.textContent=t; setStat(t,warn?'warn':(busy?'busy':'ok')); if(!warn&&!busy){ clearTimeout(statT); statT=setTimeout(function(){ setStat('',''); },1800); } }
@@ -1387,7 +1494,7 @@ function mergeSimple(v){
   const w=fromSimple(v); let jump=null, added=0;
   if(Array.isArray(v.semesters)&&v.semesters.length) w.sems.forEach(sm=>{
     const ex=W.sems.find(x=>x.name.trim().toLowerCase()===sm.name.trim().toLowerCase());
-    if(ex){ sm.courses.forEach(c=>{ if(!ex.courses.some(y=>y.name.trim().toLowerCase()===c.name.trim().toLowerCase())){ ex.courses.push(c); added++; } }); if(w.active===sm.id) jump=ex.id; }
+    if(ex){ if(!ex.start&&sm.start) ex.start=sm.start; if(!ex.end&&sm.end) ex.end=sm.end; sm.courses.forEach(c=>{ if(!ex.courses.some(y=>y.name.trim().toLowerCase()===c.name.trim().toLowerCase())){ ex.courses.push(c); added++; } }); if(w.active===sm.id) jump=ex.id; }
     else { W.sems.push(sm); added+=sm.courses.length; if(w.active===sm.id) jump=sm.id; }
   });
   W.prior=(W.prior||[]).concat(w.prior); setHistory(W);
@@ -1445,6 +1552,8 @@ document.addEventListener('input',function(ev){
   else if(f==='catrp'){ c.cats[+t.dataset.k].rp=t.checked; save(); render(true); return; }
   else if(f==='basecr'||f==='basegpa'){ W.base=W.base||{cr:null,gpa:null}; W.base[f==='basecr'?'cr':'gpa']=num(t.value); refreshPrior(); }
   else if(f==='pick'){ S.gpaPick[c.id]=t.value; }
+  else if(f==='mst'||f==='men'||f==='mloc'){ const m=c.meets[+t.dataset.mi]; if(m) m[f==='mst'?'st':f==='men'?'en':'loc']=t.value; }
+  else if(f==='semstart'||f==='semend'){ S[f==='semstart'?'start':'end']=t.value; save(); calRedraw(); return; }
   else if(f==='transfer'){ W.transfer=Math.max(0,num(t.value)||0); }
   if(f==='e'){
     const row=t.closest('.grid'), du=row&&row.querySelector('[data-due]');
@@ -1460,6 +1569,7 @@ What to do:
 - For each syllabus: create the class, and read its grading policy carefully. Pull out every grade category and its weight, how scores are combined (average, total points, best N, dropped lowest scores, a final that replaces the lowest exam, optional extra work that replaces a low score, capped points), the grading scale cutoffs, the credits, any extra credit, and any rules worth remembering (late policy, attendance, no make-ups). Put those rules in the class "notes" as short plain sentences.
 - Create every graded item you can find in the syllabus or schedule (each exam, quiz, homework, project, reflection) as an item with its due date, "earned": null, and its point value ("outOf"). If the syllabus doesn't give points, use 100.
 - If I also give you grades, fill in "earned" for the items they match. Don't guess scores: if a score isn't graded or isn't given, use null.
+- If the syllabus or schedule gives when each class meets (days, start and end time in 24-hour format, and the room), put it in "meetings" (one entry per different meeting pattern, such as a lecture and a lab). If it gives the semester's first and last day, put them in "startDate" and "endDate" (YYYY-MM-DD). Leave these out if they aren't given.
 - If something is unclear or the syllabus contradicts itself (weights that don't add to 100, a missing scale), ask me before you write the file.
 
 Use exactly this format:
@@ -1468,6 +1578,8 @@ Use exactly this format:
   "semesters": [
     {
       "name": "Fall 2026",
+      "startDate": "2026-08-24",
+      "endDate": "2026-12-11",
       "current": true,
       "finished": false,
       "classes": [
@@ -1476,6 +1588,7 @@ Use exactly this format:
           "code": "BIOSC 0150",
           "professor": "Dr. Smith",
           "credits": 3,
+          "meetings": [{ "days": ["Mon", "Wed"], "start": "09:30", "end": "10:45", "location": "Room 101" }],
           "scale": "plus-minus",
           "categories": [
             {
@@ -1555,7 +1668,7 @@ function setActive(id){
   W.active=id; S=W.sems.find(x=>x.id===id); editing=false; view='home'; refreshPrior(); applyAcc(); save(); setHash(); render(); window.scrollTo(0,0);
 }
 function addSem(name,copy){
-  const sm={id:uid(),name:name,done:false,courses:[],gpaPick:{}};
+  const sm={id:uid(),name:name,done:false,start:'',end:'',events:[],courses:[],gpaPick:{}};
   if(copy) sm.courses=S.courses.map(function(c){
     const n=JSON.parse(JSON.stringify(c)); n.id=uid(); n.color=ACC.cls[c.id]||c.color; delete n.cuts; if(c.cuts) n.cuts=c.cuts.map(r=>r.slice());
     n.cats.forEach(k=>k.items.forEach(it=>{ it.e=null; it.w=null; it.d=null; it.dl=''; }));
@@ -1613,6 +1726,113 @@ function newClassModal(){
       c.color=nextColor(); S.courses.push(c); syncColors(); view=c.id; editing=true; save(); setHash(); render(); window.scrollTo(0,0);
     });
 }
+/* ---------- calendar ---------- */
+const DAYN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MONN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], CAL_RH=58;
+let calWk=null;
+const pd=i=>new Date(i+'T12:00:00');
+const isoD=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const addD=(i,n)=>{ const d=pd(i); d.setDate(d.getDate()+n); return isoD(d); };
+const mondayOf=i=>addD(i,-((pd(i).getDay()+6)%7));
+const dayDiff=(a,b)=>Math.round((pd(b)-pd(a))/864e5);
+const tMin=t=>{ const p=String(t||'').split(':'); return p.length<2?null:(+p[0])*60+(+p[1]); };
+const minT=m=>{ m=Math.max(0,Math.min(1439,m)); return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'); };
+function fmtT(m,ap){ const h=Math.floor(m/60), mm=m%60; return (h%12||12)+(mm?':'+String(mm).padStart(2,'0'):'')+(ap===false?'':(h>=12?' PM':' AM')); }
+function fmtR(a,b){ const same=(a>=720)===(b>=720); return fmtT(a,!same)+' – '+fmtT(b); }
+function wkLabel(mon){ const a=pd(mon), b=pd(addD(mon,6)); return MONN[a.getMonth()]+' '+a.getDate()+' – '+(a.getMonth()===b.getMonth()?'':MONN[b.getMonth()]+' ')+b.getDate(); }
+function evOn(e,D){
+  if(D<e.date) return false; if(e.until&&D>e.until) return false;
+  const n=dayDiff(e.date,D);
+  if(e.rep==='none') return n===0; if(e.rep==='daily') return true; if(e.rep==='weekly') return n%7===0; if(e.rep==='biweekly') return n%14===0;
+  return pd(D).getDate()===pd(e.date).getDate();
+}
+function meetSum(c){ return c.meets.filter(m=>m.days.length&&m.st&&m.en).map(m=>{ const ds=m.days.slice().sort((a,b)=>((a+6)%7)-((b+6)%7)).map(d=>DAYN[d]).join(' '); return ds+' · '+fmtR(tMin(m.st),tMin(m.en))+(m.loc?' · '+m.loc:''); }); }
+function calView(){
+  return '<div class="cal"><div class="cpbar"><button class="back" data-act="go" data-v="home">← All classes</button></div>'
+    +'<h1 class="page-h">Calendar</h1>'
+    +'<section class="card calhead"><div class="caltop"><div class="calname">'+esc(S.name)+'</div><div class="caldates"><label>Starts<input type="date" data-f="semstart" value="'+esc(S.start||'')+'" aria-label="Semester start"></label><label>Ends<input type="date" data-f="semend" value="'+esc(S.end||'')+'" aria-label="Semester end"></label></div></div><div id="calBody">'+calBody()+'</div></section></div>';
+}
+function calRedraw(){ const b=document.getElementById('calBody'); if(b&&view==='cal') b.innerHTML=calBody(); }
+function calBody(){
+  const st=S.start||'', en=S.end||'', okR=st&&en&&en>=st;
+  const w0=okR?mondayOf(st):null, w1=okR?mondayOf(en):null;
+  const curW=mondayOf(TODAY);
+  if(!calWk){ let r=TODAY; if(okR){ if(r<st) r=st; if(r>en) r=en; } calWk=mondayOf(r); }
+  if(okR){ if(calWk<w0) calWk=w0; if(calWk>w1) calWk=w1; }
+  const weeks=[]; if(okR&&dayDiff(w0,w1)<=7*40) for(let w=w0;w<=w1;w=addD(w,7)) weeks.push(w);
+  // summary
+  let sum;
+  if(okR){
+    const k=weeks.indexOf(calWk)+1, tot=weeks.length, span=Math.max(1,dayDiff(st,en)), done=Math.min(1,Math.max(0,dayDiff(st,TODAY)/span));
+    const note=TODAY<st?'Starts in '+dayDiff(TODAY,st)+' day'+(dayDiff(TODAY,st)===1?'':'s'):TODAY>en?'Semester finished':dayDiff(TODAY,en)+' day'+(dayDiff(TODAY,en)===1?'':'s')+' left';
+    sum='<div class="calsum"><div class="calwk">Week '+k+'<small>of '+tot+'</small></div><div class="calnote">'+note+'</div></div><div class="calprog"><i style="width:'+(done*100).toFixed(1)+'%"></i></div>'
+      +(weeks.length?'<div class="wks">'+weeks.map((w,i)=>'<button type="button" class="wk'+(w===calWk?' on':'')+(w===curW?' now':'')+'" data-act="calwk" data-w="'+w+'" aria-label="Week '+(i+1)+', '+wkLabel(w)+'" title="'+wkLabel(w)+'">'+(i+1)+'</button>').join('')+'</div>':'');
+  } else sum='<div class="calhint">Set your semester’s first and last day to see week numbers and your progress.</div>';
+  // events
+  const meets=[]; S.courses.forEach(c=>c.meets.forEach(m=>{ const a=tMin(m.st), b=tMin(m.en); if(m.days.length&&a!=null&&b!=null&&b>a) meets.push({c:c,m:m,a:a,b:b}); }));
+  const evs=(S.events||[]);
+  let lo=8*60,hi=17*60; meets.forEach(x=>{ lo=Math.min(lo,x.a); hi=Math.max(hi,x.b); }); evs.forEach(e=>{ if(!e.allDay){ const a=tMin(e.st), b=tMin(e.en); if(a!=null){ lo=Math.min(lo,a); hi=Math.max(hi,b!=null&&b>a?b:a+60); } } });
+  const h0=Math.max(0,Math.floor(lo/60)), h1=Math.min(24,Math.ceil(hi/60)), H=(h1-h0)*CAL_RH;
+  const wkend=meets.some(x=>x.m.days.includes(0)||x.m.days.includes(6))||evs.some(e=>{ for(let i=5;i<7;i++) if(evOn(e,addD(calWk,i))) return true; return false; });
+  const nd=wkend?7:5, days=[]; for(let i=0;i<nd;i++) days.push(addD(calWk,i));
+  const inSem=d=>!okR||(d>=st&&d<=en);
+  const dayEvents=days.map(d=>{
+    const L=[]; if(inSem(d)) meets.forEach(x=>{ if(x.m.days.includes(pd(d).getDay())) L.push({a:x.a,b:x.b,col:COLORS[x.c.id],fg:TILE[x.c.id],t:x.c.name,loc:x.m.loc,go:'go',id:x.c.id}); });
+    const allDay=[];
+    evs.forEach(e=>{ if(!evOn(e,d)) return; if(e.allDay||tMin(e.st)==null) allDay.push(e); else { const a=tMin(e.st); let b=tMin(e.en); if(b==null||b<=a) b=a+60; L.push({a:a,b:b,col:e.color,fg:fgFor(e.color),t:e.t,loc:e.loc,go:'evedit',id:e.id}); } });
+    L.sort((x,y)=>x.a-y.a||y.b-x.b);
+    const out=[]; let cluster=[],cend=-1;
+    const flush=()=>{ const lanes=[]; cluster.forEach(x=>{ let l=0; while(lanes[l]!==undefined&&lanes[l]>x.a) l++; lanes[l]=x.b; x.lane=l; }); const n=lanes.length; cluster.forEach(x=>{ x.n=n; out.push(x); }); cluster=[]; };
+    L.forEach(x=>{ if(cluster.length&&x.a>=cend){ flush(); cend=-1; } cluster.push(x); cend=Math.max(cend,x.b); }); if(cluster.length) flush();
+    const dues=[]; S.courses.forEach(c=>c.cats.forEach(k=>k.items.forEach(it=>{ if(it.d===d&&!it.opt) dues.push({c:c,it:it}); })));
+    return {d:d,blocks:out,allDay:allDay,dues:dues};
+  });
+  const hasTop=dayEvents.some(x=>x.allDay.length||x.dues.length);
+  const nowM=(new Date()).getHours()*60+(new Date()).getMinutes();
+  let g='<div class="calgrid" style="--n:'+nd+';--H:'+H+'px;--rh:'+CAL_RH+'px">';
+  g+='<div></div>'+dayEvents.map(x=>{ const d=pd(x.d); return '<div class="dh'+(x.d===TODAY?' today':'')+(inSem(x.d)?'':' off')+'"><b>'+DAYN[d.getDay()]+'</b><span>'+d.getDate()+'</span></div>'; }).join('');
+  if(hasTop){
+    g+='<div class="dlab">Due</div>'+dayEvents.map(x=>'<div class="dues">'+x.allDay.map(e=>'<button type="button" class="due ev2" style="--c:'+e.color+'" data-act="evedit" data-id="'+e.id+'" title="'+esc(e.t)+'">'+esc(e.t)+'</button>').join('')
+      +x.dues.map(u=>'<button type="button" class="due'+(u.it.e!=null?' dn':'')+'" style="--c:'+COLORS[u.c.id]+'" data-act="go" data-v="'+u.c.id+'" title="'+esc(u.c.name+' · '+u.it.n)+'">'+esc(u.it.n)+'</button>').join('')+'</div>').join('');
+  }
+  let ax=''; for(let h=h0;h<=h1;h++) ax+='<span style="top:'+((h-h0)*CAL_RH)+'px">'+(h===h0||h===h1?'':fmtT(h*60,true).replace(':00',''))+'</span>';
+  g+='<div class="axis">'+ax+'</div>';
+  dayEvents.forEach(x=>{
+    g+='<div class="cdcol'+(x.d===TODAY?' today':'')+(inSem(x.d)?'':' off')+'" data-act="evnew" data-date="'+x.d+'" data-h0="'+h0+'">';
+    x.blocks.forEach(b=>{
+      const top=(b.a/60-h0)*CAL_RH, ht=Math.max(26,(b.b-b.a)/60*CAL_RH-3), w=100/b.n;
+      g+='<button type="button" class="ev'+(ht<44?' sm':'')+'" style="--c:'+b.col+';--fg:'+b.fg+';top:'+top.toFixed(1)+'px;height:'+ht.toFixed(1)+'px;left:calc('+(b.lane*w).toFixed(2)+'% + 3px);width:calc('+w.toFixed(2)+'% - 6px)" data-act="'+b.go+'" data-'+(b.go==='go'?'v':'id')+'="'+b.id+'"><span class="nm">'+esc(b.t)+'</span><span class="tm">'+fmtR(b.a,b.b)+'</span>'+(b.loc?'<span class="lc">'+esc(b.loc)+'</span>':'')+'</button>';
+    });
+    if(x.d===TODAY&&nowM>=h0*60&&nowM<=h1*60) g+='<div class="nowl" style="top:'+((nowM/60-h0)*CAL_RH).toFixed(1)+'px"></div>';
+    g+='</div>';
+  });
+  g+='</div>';
+  const any=meets.length||evs.length;
+  const prevOff=okR&&calWk<=w0, nextOff=okR&&calWk>=w1;
+  const arrow=d=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="'+(d<0?'M14.5 6 8.5 12l6 6':'M9.5 6l6 6-6 6')+'"/></svg>';
+  const tb='<div class="caltb"><div class="calnav"><button type="button" class="tg" data-act="calwk" data-w="prev"'+(prevOff?' disabled':'')+' aria-label="Previous week">'+arrow(-1)+'</button><button type="button" class="tg" data-act="calwk" data-w="next"'+(nextOff?' disabled':'')+' aria-label="Next week">'+arrow(1)+'</button></div><div class="caltitle">'+wkLabel(calWk)+'<small>'+pd(calWk).getFullYear()+'</small></div>'
+    +'<button type="button" class="btn sm" data-act="calwk" data-w="today">Today</button><button type="button" class="btn pri sm" data-act="evadd">＋ Event</button></div>';
+  const legend=S.courses.length?'<div class="callg">'+S.courses.map(c=>{ const m=meetSum(c); return '<button type="button" class="lg" data-act="go" data-v="'+c.id+'"><i style="background:'+COLORS[c.id]+'"></i><div><b>'+esc(c.name)+'</b><small>'+(m.length?m.map(esc).join('<br>'):'No time set · add one under ✎ Edit')+'</small></div></button>'; }).join('')+'</div>':'';
+  return sum+'<div class="calcard">'+tb+(any?'':'<div class="calhint pad">Add class times in each class’s settings (✎ Edit), or tap the grid to add an event.</div>')+'<div class="calscroll">'+g+'</div></div>'+legend;
+}
+function evModal(e,edit){
+  const v=Object.assign({t:'',date:TODAY,allDay:false,st:'09:00',en:'10:00',loc:'',note:'',color:'#FF7A59',rep:'none',until:''},e||{});
+  const ro=(val,l)=>'<option value="'+val+'"'+(v.rep===val?' selected':'')+'>'+l+'</option>';
+  const body='<label class="f">Title<input type="text" name="t" value="'+esc(v.t)+'" placeholder="Study group, office hours, exam…" required></label>'
+    +'<div class="two"><label class="f">Date<input type="date" name="date" value="'+v.date+'" required></label><label class="f chk2"><span>All day</span><input type="checkbox" name="allDay" id="evAll"'+(v.allDay?' checked':'')+'></label></div>'
+    +'<div class="two" id="evTimes"'+(v.allDay?' style="display:none"':'')+'><label class="f">Starts<input type="time" name="st" value="'+v.st+'"></label><label class="f">Ends<input type="time" name="en" value="'+v.en+'"></label></div>'
+    +'<label class="f">Location<input type="text" name="loc" value="'+esc(v.loc)+'" placeholder="Optional"></label>'
+    +'<div class="two"><label class="f">Repeats<select name="rep">'+ro('none','Does not repeat')+ro('daily','Every day')+ro('weekly','Every week')+ro('biweekly','Every 2 weeks')+ro('monthly','Every month')+'</select></label><label class="f">Until<input type="date" name="until" value="'+v.until+'"></label></div>'
+    +'<div class="f"><span>Color</span><div class="evcs">'+PALETTE.map(p=>'<label class="evc"><input type="radio" name="color" value="'+p+'"'+(p.toLowerCase()===v.color.toLowerCase()?' checked':'')+'><i style="background:'+p+'"></i></label>').join('')+'</div></div>'
+    +'<label class="f">Notes<textarea name="note" placeholder="Optional">'+esc(v.note)+'</textarea></label>'
+    +(edit?'<div><button type="button" class="btn danger sm" data-act="evdel" data-id="'+v.id+'">Delete event</button></div>':'');
+  openModal(edit?'Edit event':'New event',body,edit?'Save':'Add event',function(f){
+    const ne=normEvent({id:edit?v.id:null,t:(f.t||'').trim()||'Event',date:f.date,allDay:f.allDay==='on',st:f.st,en:f.en,loc:f.loc,note:f.note,color:f.color,rep:f.rep,until:f.until});
+    if(!ne.allDay&&ne.st&&ne.en&&ne.en<=ne.st) ne.en=minT(tMin(ne.st)+60);
+    S.events=S.events||[]; const i=S.events.findIndex(x=>x.id===ne.id); if(i>=0) S.events[i]=ne; else S.events.push(ne);
+    calWk=mondayOf(ne.date); save(); render(true);
+  });
+  const all=document.getElementById('evAll'); if(all) all.addEventListener('change',function(){ const t=document.getElementById('evTimes'); if(t) t.style.display=all.checked?'none':''; });
+}
 /* ---------- class editing ---------- */
 const scaleSel=c=>c.cuts?'custom':(c.scale==='plain'?'plain':(c.scale==='std'?'std':'custom'));
 function editPanel(c){
@@ -1626,8 +1846,17 @@ function editPanel(c){
     +'<div class="two"><label class="f">Graded by<select data-f="pooled" data-c="'+c.id+'"><option value="0"'+(c.pooled?'':' selected')+'>Weighted categories</option><option value="1"'+(c.pooled?' selected':'')+'>Total points</option></select></label>'
     +'<label class="f">Grading scale<select data-f="scale" data-c="'+c.id+'">'+op('std','Plus/minus (A+ at 97)')+op('plain','Plain letters (A at 90)')+op('custom','Custom cutoffs')+'</select></label></div>'
     +cuts
+    +meetsEdit(c)
     +'<label class="f">Notes<textarea data-f="cnotes" data-c="'+c.id+'" placeholder="Syllabus notes, one per line">'+esc(c.notes.join('\n'))+'</textarea></label>'
     +'<div class="editact"><button type="button" class="btn danger" data-act="delclass" data-c="'+c.id+'">Delete class</button></div></section>';
+}
+const DCH=[[1,'M'],[2,'T'],[3,'W'],[4,'T'],[5,'F'],[6,'S'],[0,'S']];
+function meetsEdit(c){
+  const rows=c.meets.map((m,i)=>'<div class="mrow"><div class="dchips">'+DCH.map(d=>'<button type="button" class="'+(m.days.includes(d[0])?'on':'')+'" data-act="mday" data-c="'+c.id+'" data-mi="'+i+'" data-d="'+d[0]+'" aria-pressed="'+m.days.includes(d[0])+'" aria-label="'+DAYN[d[0]]+'">'+d[1]+'</button>').join('')+'</div>'
+    +'<div class="mtimes"><input type="time" data-f="mst" data-c="'+c.id+'" data-mi="'+i+'" value="'+m.st+'" aria-label="Start time"><span>to</span><input type="time" data-f="men" data-c="'+c.id+'" data-mi="'+i+'" value="'+m.en+'" aria-label="End time"></div>'
+    +'<input type="text" class="mloc" data-f="mloc" data-c="'+c.id+'" data-mi="'+i+'" value="'+esc(m.loc)+'" placeholder="Room (optional)" aria-label="Room">'
+    +'<button type="button" class="mdel" data-act="mdel" data-c="'+c.id+'" data-mi="'+i+'" aria-label="Remove this time" title="Remove">×</button></div>').join('');
+  return '<div class="f meets"><span>Class times</span>'+rows+'<div><button type="button" class="btn sm" data-act="madd" data-c="'+c.id+'">＋ '+(c.meets.length?'Add another time':'Add a time')+'</button></div><span class="hint">Shows in the calendar, which you open with the calendar icon at the top.</span></div>';
 }
 function catEdit(c,k,ki){
   const base='data-c="'+c.id+'" data-k="'+ki+'"', r=k.rule||'avg';
@@ -1685,7 +1914,15 @@ function catEdit(c,k,ki){
 document.addEventListener('click',function(ev){
   const b=ev.target.closest('[data-act]'); if(!b) return;
   const a=b.dataset.act;
-  if(a==='go'){ view=b.dataset.v; wipeArmed=false; editing=false; reorder=false; setHash(); render(); window.scrollTo(0,0); return; }
+  if(a==='mday'){ const c=getC(b.dataset.c), m=c&&c.meets[+b.dataset.mi]; if(m){ const d=+b.dataset.d; m.days=m.days.includes(d)?m.days.filter(x=>x!==d):m.days.concat(d).sort((x,y)=>x-y); save(); render(true); } return; }
+  if(a==='madd'){ const c=getC(b.dataset.c); if(c){ c.meets.push(normMeet({})); save(); render(true); } return; }
+  if(a==='mdel'){ const c=getC(b.dataset.c); if(c){ c.meets.splice(+b.dataset.mi,1); save(); render(true); } return; }
+  if(a==='calwk'){ const w=b.dataset.w; if(w==='prev') calWk=addD(calWk,-7); else if(w==='next') calWk=addD(calWk,7); else if(w==='today') calWk=null; else calWk=w; calRedraw(); return; }
+  if(a==='evnew'){ const r=b.getBoundingClientRect(), mins=Math.round(((ev.clientY-r.top)/CAL_RH*60+(+b.dataset.h0)*60)/30)*30; evModal({date:b.dataset.date,st:minT(mins),en:minT(mins+60)}); return; }
+  if(a==='evadd'){ evModal({date:b.dataset.date||calWk||TODAY}); return; }
+  if(a==='evedit'){ const e=(S.events||[]).find(x=>x.id===b.dataset.id); if(e) evModal(e,true); return; }
+  if(a==='evdel'){ S.events=(S.events||[]).filter(x=>x.id!==b.dataset.id); closeModal(); save(); calRedraw(); return; }
+  if(a==='go'){ view=b.dataset.v; if(view==='cal') calWk=null; wipeArmed=false; editing=false; reorder=false; setHash(); render(); window.scrollTo(0,0); return; }
   if(a==='jump'){ view='home'; wipeArmed=false; setHash(); render(); const el=document.getElementById(b.dataset.t); if(el&&el.classList.contains('col')){ delete LAY.col[el.dataset.sec]; saveLay(); el.classList.remove('col'); } if(el) el.scrollIntoView(); else window.scrollTo(0,0); return; }
   if(a==='sectoggle'){ const id=b.dataset.s; LAY.col[id]=!LAY.col[id]; saveLay(); b.closest('.hsec').classList.toggle('col',!!LAY.col[id]); b.setAttribute('aria-expanded',String(!LAY.col[id])); return; }
   if(a==='syncconnect'){
@@ -1762,7 +1999,7 @@ document.addEventListener('change',function(ev){
   refreshPrior(); syncColors();
   if(migrated) save();
   const h=(location.hash||'').replace('#','');
-  if(h&&getC(h)) view=h;
+  if(h&&(h==='cal'||getC(h))) view=h;
   render();
   if(syncCfg()) syncNow();
   try{ if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')) navigator.serviceWorker.register('sw.js'); }catch(e){}
