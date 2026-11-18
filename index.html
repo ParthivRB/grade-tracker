@@ -266,6 +266,21 @@ input[type=range]{width:100%;accent-color:var(--blue);margin:14px 0 0}
 .grid .it{min-width:0}
 .grid .it input{background:transparent;padding:5px 8px;font-weight:600}
 .grid .it input:hover{background:var(--soft)}
+.tag{display:none;margin:2px 10px 0;font-size:11.5px;font-weight:700;padding:1px 9px;border-radius:99px;width:fit-content;max-width:100%}
+.tag.d,.tag.u,.tag.c{display:inline-block}
+.tag.d{background:var(--warn-soft);color:var(--warn)}
+.tag.u{background:var(--good-soft);color:var(--good)}
+.tag.c{background:var(--soft);color:var(--mut)}
+.grid{transition:opacity .25s ease}
+.grid.dropped{opacity:.5}
+.grid.dropped .it input[data-f=n]{text-decoration:line-through;text-decoration-color:var(--mut)}
+.rule b{color:var(--ink)}
+.goal{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px}
+.goal button{border:2px solid var(--line);background:var(--elev);color:var(--ink2);border-radius:99px;padding:5px 13px;font-weight:700;font-size:13px;cursor:pointer;transition:border-color .18s ease,background-color .18s ease,color .18s ease}
+.goal button:hover{border-color:var(--blue);color:var(--blue)}
+.goal button.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.nd.goalrow{outline:2px solid var(--ink);outline-offset:-2px}
+.tneed{display:inline-block;margin-top:9px;padding:5px 12px;border-radius:12px;background:color-mix(in srgb,var(--fg) 14%,transparent);font-size:13px;font-weight:700;line-height:1.35}
 .due{padding:0 10px;font-size:12.5px;color:var(--mut)}
 .due.late{color:var(--warn)}
 .rpct{font-size:13.5px;text-align:center;font-weight:800;border-radius:99px;padding:4px 6px;color:var(--mut)}
@@ -364,7 +379,7 @@ function baseDefaults(){
     {name:'Creative Assignment #1 (flipbook / zoetrope)',w:10,rule:'avg',items:[I('Creative Assignment #1',100,'2026-09-29','due Sep 22–29')]},
     {name:'Creative Assignment #2 (video project)',w:10,rule:'avg',items:[I('Creative Assignment #2',100,'2026-11-03','due Oct 27–Nov 3')]},
     {name:'Creative Assignment #3 (stop-motion short)',w:10,rule:'avg',items:[I('Creative Assignment #3',100,'2026-12-01')]},
-    {name:'Weekly reflections (best 10 of 13)',w:50,rule:'avg',items:[1,2,3,4,5,6,7,8,9,10].map(n=>I('Reflection '+n,100))}
+    {name:'Weekly reflections (best 10 of 13)',w:50,rule:'best',n:10,items:[1,2,3,4,5,6,7,8,9,10,11,12,13].map(n=>I('Reflection '+n,100))}
    ]},
   {id:'syn',name:'Synaptic Transmission',code:'NROSCI 1017 · Fraser',credits:null,scale:'s1017',scaleAssumed:false,pooled:false,lenience:0,fill:90,target:'A',ec:null,
    notes:[
@@ -478,7 +493,9 @@ function loadMerged(saved){
       const sk=(sc.cats||[]).find(x=>x.name===k.name);
       if(!sk) return;
       if(typeof sk.w==='number') k.w=sk.w;
+      const defItems=k.items;
       if(Array.isArray(sk.items)) k.items=sk.items.map(it=>({n:String(it.n||''),p:(typeof it.p==='number'?it.p:100),e:(typeof it.e==='number'?it.e:null),w:(typeof it.w==='number'?it.w:null),d:it.d||null,dl:it.dl||'',opt:!!it.opt}));
+      if(k.rule==='best'&&/^Weekly reflections/.test(k.name)&&k.items.length===10) k.items=k.items.concat(defItems.slice(10));
     });
   });
   return D;
@@ -576,6 +593,35 @@ const letterOf=(c,pct)=>{const r=scaleRow(c,pct);return r?r[1]:'–';};
 function remaining(c){
   let n=0; c.cats.forEach(k=>k.items.forEach(it=>{ if(!it.opt&&it.p>0&&it.e==null&&it.w==null) n++; })); return n;
 }
+function dropInfo(k){
+  const st={};
+  if(k.rule==='best'){
+    const L=[]; k.items.forEach((it,i)=>{ const r=ratio(it,'whatif',null); if(r!=null) L.push({i:i,r:r}); });
+    const sorted=L.slice().sort((a,b)=>b.r-a.r||a.i-b.i), keep=new Set(sorted.slice(0,k.n).map(x=>x.i));
+    L.forEach(x=>{ st[x.i]=keep.has(x.i)?{s:'count'}:{s:'drop'}; });
+    return {st:st,dropped:L.filter(x=>!keep.has(x.i)).map(x=>x.i),scored:L.length};
+  }
+  if(k.rule==='swap'){
+    const q=[],cs=[];
+    k.items.forEach((it,i)=>{ const r=ratio(it,'whatif',null); if(r==null) return; (it.opt?cs:q).push({i:i,r:r}); });
+    cs.sort((a,b)=>b.r-a.r);
+    const idx=q.filter(x=>x.r>0).sort((a,b)=>a.r-b.r); let ci=0; const pairs=[];
+    idx.forEach(x=>{ if(ci<cs.length&&cs[ci].r>x.r){ st[x.i]={s:'drop',by:cs[ci].i}; st[cs[ci].i]={s:'use',for:x.i}; pairs.push([cs[ci].i,x.i]); ci++; } });
+    return {st:st,pairs:pairs,scored:q.length};
+  }
+  return null;
+}
+function tileNeed(c){
+  if(!remaining(c)) return '';
+  const L=c.target||'A', r=SCALES[c.scale].find(x=>x[1]===L); if(!r) return '';
+  const n=needed(c,r[0]);
+  let t;
+  if(n.kind==='lock') t=L+' is locked in';
+  else if(n.kind==='out') t=L+' is out of reach';
+  else if(n.kind==='over') t=L+' needs over 100% on the rest';
+  else t='Need <b>'+f1(Math.ceil(n.x*10)/10)+'%</b> on the rest for '+(/^[AF]/.test(L)?'an ':'a ')+L;
+  return '<span class="tneed">'+t+'</span>';
+}
 function needed(c,min){
   const g=x=>{const p=courseRes(c,'proj',x).pct; return p==null?-1e9:p+(c.lenience||0)+1e-9;};
   if(g(0)>=min) return {kind:'lock'};
@@ -640,12 +686,22 @@ function ruleText(k){
   if(k.rule==='swap') return 'A higher case study score replaces your lowest quiz. A quiz you skipped isn’t swapped.';
   return '';
 }
+function ruleLive(c,k){
+  const d=dropInfo(k); if(!d) return ruleText(k);
+  const nm=i=>esc(k.items[i].n), pc=i=>pctS(100*ratio(k.items[i],'whatif',null));
+  if(k.rule==='best'){
+    if(d.dropped.length) return 'Counting your best '+k.n+' of '+k.items.length+'. <b>Dropped:</b> '+d.dropped.map(i=>nm(i)+' ('+pc(i)+')').join(', ')+'.';
+    return 'Only your best '+k.n+' of '+k.items.length+' count. '+(d.scored?d.scored+' scored so far, nothing dropped yet.':'Nothing scored yet.');
+  }
+  if(!d.pairs.length) return ruleText(k);
+  return d.pairs.map(p=>'<b>'+nm(p[0])+'</b> ('+pc(p[0])+') replaces '+nm(p[1])+' ('+pc(p[1])+')').join(' · ');
+}
 function itemRow(c,k,i,it){
   const base='data-c="'+c.id+'" data-k="'+k+'" data-i="'+i+'"';
   const late=it.d&&it.d<TODAY&&it.e==null&&!it.opt;
   const due=it.d?'<div class="due'+(late?' late':'')+'" data-due="1">'+(it.dl?esc(it.dl)+' · ':'')+(late?'past due · ':'')+fd(it.d)+'</div>':(it.dl?'<div class="due">'+esc(it.dl)+'</div>':'');
-  return '<div class="grid">'
-    +'<div class="it"><input type="text" data-f="n" '+base+' value="'+esc(it.n)+'" aria-label="Item name">'+due+'</div>'
+  return '<div class="grid" data-r="'+k+'-'+i+'">'
+    +'<div class="it"><input type="text" data-f="n" '+base+' value="'+esc(it.n)+'" aria-label="Item name">'+due+'<div class="tag" data-tag></div></div>'
     +'<input type="number" step="any" inputmode="decimal" data-f="e" '+base+' value="'+(it.e==null?'':it.e)+'" placeholder="earned" aria-label="Points earned">'
     +'<input type="number" step="any" inputmode="decimal" data-f="p" '+base+' value="'+(it.p==null?'':it.p)+'" placeholder="out of" aria-label="Points possible">'
     +'<input type="number" step="any" inputmode="decimal" data-f="w" '+base+' value="'+(it.w==null?'':it.w)+'" placeholder="what-if" aria-label="What-if score (replaces earned)">'
@@ -656,6 +712,8 @@ function needHtml(c){
   const left=remaining(c);
   if(!left) return '<h3>What you need</h3><div class="empty" style="padding:0">Everything has a score or a what-if, so the projection is final.</div>';
   const sc=SCALES[c.scale];
+  const goal=c.target||'A';
+  const chips='<div class="goal" role="group" aria-label="Goal grade">'+['A+','A','A-','B+','B','B-'].map(L=>'<button type="button" class="'+(L===goal?'on':'')+'" data-act="goal" data-c="'+c.id+'" data-l="'+L+'">'+L+'</button>').join('')+'</div>';
   const rows=['A+','A','A-','B+','B','B-'].map(L=>{
     const r=sc.find(x=>x[1]===L); if(!r) return '';
     const n=needed(c,r[0]);
@@ -664,9 +722,10 @@ function needHtml(c){
     else if(n.kind==='out'){cls+=' out';txt='Out of reach';}
     else if(n.kind==='over'){cls+=' out';txt='Needs over 100% on the rest';}
     else txt='Average '+f3(n.x)+'% on the rest';
+    if(L===goal) cls+=' goalrow';
     return '<div class="'+cls+'"><b>'+L+'</b><span>'+txt+'</span></div>';
   }).join('');
-  return '<h3>What you need on the '+left+' ungraded item'+(left===1?'':'s')+'</h3><div class="needgrid">'+rows+'</div>';
+  return '<h3>What you need on the '+left+' ungraded item'+(left===1?'':'s')+'</h3>'+chips+'<div class="needgrid">'+rows+'</div>';
 }
 function backupHtml(){
   return '<details><summary>Backup and reset</summary>'
@@ -832,6 +891,7 @@ function homeView(){
       +'<div class="row"><span class="p">'+(cur.pct==null?'No scores yet':pctS(cur.pct))+'</span><span class="pj">What-if <b>'+letterOf(c,wi.pct)+' · '+pctS(wi.pct)+'</b></span></div>'
       +'<div class="tbar"><i style="width:'+Math.round(cur.progress*100)+'%"></i></div>'
       +'<small>'+Math.round(cur.progress*100)+'% of the grade is in</small>'
+      +tileNeed(c)
       +(late&&cur.pct!=null?'<span class="late">'+late+' past due, no score entered</span>':'')
       +'</button>';
   }).join('');
@@ -888,7 +948,7 @@ function courseView(c){
       :'<label>Weight <input type="number" step="any" inputmode="decimal" data-f="cw" data-c="'+c.id+'" data-k="'+ki+'" value="'+k.w+'" aria-label="Category weight in percent"> %</label>';
     const rt=ruleText(k);
     return '<section class="card cat"><div class="cathead"><h3>'+esc(k.name)+'</h3><div class="catmeta">'+meta+'<span class="cpct" data-k="'+ki+'">–</span></div></div>'
-      +(rt?'<div class="rule">'+rt+'</div>':'')
+      +(rt?'<div class="rule" data-rl="'+ki+'">'+rt+'</div>':'')
       +'<div class="grid h"><div>Item</div><div>Earned</div><div>Out of</div><div>What-if</div><div style="text-align:center">Score</div><div></div></div>'
       +k.items.map((it,ii)=>itemRow(c,ki,ii,it)).join('')
       +'<div class="addrow"><button class="btn" data-act="add" data-c="'+c.id+'" data-k="'+ki+'">Add item</button>'
@@ -978,6 +1038,18 @@ function refresh(){
     const k=c.cats[+el.dataset.k]; const r=catRes(k,'whatif',null);
     el.textContent=r?pctS(r.pct):'–';
   });
+  $$('[data-rl]').forEach(el=>{ el.innerHTML=ruleLive(c,c.cats[+el.dataset.rl]); });
+  const infos=c.cats.map(k=>dropInfo(k));
+  $$('.grid[data-r]').forEach(row=>{
+    const p=row.dataset.r.split('-'), k=c.cats[+p[0]], d=infos[+p[0]], s=d&&d.st[+p[1]], tg=row.querySelector('[data-tag]');
+    row.classList.toggle('dropped',!!(s&&s.s==='drop'));
+    if(!tg) return;
+    let t='',cl='tag';
+    if(s&&s.s==='drop'){ t=s.by!=null?'Replaced by '+k.items[s.by].n:'Dropped'; cl+=' d'; }
+    else if(s&&s.s==='use'){ t='Replaces '+k.items[s.for].n; cl+=' u'; }
+    else if(s&&s.s==='count'&&d.dropped.length){ t='Counts'; cl+=' c'; }
+    tg.className=cl; tg.textContent=t;
+  });
   $$('.rpct').forEach(el=>{
     const it=c.cats[+el.dataset.k].items[+el.dataset.i];
     el.classList.remove('wi','on');
@@ -1057,6 +1129,7 @@ document.addEventListener('click',function(ev){
   const c=b.dataset.c?getC(b.dataset.c):null;
   if(a==='add'){ c.cats[+b.dataset.k].items.push(I('New item',(c.pooled?5:100))); save(); render(); }
   else if(a==='addopt'){ c.cats[+b.dataset.k].items.push(I('Case study',100,null,'',true)); save(); render(); }
+  else if(a==='goal'){ c.target=b.dataset.l; save(); refresh(); }
   else if(a==='del'){ c.cats[+b.dataset.k].items.splice(+b.dataset.i,1); save(); render(); }
   else if(a==='download'){ const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'}); const u=URL.createObjectURL(blob); const l=document.createElement('a'); l.href=u; l.download='grade-tracker-backup.json'; document.body.appendChild(l); l.click(); l.remove(); setTimeout(function(){URL.revokeObjectURL(u);},1000); }
   else if(a==='export'){ $('#bk').value=JSON.stringify(S); $('#bkmsg').textContent='Copy all of that text and keep it somewhere safe.'; }
