@@ -1174,32 +1174,29 @@ button.rpct:hover{transform:translateY(-1px);box-shadow:0 0 0 2px var(--c)}
   .qmore{margin-left:0}
 }
 
-.rules{margin-top:16px;padding:18px 22px;border-radius:24px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
-.rh{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.rh b{font-size:16px;letter-spacing:-0.02em;display:block}
-.rh small{display:block;color:var(--mut);font-size:13px;margin-top:2px}
-.rchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.rchip{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:8px;padding:8px 14px 8px 10px;border-radius:99px;background:var(--soft);font-weight:700;font-size:13px;color:var(--ink);transition:background-color .15s,transform .15s}
-.rchip i{font-style:normal;width:22px;height:22px;border-radius:99px;display:grid;place-items:center;background:var(--c,var(--blue));color:var(--fg,#fff);font-size:12px;font-weight:800}
-.rchip:hover{background:var(--line);transform:translateY(-1px)}
-.rnone{margin-top:12px;color:var(--mut);font-size:14px}
-.rwarn{margin-top:12px;padding:10px 14px;border-radius:14px;background:var(--warn-soft);color:var(--warn);font-weight:700;font-size:13.5px}
-.rgc{width:min(640px,100%);max-height:calc(100vh - 32px);overflow:auto;border-radius:30px;padding:24px;background:var(--elev);border:1px solid var(--line);box-shadow:0 40px 90px -30px rgba(0,0,0,.7);transform:translateY(18px) scale(.97);transition:transform .45s cubic-bezier(.16,1,.3,1)}
-.wio.open .rgc{transform:none}
-.rgh{display:flex;justify-content:space-between;align-items:center}
-.rgh h3{font-family:var(--disp);font-weight:800;font-size:24px;letter-spacing:-0.045em}
-.rgx{all:unset;cursor:pointer;width:34px;height:34px;border-radius:99px;display:grid;place-items:center;font-size:22px;color:var(--mut)}
-.rgx:hover{background:var(--soft);color:var(--ink)}
-.rgp{color:var(--mut);font-size:14px;margin:6px 0 16px}
-.rgg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.rgi{all:unset;cursor:pointer;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;padding:16px;border-radius:20px;background:var(--soft);border:2px solid transparent;transition:transform .2s cubic-bezier(.2,.7,.2,1),border-color .2s;opacity:0;animation:tfloat .5s cubic-bezier(.16,1,.3,1) forwards}
-.rgi:nth-child(2n){animation-delay:.05s}.rgi:nth-child(3n){animation-delay:.1s}
-.rgi:hover{transform:translateY(-2px);border-color:var(--blue)}
-.rgi i{font-style:normal;width:32px;height:32px;border-radius:11px;display:grid;place-items:center;background:var(--blue);color:#fff;font-weight:800;margin-bottom:4px}
-.rgi b{font-size:15px;letter-spacing:-0.02em}
-.rgi small{color:var(--mut);font-size:12.5px;line-height:1.4}
-.rgi em{font-style:normal;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);margin-top:6px}
-@media (max-width:720px){ .rgg{grid-template-columns:1fr} .rules{padding:16px 18px} .rgal{align-items:end;padding:0} .rgc{border-radius:30px 30px 0 0;width:100%} }
+
+.qf{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ink2)}
+.ql{color:var(--mut);font-weight:700}
+.qin{display:inline-flex;align-items:center;gap:4px;background:var(--soft);border-radius:99px;padding:2px 10px 2px 4px}
+.qin input{width:52px!important;border-radius:99px!important;padding:5px 6px!important;text-align:center;background:transparent!important;border:0!important;font-weight:800}
+.qin input:focus{background:var(--elev)!important}
+.qin em{font-style:normal;font-size:12px;color:var(--mut);font-weight:700}
+.qseg{display:inline-flex;background:var(--soft);border-radius:99px;padding:3px;gap:2px}
+.qseg button{all:unset;cursor:pointer;padding:5px 13px;border-radius:99px;font-size:12.5px;font-weight:800;color:var(--mut);transition:background-color .2s,color .2s}
+.qseg button.on{background:var(--ink);color:var(--bg)}
+.crules{margin-top:16px;padding:16px 22px;border-radius:24px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
+.crow{display:flex;align-items:center;flex-wrap:wrap;gap:12px 22px}
+.crow>b{font-size:15px;letter-spacing:-0.02em;margin-right:4px}
+.creq{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;margin-top:12px;padding:10px 14px;border-radius:16px;background:var(--soft);font-size:13px;font-weight:600;color:var(--ink2)}
+.creq select{width:auto;padding:6px 10px;border-radius:99px}
+.creq .qin{background:var(--card)}
+.creqx{all:unset;cursor:pointer;margin-left:auto;width:26px;height:26px;border-radius:99px;display:grid;place-items:center;color:var(--mut);font-size:18px}
+.creqx:hover{background:var(--line);color:var(--ink)}
+.crules .rwarn{margin-top:12px}
+.crules .rwarn:empty,#rwarn:empty{display:none}
+#rwarn .rwarn{margin-top:12px;padding:10px 14px;border-radius:14px;background:var(--warn-soft);color:var(--warn);font-weight:700;font-size:13.5px}
+.qrule{gap:10px 20px}
+@media (max-width:720px){ .crules{padding:14px 16px} .crow>b{flex:1 1 100%} }
 </style></head><body><header class="top" id="shell-header"><div class="wrap">
   <button class="brand" data-act="go" data-v="home" aria-label="Tally home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="22" fill="#0D1226"/><path d="M21.5 33.5 29 41 43 25" fill="none" stroke="#FFB81C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="t">Tally</span></button>
   <div class="right"><nav class="tabs" aria-label="Sections">
@@ -2015,7 +2012,7 @@ function courseView(c){
     +'<section class="cband"><header class="chead"><div><h1>'+esc(c.name)+'</h1><p>'+esc(subOf(c))+'</p></div>'
     +'<div class="chctl"><button type="button" class="wibtn" data-act="wiopen" data-c="'+c.id+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/></svg>Try a what-if</button><label class="fld">Credits <input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="–"></label></div></header>'
     +'<div id="sum"></div></section>'
-    +(editing?editPanel(c):'')+rulesHtml(c)+wn+cats+'<button type="button" class="addsec" data-act="secnew" data-c="'+c.id+'"><span>＋</span> Add a section<small>Homework, labs, exams, participation…</small></button>'+ec
+    +(editing?editPanel(c):'')+classRules(c)+wn+cats+'<button type="button" class="addsec" data-act="secnew" data-c="'+c.id+'"><span>＋</span> Add a section<small>Homework, labs, exams, participation…</small></button>'+ec
     +'<section class="card csum" id="projcard"><h2 class="projh">Projected final</h2><div id="projsum"></div>'
     +'<div class="fillbox"><label for="fill"><span>Assume the rest of your work scores</span><b id="fillv">'+c.fill+'%</b></label>'
     +'<input type="range" id="fill" min="0" max="110" step="1" value="'+c.fill+'" data-f="fill" data-c="'+c.id+'"></div>'
@@ -2087,6 +2084,7 @@ function refresh(){
     return;
   }
   const c=getC(view); if(!c||gradesOff(c)) return;
+  const rwn=$('#rwarn'); if(rwn) rwn.innerHTML=warnHtml(c);
   updateSum(c);
   updateProj(c);
   $('#need').innerHTML=needHtml(c);
@@ -2247,7 +2245,11 @@ document.addEventListener('input',function(ev){
   else if(f==='catn'){ c.cats[+t.dataset.k].n=Math.max(1,Math.floor(num(t.value)||1)); }
   else if(f==='catcap'){ const v=num(t.value); c.cats[+t.dataset.k].cap=(v>0?v/100:0.8); }
   else if(f==='catrp'){ c.cats[+t.dataset.k].rp=t.checked; save(); render(true); return; }
-  else if(f==='qdrop'){ c.cats[+t.dataset.k].drop=t.checked?1:0; save(); render(true); return; }
+  else if(f==='qbonus'){ c.cats[+t.dataset.k].bonus=num(t.value)||0; }
+  else if(f==='ccurve'){ c.curve=num(t.value)||0; }
+  else if(f==='reqmin'){ const q=c.reqs[+t.dataset.q]; if(q) q.min=num(t.value)||0; }
+  else if(f==='reqcat'){ const q=c.reqs[+t.dataset.q]; if(q) q.cat=+t.value; }
+  else if(f==='reqcap'){ const q=c.reqs[+t.dataset.q]; if(q) q.cap=t.value; }
   else if(f==='basecr'||f==='basegpa'){ W.base=W.base||{cr:null,gpa:null}; W.base[f==='basecr'?'cr':'gpa']=num(t.value); refreshPrior(); }
   else if(f==='nogpa'){ c.noGpa=!t.checked; save(); render(true); return; }
   else if(f==='nograde'){ c.noGrades=!t.checked; save(); render(true); return; }
@@ -2777,103 +2779,31 @@ function meetsEdit(c){
 }
 let openCats=new Set();
 const CAPL=c=>scaleOf(c).map(r=>r[1]).filter(l=>l!=='A+'&&l!=='A');
-const catSel=(c,name,val)=>'<label class="f">Section<select name="'+name+'">'+c.cats.map((k,i)=>'<option value="'+i+'"'+(i===val?' selected':'')+'>'+esc(k.name)+'</option>').join('')+'</select></label>';
-const numF=(label,name,val,extra)=>'<label class="f">'+label+'<input type="number" name="'+name+'" step="any" value="'+val+'" '+(extra||'')+'></label>';
-const rl=(k,fn)=>k.name+' · '+fn;
-const RULES=[
-  {id:'drop',scope:'cat',ic:'↓',name:'Drop lowest scores',desc:'Your worst N scores in a section don’t count.',
-    on:(c,k)=>(k.drop>0&&(k.rule==='avg'||k.rule==='sum')),label:(c,k)=>rl(k,'drop lowest '+k.drop),
-    form:(c,k)=>numF('How many to drop','n',k?k.drop||1:1,'min="1" step="1"'),
-    set:(c,k,v)=>{ if(k.rule!=='avg'&&k.rule!=='sum') k.rule='avg'; k.drop=Math.max(1,Math.floor(num(v.n)||1)); },off:(c,k)=>{ k.drop=0; }},
-  {id:'drophi',scope:'cat',ic:'↑',name:'Drop highest scores',desc:'Your best N scores are ignored (rare, but some courses do it).',
-    on:(c,k)=>(k.dropHi>0&&(k.rule==='avg'||k.rule==='sum')),label:(c,k)=>rl(k,'drop highest '+k.dropHi),
-    form:(c,k)=>numF('How many to drop','n',k?k.dropHi||1:1,'min="1" step="1"'),
-    set:(c,k,v)=>{ if(k.rule!=='avg'&&k.rule!=='sum') k.rule='avg'; k.dropHi=Math.max(1,Math.floor(num(v.n)||1)); },off:(c,k)=>{ k.dropHi=0; }},
-  {id:'best',scope:'cat',ic:'★',name:'Only the best N count',desc:'Take the best N of M items, like best 8 of 10 homeworks.',
-    on:(c,k)=>k.rule==='best',label:(c,k)=>rl(k,'best '+k.n+' of '+k.items.filter(i=>!i.opt).length),
-    form:(c,k)=>numF('Count the best','n',k&&k.n?k.n:Math.max(1,(k?k.items.length:3)-1),'min="1" step="1"'),
-    set:(c,k,v)=>{ k.rule='best'; k.n=Math.max(1,Math.floor(num(v.n)||1)); },off:(c,k)=>{ k.rule='avg'; }},
-  {id:'rp',scope:'cat',ic:'⇄',name:'Final replaces lowest',desc:'Mark an item (like the final) that takes the place of your lowest score when it is higher.',
-    on:(c,k)=>!!k.rp&&(k.rule==='avg'||k.rule==='sum'),label:(c,k)=>rl(k,'final can replace lowest'),
-    form:()=>'<p class="hint">After adding this, tap “Replaces lowest” on the item that should do the replacing.</p>',
-    set:(c,k)=>{ if(k.rule!=='avg'&&k.rule!=='sum') k.rule='avg'; k.rp=true; },off:(c,k)=>{ k.rp=false; k.items.forEach(i=>{ i.rp=false; }); }},
-  {id:'swap',scope:'cat',ic:'⊕',name:'Optional items replace lowest',desc:'Extra optional work (like a retake or makeup) replaces your lowest regular score when higher.',
-    on:(c,k)=>k.rule==='swap',label:(c,k)=>rl(k,'optional items replace lowest'),
-    form:()=>'<p class="hint">Mark items as “Optional” in the section. They only count when they beat a regular score.</p>',
-    set:(c,k)=>{ k.rule='swap'; },off:(c,k)=>{ k.rule='avg'; }},
-  {id:'cap',scope:'cat',ic:'▤',name:'Capped points',desc:'Full credit is reached at a share of all points, like 80% of the points = 100%.',
-    on:(c,k)=>k.rule==='cap',label:(c,k)=>rl(k,'full credit at '+Math.round((k.cap||0.8)*100)+'% of points'),
-    form:(c,k)=>numF('Full credit at (% of points)','n',k&&k.rule==='cap'?Math.round((k.cap||0.8)*100):80,'min="1" max="100"'),
-    set:(c,k,v)=>{ k.rule='cap'; const x=num(v.n); k.cap=(x>0?x/100:0.8); },off:(c,k)=>{ k.rule='avg'; }},
-  {id:'bonus',scope:'cat',ic:'＋',name:'Section curve',desc:'Add or subtract points on the whole section, like a +3 curve on the midterm.',
-    on:(c,k)=>!!k.bonus,label:(c,k)=>rl(k,'curve '+(k.bonus>0?'+':'−')+Math.abs(k.bonus)),
-    form:(c,k)=>numF('Points added to the section %','n',k&&k.bonus?k.bonus:3,'step="0.5"'),
-    set:(c,k,v)=>{ k.bonus=num(v.n)||0; },off:(c,k)=>{ k.bonus=0; }},
-  {id:'curve',scope:'course',ic:'◢',name:'Class curve',desc:'Add points to your final percent, like a flat +2 curve for the whole class.',
-    on:(c)=>!!c.curve,label:(c)=>'Class curve '+(c.curve>0?'+':'−')+Math.abs(c.curve),
-    form:(c)=>numF('Points added to your final %','n',c.curve||2,'step="0.5"'),
-    set:(c,k,v)=>{ c.curve=num(v.n)||0; },off:(c)=>{ c.curve=0; }},
-  {id:'round',scope:'course',ic:'≈',name:'Rounding policy',desc:'Many professors round your final percent. 89.5 can become 90.',
-    on:(c)=>c.round!=='none',label:(c)=>c.round==='ceil'?'Round up to next whole %':'Round to nearest whole %',
-    form:(c)=>'<label class="f">Round the final percent<select name="m"><option value="whole"'+(c.round!=='ceil'?' selected':'')+'>To the nearest whole percent</option><option value="ceil"'+(c.round==='ceil'?' selected':'')+'>Up to the next whole percent</option></select></label>',
-    set:(c,k,v)=>{ c.round=v.m==='ceil'?'ceil':'whole'; },off:(c)=>{ c.round='none'; }},
-  {id:'req',scope:'req',ic:'⛔',name:'Must-pass requirement',desc:'Some classes cap your grade unless you hit a minimum, like “must score 60% on the final or the best you can earn is a D”.',
-    on:()=>false,
-    form:(c,q)=>catSel(c,'cat',q?q.cat:Math.max(0,c.cats.length-1))+numF('Minimum score (%)','min',q?q.min:60,'min="0" max="100"')+'<label class="f">Otherwise the best grade is<select name="cap">'+CAPL(c).map(l=>'<option value="'+l+'"'+((q?q.cap:'D')===l?' selected':'')+'>'+l+'</option>').join('')+'</select></label>',
-    set:(c,q,v)=>{ const o={cat:+v.cat,min:num(v.min)||0,cap:v.cap||'D'}; if(q){ q.cat=o.cat; q.min=o.min; q.cap=o.cap; } else c.reqs.push(o); }}
-];
-function activeRules(c){
-  const L=[];
-  RULES.forEach(R=>{
-    if(R.scope==='cat'){ if(c.pooled) return; c.cats.forEach((k,ki)=>{ if(R.on(c,k)) L.push({R:R,k:ki,t:R.label(c,k)}); }); }
-    else if(R.scope==='course'){ if(R.on(c)) L.push({R:R,t:R.label(c)}); }
-  });
-  if(!c.pooled) (c.reqs||[]).forEach((q,qi)=>{ const k=c.cats[q.cat]; if(k) L.push({R:RULES.find(r=>r.id==='req'),q:qi,t:k.name+' ≥ '+trim(String(q.min))+'% or grade capped at '+q.cap}); });
-  return L;
-}
-function rulesHtml(c){
-  const act=activeRules(c), res=courseRes(c,'whatif'), capd=(res.capped||[]);
-  const chips=act.map(a=>'<button type="button" class="rchip" data-act="ruleedit" data-c="'+c.id+'" data-r="'+a.R.id+'"'+(a.k!=null?' data-k="'+a.k+'"':'')+(a.q!=null?' data-q="'+a.q+'"':'')+'><i>'+a.R.ic+'</i><span>'+esc(a.t)+'</span></button>').join('');
-  const warn=capd.length?'<div class="rwarn">Your grade is capped at '+capd.map(q=>q.cap).join('/')+': '+capd.map(q=>esc((c.cats[q.cat]||{}).name||'a section')+' is under '+trim(String(q.min))+'%').join(', ')+'.</div>':'';
-  return '<section class="rules"><div class="rh"><div><b>Grading rules</b><small>Everything your syllabus says about how grades are counted.</small></div><button type="button" class="btn pri sm" data-act="ruleadd" data-c="'+c.id+'">＋ Add a rule</button></div>'
-    +(act.length?'<div class="rchips">'+chips+'</div>':'<p class="rnone">No special rules yet. Add drop-lowest, curves, rounding, minimum-to-pass and more.</p>')+warn+'</section>';
-}
-function ruleGallery(c){
-  const list=RULES.filter(R=>!(c.pooled&&(R.scope==='cat'||R.scope==='req')));
-  const ov=document.createElement('div'); ov.className='wio rgal'; ov.innerHTML='<div class="rgc" role="dialog" aria-modal="true" aria-label="Add a rule"><div class="rgh"><h3>Add a rule</h3><button type="button" class="rgx" aria-label="Close">×</button></div><p class="rgp">Pick whatever your syllabus says. You can combine as many as you need.</p><div class="rgg">'
-    +list.map(R=>'<button type="button" class="rgi" data-id="'+R.id+'"><i>'+R.ic+'</i><b>'+R.name+'</b><small>'+R.desc+'</small><em>'+(R.scope==='cat'?'Per section':R.scope==='req'?'Per section':'Whole class')+'</em></button>').join('')+'</div></div>';
-  document.body.appendChild(ov); requestAnimationFrame(function(){ ov.classList.add('open'); });
-  const close=function(){ ov.classList.remove('open'); document.removeEventListener('keydown',kd,true); setTimeout(function(){ ov.remove(); },260); };
-  const kd=function(e){ if(e.key==='Escape'){ e.stopPropagation(); close(); } };
-  document.addEventListener('keydown',kd,true);
-  ov.addEventListener('click',function(e){ if(e.target===ov||e.target.closest('.rgx')){ close(); return; } const b=e.target.closest('.rgi'); if(!b) return; close(); setTimeout(function(){ ruleForm(c,b.dataset.id); },180); });
-}
-function ruleForm(c,id,ki,qi){
-  const R=RULES.find(r=>r.id===id); if(!R) return;
-  const editing=(R.scope==='cat'&&ki!=null)||(R.scope==='course'&&R.on(c))||(R.scope==='req'&&qi!=null);
-  const q=R.scope==='req'&&qi!=null?c.reqs[qi]:null;
-  let body='<p class="hint" style="margin:-6px 0 4px;text-transform:none;letter-spacing:0;font-weight:500;font-size:13.5px">'+R.desc+'</p>';
-  if(R.scope==='cat'){ const k0=ki!=null?c.cats[ki]:null; body+=catSel(c,'cat',ki!=null?ki:Math.max(0,c.cats.findIndex(k=>!R.on(c,k)))); body+=R.form(c,k0); }
-  else if(R.scope==='req') body+=R.form(c,q); else body+=R.form(c);
-  if(editing) body+='<div><button type="button" class="btn danger sm" data-act="ruleoff" data-c="'+c.id+'" data-r="'+id+'"'+(ki!=null?' data-k="'+ki+'"':'')+(qi!=null?' data-q="'+qi+'"':'')+'>Remove this rule</button></div>';
-  openModal(R.name,body,editing?'Save':'Add rule',function(v){
-    if(R.scope==='cat'){ const k=c.cats[+v.cat]; if(!k) return false; R.set(c,k,v); }
-    else if(R.scope==='req') R.set(c,q,v); else R.set(c,null,v);
-    save(); render(true);
-  });
-}
-
 function quickRule(c,k,ki){
   const r=k.rule||'avg', base='data-c="'+c.id+'" data-k="'+ki+'"', real=k.items.filter(i=>!i.opt).length;
-  const step=(act,val,lab)=>'<span class="qstep"><button type="button" data-act="'+act+'" '+base+' data-d="-1" aria-label="Fewer">−</button><b>'+val+'</b><button type="button" data-act="'+act+'" '+base+' data-d="1" aria-label="More">+</button></span>'+(lab?'<span class="qlab">'+lab+'</span>':'');
+  const step=(act,label,val)=>'<span class="qf"><span class="ql">'+label+'</span><span class="qstep"><button type="button" data-act="'+act+'" '+base+' data-d="-1" aria-label="Less">−</button><b>'+val+'</b><button type="button" data-act="'+act+'" '+base+' data-d="1" aria-label="More">+</button></span></span>';
+  const curve='<label class="qf"><span class="ql">Curve</span><span class="qin"><input type="number" step="0.5" inputmode="decimal" data-f="qbonus" '+base+' value="'+(k.bonus||'')+'" placeholder="0" aria-label="Section curve in points"><em>pts</em></span></label>';
   let main='';
-  if(r==='avg'||r==='sum') main='<label class="qsw"><input type="checkbox" class="swi" data-f="qdrop" '+base+(k.drop>0?' checked':'')+'><i></i><span>Drop lowest</span></label>'+(k.drop>0?step('qdropn',k.drop,k.drop===1?'score':'scores'):'')
+  if(r==='avg'||r==='sum') main=step('qdropn','Drop lowest',k.drop||0)+step('qhin','Drop highest',k.dropHi||0)+curve
     +'<label class="qsw"><input type="checkbox" class="swi" data-f="catrp" '+base+(k.rp?' checked':'')+'><i></i><span>Final replaces lowest</span></label>';
-  else if(r==='best') main='<span class="qlab strong">Count the best</span>'+step('qbestn',k.n||real,'of '+real);
-  else if(r==='cap') main='<span class="qlab strong">Capped at '+Math.round((k.cap||0.8)*100)+'% of points</span>';
-  else if(r==='swap') main='<span class="qlab strong">Optional items replace your lowest</span>';
+  else if(r==='best') main=step('qbestn','Count the best',(k.n||real)+' of '+real)+curve;
+  else if(r==='cap') main='<span class="qlab strong">Full credit at '+Math.round((k.cap||0.8)*100)+'% of points</span>'+curve;
+  else if(r==='swap') main='<span class="qlab strong">Optional items replace your lowest</span>'+curve;
   const open=editing||openCats.has(c.id+':'+ki);
-  return '<div class="qrule">'+main+(editing?'':'<button type="button" class="qmore'+(open?' on':'')+'" data-act="catopts" '+base+'>'+(open?'Done':'More scoring options')+'</button>')+'</div>';
+  return '<div class="qrule">'+main+(editing?'':'<button type="button" class="qmore'+(open?' on':'')+'" data-act="catopts" '+base+'>'+(open?'Done':'Scoring type')+'</button>')+'</div>';
+}
+function warnHtml(c){
+  const capd=(courseRes(c,'whatif').capped||[]);
+  return capd.length?'<div class="rwarn">Your grade is capped at '+capd.map(q=>q.cap).join('/')+': '+capd.map(q=>esc((c.cats[q.cat]||{}).name||'a section')+' is under '+trim(String(q.min))+'%').join(', ')+'.</div>':'';
+}
+function classRules(c){
+  const opt=(v,l)=>'<button type="button" class="'+(c.round===v?'on':'')+'" data-act="cround" data-c="'+c.id+'" data-m="'+v+'">'+l+'</button>';
+  const reqs=c.pooled?'':(c.reqs||[]).map((q,qi)=>'<div class="creq"><span>Need</span><select data-f="reqcat" data-c="'+c.id+'" data-q="'+qi+'" aria-label="Section">'+c.cats.map((k,i)=>'<option value="'+i+'"'+(i===q.cat?' selected':'')+'>'+esc(k.name)+'</option>').join('')+'</select><span>at least</span><span class="qin"><input type="number" step="any" min="0" max="100" data-f="reqmin" data-c="'+c.id+'" data-q="'+qi+'" value="'+q.min+'" aria-label="Minimum percent"><em>%</em></span><span>or the best grade is</span><select data-f="reqcap" data-c="'+c.id+'" data-q="'+qi+'" aria-label="Capped grade">'+CAPL(c).map(l=>'<option'+(l===q.cap?' selected':'')+'>'+l+'</option>').join('')+'</select><button type="button" class="creqx" data-act="reqdel" data-c="'+c.id+'" data-q="'+qi+'" aria-label="Remove">×</button></div>').join('');
+  return '<section class="crules"><div class="crow"><b>Class rules</b>'
+    +'<label class="qf"><span class="ql">Curve</span><span class="qin"><input type="number" step="0.5" inputmode="decimal" data-f="ccurve" data-c="'+c.id+'" value="'+(c.curve||'')+'" placeholder="0" aria-label="Class curve in points"><em>pts</em></span></label>'
+    +'<span class="qf"><span class="ql">Round final %</span><span class="qseg">'+opt('none','Off')+opt('whole','Nearest')+opt('ceil','Up')+'</span></span>'
+    +(c.pooled?'':'<button type="button" class="qmore" data-act="reqadd" data-c="'+c.id+'">＋ Must-pass minimum</button>')+'</div>'
+    +reqs+'<div id="rwarn">'+warnHtml(c)+'</div></section>';
 }
 function catEdit(c,k,ki){
   const base='data-c="'+c.id+'" data-k="'+ki+'"', r=k.rule||'avg';
@@ -2937,14 +2867,16 @@ document.addEventListener('click',function(ev){
   if(a==='calday'){ calDay=b.dataset.d; calRedraw(); return; }
   if(a==='calwk'){ const w=b.dataset.w; if(w==='prev'){ calWk=addD(calWk,-7); if(calDay) calDay=addD(calDay,-7); } else if(w==='next'){ calWk=addD(calWk,7); if(calDay) calDay=addD(calDay,7); } else if(w==='today'){ calWk=null; calDay=null; } else { calWk=w; calDay=null; } calRedraw(); return; }
   if(a==='evnew'){ const r=b.getBoundingClientRect(), mins=Math.round((((ev.clientY-r.top)/r.height)*(+b.dataset.hrs)*60+(+b.dataset.h0)*60)/30)*30; evModal({date:b.dataset.date,st:minT(mins),en:minT(mins+60)}); return; }
-  if(a==='ruleadd'){ const c=getC(b.dataset.c); if(c) ruleGallery(c); return; }
-  if(a==='ruleedit'){ const c=getC(b.dataset.c); if(c) ruleForm(c,b.dataset.r,b.dataset.k!=null?+b.dataset.k:null,b.dataset.q!=null?+b.dataset.q:null); return; }
-  if(a==='ruleoff'){ const c=getC(b.dataset.c), R=RULES.find(r=>r.id===b.dataset.r); if(c&&R){ if(R.scope==='req') c.reqs.splice(+b.dataset.q,1); else if(R.scope==='cat') R.off(c,c.cats[+b.dataset.k]); else R.off(c); save(); closeModal(); render(true); } return; }
   if(a==='wiopen'){ const c=getC(b.dataset.c); if(c) wiOpen(c,b.dataset.k!=null?+b.dataset.k:-1,b.dataset.i!=null?+b.dataset.i:-1); return; }
   if(a==='secnew'){ const c=getC(b.dataset.c); if(c) secModal(c); return; }
   if(a==='catopts'){ const key=b.dataset.c+':'+b.dataset.k; if(openCats.has(key)) openCats.delete(key); else openCats.add(key); render(true); return; }
-  if(a==='qdropn'||a==='qbestn'){ const c=getC(b.dataset.c), k=c&&c.cats[+b.dataset.k]; if(!k) return; const real=k.items.filter(i=>!i.opt).length, d=+b.dataset.d;
-    if(a==='qdropn') k.drop=Math.max(1,Math.min(Math.max(1,real-1),(k.drop||1)+d)); else k.n=Math.max(1,Math.min(real,(k.n||real)+d)); save(); render(true); return; }
+  if(a==='cround'){ const c=getC(b.dataset.c); if(c){ c.round=b.dataset.m; save(); render(true); } return; }
+  if(a==='reqadd'){ const c=getC(b.dataset.c); if(c){ c.reqs.push({cat:Math.max(0,c.cats.length-1),min:60,cap:CAPL(c).includes('D')?'D':CAPL(c)[0]}); save(); render(true); } return; }
+  if(a==='reqdel'){ const c=getC(b.dataset.c); if(c){ c.reqs.splice(+b.dataset.q,1); save(); render(true); } return; }
+  if(a==='qdropn'||a==='qbestn'||a==='qhin'){ const c=getC(b.dataset.c), k=c&&c.cats[+b.dataset.k]; if(!k) return; const real=k.items.filter(i=>!i.opt).length, d=+b.dataset.d;
+    if(a==='qdropn') k.drop=Math.max(0,Math.min(Math.max(0,real-1-(k.dropHi||0)),(k.drop||0)+d));
+    else if(a==='qhin') k.dropHi=Math.max(0,Math.min(Math.max(0,real-1-(k.drop||0)),(k.dropHi||0)+d));
+    else k.n=Math.max(1,Math.min(real,(k.n||real)+d)); save(); render(true); return; }
   if(a==='tourplay'){ tourOpen(); return; }
   if(a==='setupplay'){ setupOpen(); return; }
   if(a==='setupai'){ setupOpen('ai'); return; }
