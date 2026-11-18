@@ -655,7 +655,7 @@ function fromSimple(src){
 function loadAny(src){
   if(src&&(Array.isArray(src.semesters)||Array.isArray(src.earlier))&&!src.sems&&!src.courses){ const w=fromSimple(src); setHistory(w); return w; }
   if(src&&Array.isArray(src.sems)){
-    const w={v:3,active:src.active,sems:src.sems.map(sm=>({id:sm.id||uid(),name:sm.name||'Semester',done:!!sm.done,gpaPick:sm.gpaPick||{},courses:(sm.courses||[]).map(normCourse)})),ts:src.ts||0,base:src.base||null};
+    const w={v:3,active:src.active,sems:src.sems.map(sm=>({id:sm.id||uid(),name:sm.name||'Semester',short:sm.short||'',done:!!sm.done,gpaPick:sm.gpaPick||{},courses:(sm.courses||[]).map(normCourse)})),ts:src.ts||0,base:src.base||null};
     if(!w.sems.length){ const e=emptyW(); w.sems=e.sems; w.active=e.active; }
     if(!w.sems.some(x=>x.id===w.active)) w.active=w.sems[0].id;
     setHistory(src); w.prior=PRIOR; w.oldPct=OLD_PCT; w.oldX=OLD_X; w.history=HIST;
@@ -1003,9 +1003,9 @@ function cumPoints(gp){
   let cr=0,qp=0; const pts=[];
   if(W.base&&W.base.cr>0&&typeof W.base.gpa==='number'){ cr=W.base.cr; qp=cr*W.base.gpa; pts.push({l:'Before',v:W.base.gpa}); }
   PRIOR.forEach(function(t,pi){ t.c.forEach(x=>{cr+=x[1];qp+=x[1]*x[2];}); if(cr) pts.push({l:t.short||t.t,v:qp/cr,k:'p'+pi}); });
-  const ai=W.sems.findIndex(x=>x.id===W.active); W.sems.forEach((sm,i)=>{ if(i<ai){ const t=semTotals(sm); if(t.cr){ cr+=t.cr; qp+=t.qp; pts.push({l:sm.name,v:qp/cr,k:'s'+sm.id}); } } });
-  if(gp&&gp.cr) pts.push({l:S.name,v:gp.cum,proj:true,k:'s'+W.active});
-  else if(pts.length) pts.push({l:S.name,v:pts[pts.length-1].v,proj:true,k:'s'+W.active});
+  const ai=W.sems.findIndex(x=>x.id===W.active); W.sems.forEach((sm,i)=>{ if(i<ai){ const t=semTotals(sm); if(t.cr){ cr+=t.cr; qp+=t.qp; pts.push({l:sm.short||sm.name,v:qp/cr,k:'s'+sm.id}); } } });
+  if(gp&&gp.cr) pts.push({l:S.short||S.name,v:gp.cum,proj:true,k:'s'+W.active});
+  else if(pts.length) pts.push({l:S.short||S.name,v:pts[pts.length-1].v,proj:true,k:'s'+W.active});
   return pts;
 }
 function chartSvg(pts){
@@ -1315,9 +1315,9 @@ function hasData(){ return !!(W&&W.sems.some(sm=>sm.courses.length)); }
 function confirmReplace(){ return !hasData()||confirm('Loading a file replaces everything saved in this browser. Download a backup first if you want to keep it. Load the file?'); }
 function renameLabel(k){
   let cur='', set;
-  if(k[0]==='p'){ const t=W.prior[+k.slice(1)]; if(!t) return; cur=t.short||t.t; set=function(v){ t.short=v; t.t=v; }; }
-  else { const sm=W.sems.find(x=>x.id===k.slice(1)); if(!sm) return; cur=sm.name; set=function(v){ sm.name=v; }; }
-  openModal('Rename','<label class="f">Name<input name="name" type="text" value="'+esc(cur)+'" required></label>','Save',function(v){ const n=(v.name||'').trim(); if(!n) return false; set(n); save(); render(true); });
+  if(k[0]==='p'){ const t=W.prior[+k.slice(1)]; if(!t) return; cur=t.short||t.t; set=function(v){ t.short=v; }; }
+  else { const sm=W.sems.find(x=>x.id===k.slice(1)); if(!sm) return; cur=sm.short||sm.name; set=function(v){ sm.short=v; }; }
+  openModal('Graph label','<label class="f">Label on the graph<input name="name" type="text" value="'+esc(cur)+'" required></label>','Save',function(v){ const n=(v.name||'').trim(); if(!n) return false; set(n); save(); render(true); });
 }
 function inlineEditHeader(el){
   const c=getC(view); if(!c) return; const box=el.closest('.chead>div'); if(!box||box.querySelector('input')) return;
