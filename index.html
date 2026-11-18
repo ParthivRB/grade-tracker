@@ -266,6 +266,72 @@ input[type=range]{width:100%;accent-color:var(--blue);margin:14px 0 0}
 .grid .it{min-width:0}
 .grid .it input{background:transparent;padding:5px 8px;font-weight:600}
 .grid .it input:hover{background:var(--soft)}
+.semtitle{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:.28em}
+.semtitle svg{width:.34em;height:.24em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.45;transition:transform .25s ease,opacity .2s ease;margin-top:.08em}
+.semtitle:hover svg{opacity:1}
+.semtitle[aria-expanded=true] svg{transform:rotate(180deg);opacity:1}
+.semtitle:focus-visible{outline:3px solid var(--gold);outline-offset:8px;border-radius:12px}
+.pop.menu{width:min(340px,calc(100vw - 32px));right:auto;transform-origin:top left;padding:12px}
+.pop.menu h4{margin:4px 8px 8px}
+.mi{display:flex;width:100%;justify-content:space-between;align-items:center;gap:10px;background:none;border:0;border-radius:12px;padding:10px 12px;text-align:left;cursor:pointer;color:var(--ink);font:inherit;font-weight:600;transition:background-color .15s ease}
+.mi:hover{background:var(--soft)}
+.mi small{color:var(--mut);font-weight:500;font-size:12.5px}
+.mi.on{background:var(--soft)}
+.mi.on span::after{content:" ✓";color:var(--blue)}
+.mi.act{color:var(--ink2)}
+.mi.danger{color:var(--warn)}
+.mi.tog{font-size:14px;line-height:1.3}
+.mi.tog input{width:18px;height:18px;accent-color:var(--blue);flex:0 0 auto}
+.msep{height:1px;background:var(--line);margin:8px 4px}
+.modal{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.5);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);display:grid;place-items:center;padding:16px;opacity:0;transition:opacity .2s ease}
+.modal.open{opacity:1}
+.mbox{width:min(460px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--elev);border:1px solid var(--line);border-radius:26px;padding:24px;box-shadow:0 30px 80px -20px rgba(0,0,0,.6);transform:translateY(12px) scale(.98);transition:transform .3s cubic-bezier(.2,.7,.2,1)}
+.modal.open .mbox{transform:none}
+.mbox h3{margin:0 0 16px;font-family:var(--disp);font-weight:800;letter-spacing:-0.04em;font-size:22px}
+.f{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;font-weight:600;font-size:13.5px;color:var(--ink2)}
+.f input,.f select,.f textarea{width:100%}
+.f textarea{min-height:90px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.two{grid-template-columns:1fr;gap:0}}
+.mact{display:flex;justify-content:flex-end;gap:10px;margin-top:10px}
+.chk{display:flex!important;align-items:center;flex-direction:row!important;gap:8px}
+.chk input{width:auto!important}
+.tile.add{border:2px dashed var(--line);background:transparent;color:var(--mut);align-items:center;justify-content:center;box-shadow:none;font-weight:700;gap:6px;transition:color .2s ease,border-color .2s ease,transform .18s ease}
+.tile.add span{font-size:36px;line-height:1;font-weight:500}
+.tile.add:hover{color:var(--ink);border-color:var(--mut)}
+.editbtn{border:0;border-radius:99px;padding:9px 18px;font-weight:700;font-size:14px;cursor:pointer;background:color-mix(in srgb,var(--fg) 16%,transparent);color:var(--fg);transition:background-color .2s ease}
+.editbtn:hover,.editbtn.on{background:var(--fg);color:var(--c)}
+.chead{align-items:center}
+.editp{margin-top:16px;padding:22px clamp(18px,3vw,28px)}
+.editp h3{margin:0 0 14px;font-size:17px;font-weight:800}
+.editact{display:flex;justify-content:flex-end}
+.cuts{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px 14px;margin:0 0 16px}
+.cut{display:flex;align-items:center;gap:8px;font-size:13px}
+.cut b{width:28px}
+.cut label{display:flex;gap:5px;align-items:center;color:var(--mut)}
+.cut input{width:64px;padding:5px 7px}
+.catedit{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;padding:12px 22px 0;font-size:13.5px;color:var(--ink2);font-weight:600}
+.catedit label{display:flex;align-items:center;gap:8px}
+.catedit input[type=number]{width:66px;padding:5px 8px}
+.catedit select{width:auto;padding:6px 10px}
+.catedit .hint{color:var(--mut);font-weight:500;font-size:12.5px}
+.btn.danger{color:var(--warn);border-color:transparent;background:var(--warn-soft)}
+.btn.danger:hover{border-color:var(--warn);color:var(--warn)}
+.btn.sm{padding:5px 13px;font-size:12.5px;margin-left:auto}
+.mini{margin:4px 10px 0;border:1.5px solid var(--line);background:none;border-radius:99px;font-size:11.5px;font-weight:700;padding:1px 10px;color:var(--mut);cursor:pointer;width:fit-content;transition:background-color .15s ease,color .15s ease,border-color .15s ease}
+.mini.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.catname{font:inherit;font-weight:800;letter-spacing:-0.02em;background:transparent!important;border:2px dashed var(--line)!important;padding:3px 8px!important;width:min(320px,60vw)!important}
+.catname:focus{border-color:var(--blue)!important}
+.cathead h3 .catname{font-size:17px}
+.onb{padding:30px;margin-top:22px}
+.onbrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+details.ai textarea{min-height:240px;margin-top:12px}
+.base{margin-top:14px;padding:16px 22px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.base .bl{display:flex;flex-direction:column;gap:2px;max-width:42ch}
+.base small{color:var(--mut);font-size:12.5px}
+.basectl{display:flex;gap:14px;flex-wrap:wrap}
+.basectl label{display:flex;align-items:center;gap:8px;color:var(--mut);font-weight:600;font-size:13.5px}
+.basectl input{width:88px}
 .tag{display:none;margin:2px 10px 0;font-size:11.5px;font-weight:700;padding:1px 9px;border-radius:99px;width:fit-content;max-width:100%}
 .tag.d,.tag.u,.tag.c{display:inline-block}
 .tag.d{background:var(--warn-soft);color:var(--warn)}
@@ -328,7 +394,7 @@ textarea{width:100%;min-height:120px;background:var(--soft);border:1px solid var
   .brand span.t{display:none}
 }
 </style></head><body><header class="top" id="shell-header"><div class="wrap">
-  <button class="brand" data-act="go" data-v="home" aria-label="Grade Tracker home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="15" fill="#0D1226"/><path d="M16 34 27 45 49 20" fill="none" stroke="#FFB81C" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="t">Grade Tracker</span></button>
+  <button class="brand" data-act="go" data-v="home" aria-label="Grade Tracker home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="22" fill="#0D1226"/><path d="M21.5 33.5 29 41 43 25" fill="none" stroke="#FFB81C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="t">Grade Tracker</span></button>
   <div class="right"><nav class="tabs" aria-label="Sections">
     <button data-act="go" data-v="home">Home</button>
     <button data-act="jump" data-t="classes">Classes</button>
@@ -343,7 +409,9 @@ textarea{width:100%;min-height:120px;background:var(--soft);border:1px solid var
 const STD=[[97,'A+',4],[93,'A',4],[90,'A-',3.75],[87,'B+',3.25],[83,'B',3],[80,'B-',2.75],[77,'C+',2.25],[73,'C',2],[70,'C-',1.75],[67,'D+',1.25],[63,'D',1],[60,'D-',0.75],[0,'F',0]];
 const S370=[[98,'A+',4],[93,'A',4],[90,'A-',3.75],[88,'B+',3.25],[83,'B',3],[80,'B-',2.75],[78,'C+',2.25],[73,'C',2],[70,'C-',1.75],[68,'D+',1.25],[63,'D',1],[60,'D-',0.75],[0,'F',0]];
 const S1017=[[98,'A+',4],[93,'A',4],[90,'A-',3.75],[88,'B+',3.25],[82,'B',3],[80,'B-',2.75],[78,'C+',2.25],[72,'C',2],[70,'C-',1.75],[68,'D+',1.25],[60,'D',1],[0,'F',0]];
-const SCALES={std:STD,s370:S370,s1017:S1017};
+const PLAIN=[[90,'A',4],[80,'B',3],[70,'C',2],[60,'D',1],[0,'F',0]];
+const SCALES={std:STD,plain:PLAIN,s370:S370,s1017:S1017};
+const scaleOf=c=>(c.cuts&&c.cuts.length)?c.cuts:(SCALES[c.scale]||STD);
 const COLORS={tob:'#FF7A59',syn:'#7B5CFF',fna:'#19C3A5',ecl:'#B8E651',eco:'#FFC233',hps:'#4C92FF'};
 const LETTERS=['A+','A','A-','B+','B','B-','C+','C','C-','D+','D','D-','F'];
 const GPAOF={'A+':4,'A':4,'A-':3.75,'B+':3.25,'B':3,'B-':2.75,'C+':2.25,'C':2,'C-':1.75,'D+':1.25,'D':1,'D-':0.75,'F':0};
@@ -461,7 +529,8 @@ function baseDefaults(){
 
 /* ---------- state ---------- */
 const KEY='pitt-grade-tracker-fall26-v2', KEY1='pitt-grade-tracker-fall26-v1';
-let S=null, view='home', dbDoc=null, wipeArmed=false;
+const KEY3='gradetracker-v3';
+let W=null, S=null, view='home', dbDoc=null, wipeArmed=false, editing=false;
 
 function ecShape(e){
   const bx=x=>({e:(x&&typeof x.e==='number')?x.e:null,w:(x&&typeof x.w==='number')?x.w:null});
@@ -500,6 +569,86 @@ function loadMerged(saved){
   });
   return D;
 }
+const uid=()=>'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+function normItem(it){ return {n:String(it.n==null?'':it.n),p:(typeof it.p==='number'?it.p:100),e:(typeof it.e==='number'?it.e:null),w:(typeof it.w==='number'?it.w:null),d:it.d||null,dl:it.dl||'',opt:!!it.opt,rp:!!it.rp}; }
+function normCourse(c){
+  c.id=c.id||uid(); c.name=c.name||'Untitled class'; c.code=c.code||''; if(c.credits===undefined) c.credits=null;
+  c.scale=c.scale||'std'; c.pooled=!!c.pooled; c.lenience=c.lenience||0; c.fill=(typeof c.fill==='number')?c.fill:90; c.target=c.target||'A';
+  c.ec=ecShape(c.ec||{}); c.notes=Array.isArray(c.notes)?c.notes:[]; c.cats=Array.isArray(c.cats)?c.cats:[];
+  c.cats.forEach(k=>{ k.name=k.name||'Category'; k.w=(typeof k.w==='number')?k.w:0; k.rule=k.rule||'avg'; k.items=(k.items||[]).map(normItem); });
+  return c;
+}
+function defaultSemName(){ const m=new Date().getMonth(), y=new Date().getFullYear(); return (m<=4?'Spring ':m<=7?'Summer ':'Fall ')+y; }
+function emptyW(){ const id=uid(); return {v:3,active:id,sems:[{id:id,name:defaultSemName(),done:false,courses:[],gpaPick:{}}],ts:0,base:null,prior:[],oldPct:{},oldX:[],history:{}}; }
+/* simple import format (what an AI helper writes for you) */
+function fromSimple(src){
+  const RULE={average:'avg',avg:'avg',total:'sum',sum:'sum',best:'best',capped:'cap',cap:'cap',optionalreplaceslowest:'swap',optionalreplacelowest:'swap',swap:'swap'};
+  const gp=x=>{ if(typeof x==='number') return x; const L=String(x||'').toUpperCase().replace('−','-').trim(); return GPAOF[L]!==undefined?GPAOF[L]:null; };
+  const w={v:3,active:null,sems:[],ts:0,base:null,prior:[],oldPct:{},oldX:[],history:{}};
+  (src.semesters||[]).forEach(sm=>{
+    const courses=(sm.classes||[]).map(cl=>{
+      const cats=(cl.categories||[]).map(k=>({
+        name:k.name,w:typeof k.weight==='number'?k.weight:0,rule:RULE[String(k.scoring||'average').toLowerCase().replace(/[^a-z]/g,'')]||'avg',
+        drop:k.dropLowest>0?k.dropLowest:0,n:k.bestN,cap:typeof k.fullCreditPercent==='number'?k.fullCreditPercent/100:undefined,rp:!!k.replaceLowestWithFlagged,
+        items:(k.items||[]).map(it=>({n:it.name,p:it.outOf,e:it.earned,w:null,d:it.due||null,dl:'',opt:!!it.optional,rp:!!it.replacesLowest}))
+      }));
+      const c={name:cl.name,code:cl.code||'',credits:typeof cl.credits==='number'?cl.credits:null,scale:String(cl.scale||'').toLowerCase()==='plain'?'plain':'std',pooled:!!cl.totalPointsGrading,cats:cats,notes:Array.isArray(cl.notes)?cl.notes:[]};
+      if(Array.isArray(cl.cutoffs)&&cl.cutoffs.length) c.cuts=cl.cutoffs.map(x=>[x.min,x.letter,typeof x.gpa==='number'?x.gpa:(GPAOF[x.letter]||0)]).sort((a,b)=>b[0]-a[0]);
+      if(cl.extraCredit){ const e=cl.extraCredit; c.ec={label:e.label||'Extra credit',pts:{e:e.points==null?null:e.points},pct:{e:e.percent==null?null:e.percent},total:e.totalPoints}; }
+      return normCourse(c);
+    });
+    const id=uid(); w.sems.push({id:id,name:sm.name||'Semester',done:!!sm.finished,gpaPick:{},courses:courses}); if(sm.current) w.active=id;
+  });
+  (src.earlier||[]).forEach(t=>{
+    const c=(t.classes||[]).map(x=>[x.name||'Class',+x.credits||0,gp(x.grade!=null?x.grade:x.gpa)]).filter(x=>x[2]!=null&&x[1]>0);
+    if(c.length) w.prior.push({t:t.name||'Earlier',c:c,short:t.short||t.name||'Earlier'});
+  });
+  if(!w.sems.length){ const e=emptyW(); w.sems=e.sems; w.active=e.active; }
+  if(!w.active) w.active=w.sems[w.sems.length-1].id;
+  return w;
+}
+function loadAny(src){
+  if(src&&(Array.isArray(src.semesters)||Array.isArray(src.earlier))&&!src.sems&&!src.courses){ const w=fromSimple(src); setHistory(w); return w; }
+  if(src&&Array.isArray(src.sems)){
+    const w={v:3,active:src.active,sems:src.sems.map(sm=>({id:sm.id||uid(),name:sm.name||'Semester',done:!!sm.done,gpaPick:sm.gpaPick||{},courses:(sm.courses||[]).map(normCourse)})),ts:src.ts||0,base:src.base||null};
+    if(!w.sems.length){ const e=emptyW(); w.sems=e.sems; w.active=e.active; }
+    if(!w.sems.some(x=>x.id===w.active)) w.active=w.sems[0].id;
+    setHistory(src); w.prior=PRIOR; w.oldPct=OLD_PCT; w.oldX=OLD_X; w.history=HIST;
+    return w;
+  }
+  if(src&&src.courses){
+    const D=loadMerged(src), id=uid();
+    return {v:3,active:id,sems:[{id:id,name:'Fall 2026',done:false,courses:D.courses.map(normCourse),gpaPick:D.gpaPick||{}}],ts:D.ts||0,base:null,prior:PRIOR,oldPct:OLD_PCT,oldX:OLD_X,history:HIST};
+  }
+  setHistory(null); return emptyW();
+}
+function semTotals(sm){
+  let cr=0,qp=0;
+  sm.courses.forEach(c=>{
+    if(!(c.credits>0)) return;
+    const pick=sm.gpaPick[c.id];
+    const g=(pick&&GPAOF[pick]!==undefined)?GPAOF[pick]:gpaOf(c,courseRes(c,pick==='proj'?'proj':'whatif').pct);
+    if(g==null) return; cr+=c.credits; qp+=c.credits*g;
+  });
+  return {cr:cr,qp:qp};
+}
+function refreshPrior(){
+  let cr=PRIOR.reduce((a,t)=>a+t.c.reduce((b,x)=>b+x[1],0),0), qp=PRIOR.reduce((a,t)=>a+t.c.reduce((b,x)=>b+x[1]*x[2],0),0);
+  if(W.base&&W.base.cr>0&&typeof W.base.gpa==='number'){ cr+=W.base.cr; qp+=W.base.cr*W.base.gpa; }
+  W.sems.forEach(sm=>{ if(sm.done&&sm.id!==W.active){ const t=semTotals(sm); cr+=t.cr; qp+=t.qp; } });
+  PRIOR_CR=cr; PRIOR_QP=qp;
+}
+function nextColor(){
+  const used=new Set(S?S.courses.map(c=>(ACC.cls[c.id]||c.color||'').toLowerCase()):[]);
+  return PALETTE.find(p=>!used.has(p.toLowerCase()))||PALETTE[(S?S.courses.length:0)%PALETTE.length];
+}
+function syncColors(){
+  W.sems.forEach(sm=>sm.courses.forEach(c=>{ if(!c.color) c.color=COLORS0[c.id]||PALETTE[sm.courses.indexOf(c)%PALETTE.length]; }));
+  applyAcc();
+}
+function adoptState(v){
+  W=loadAny(v); S=W.sems.find(x=>x.id===W.active); view='home'; editing=false; refreshPrior(); syncColors(); save(); render();
+}
 function readLocal(k){ try{ const r=localStorage.getItem(k||KEY); return r?JSON.parse(r):null; }catch(e){ return null; } }
 
 /* ---------- grade engine ---------- */
@@ -510,38 +659,42 @@ function ratio(it,mode,fill){
   if(mode==='proj'&&!it.opt&&fill!=null) return fill/100;
   return null;
 }
-function catRes(cat,mode,fill){
-  const its=cat.items;
-  if(cat.rule==='swap'){
-    const q=[],cs=[];
-    its.forEach(it=>{
-      if(it.opt){
-        let r=null;
-        if(it.p>0){ if((mode==='proj'||mode==='whatif')&&it.w!=null) r=it.w/it.p; else if(it.e!=null) r=it.e/it.p; }
-        if(r!=null) cs.push(r);
-      }else{
-        const r=ratio(it,mode,fill); if(r!=null) q.push(r);
-      }
-    });
-    if(!q.length) return null;
-    cs.sort((a,b)=>b-a);
-    const idx=q.map((r,i)=>i).filter(i=>q[i]>0).sort((a,b)=>q[a]-q[b]);
-    let ci=0;
-    idx.forEach(i=>{ if(ci<cs.length&&cs[ci]>q[i]){ q[i]=cs[ci]; ci++; } });
-    return {pct:100*q.reduce((a,b)=>a+b,0)/q.length};
+function catPlan(cat,mode,fill){
+  const rule=cat.rule||'avg', st={}, L=[];
+  cat.items.forEach((it,i)=>{ const r=ratio(it,mode,fill); if(r!=null) L.push({i:i,r:r,p:it.p,opt:!!it.opt,rp:!!it.rp}); });
+  let cnt;
+  if(rule==='swap'){
+    const base=L.filter(x=>!x.opt), ex=L.filter(x=>x.opt).sort((a,b)=>b.r-a.r||a.i-b.i);
+    const low=base.filter(x=>x.r>0).sort((a,b)=>a.r-b.r||a.i-b.i); let ci=0;
+    low.forEach(x=>{ if(ci<ex.length&&ex[ci].r>x.r){ st[x.i]={s:'drop',by:ex[ci].i}; st[ex[ci].i]={s:'use',for:x.i}; x.r=ex[ci].r; ci++; } });
+    cnt=base;
+  }else{
+    cnt=L.slice();
+    if(cat.rp&&(rule==='avg'||rule==='sum')){
+      const rps=L.filter(x=>x.rp).sort((a,b)=>b.r-a.r||a.i-b.i), low=L.filter(x=>!x.rp).sort((a,b)=>a.r-b.r||a.i-b.i); let bi=0;
+      rps.forEach(x=>{ if(bi<low.length&&x.r>low[bi].r){ st[low[bi].i]={s:'drop',by:x.i}; st[x.i]={s:'use',for:low[bi].i}; low[bi].r=x.r; bi++; } });
+    }
+    const real=cat.items.filter(it=>!it.opt).length;
+    let keep=Infinity;
+    if(rule==='best') keep=cat.n||real;
+    else if((rule==='avg'||rule==='sum')&&cat.drop>0) keep=Math.max(1,real-cat.drop);
+    if(cnt.length>keep){
+      const order=cnt.slice().sort((a,b)=>b.r-a.r||a.i-b.i), kept=new Set(order.slice(0,keep).map(x=>x.i));
+      cnt.forEach(x=>{ if(!kept.has(x.i)) st[x.i]={s:'drop'}; });
+      cnt=cnt.filter(x=>kept.has(x.i));
+    }
   }
-  const list=[];
-  its.forEach(it=>{ const r=ratio(it,mode,fill); if(r!=null) list.push({r:r,p:it.p,e:r*it.p}); });
-  if(!list.length) return null;
-  const sumE=a=>a.reduce((s,x)=>s+x.e,0), sumP=a=>a.reduce((s,x)=>s+x.p,0);
-  if(cat.rule==='avg') return {pct:100*list.reduce((s,x)=>s+x.r,0)/list.length};
-  if(cat.rule==='best'){
-    const top=list.slice().sort((a,b)=>b.r-a.r).slice(0,cat.n||list.length);
-    return {pct:100*sumE(top)/sumP(top)};
+  cnt.forEach(x=>{ if(!st[x.i]) st[x.i]={s:'count'}; });
+  const sumE=a=>a.reduce((t,x)=>t+x.r*x.p,0), sumP=a=>a.reduce((t,x)=>t+x.p,0);
+  let pct=null;
+  if(cnt.length){
+    if(rule==='avg'||rule==='swap') pct=100*cnt.reduce((t,x)=>t+x.r,0)/cnt.length;
+    else if(rule==='cap') pct=Math.min(100,100*(sumE(cnt)/sumP(cnt))/(cat.cap||1));
+    else pct=100*sumE(cnt)/sumP(cnt);
   }
-  if(cat.rule==='cap') return {pct:Math.min(100,100*(sumE(list)/sumP(list))/cat.cap)};
-  return {pct:100*sumE(list)/sumP(list)};
+  return {pct:pct,st:st,cnt:cnt,scored:L.length};
 }
+function catRes(cat,mode,fill){ const r=catPlan(cat,mode,fill); return r.pct==null?null:{pct:r.pct}; }
 function ecAmt(c,k,mode){
   const b=c.ec&&c.ec[k]; if(!b) return 0;
   const v=(mode!=='cur'&&b.w!=null)?b.w:b.e; if(v==null) return 0;
@@ -571,7 +724,7 @@ function courseRes(c,mode,fill){
     const w=k.w||0; tw+=w;
     const real=k.items.filter(it=>!it.opt);
     const entered=real.filter(it=>it.e!=null&&it.p>0).length;
-    const denom=Math.min(real.length,k.rule==='best'?(k.n||real.length):real.length)||1;
+    const denom=Math.max(1,Math.min(real.length,k.rule==='best'?(k.n||real.length):((k.drop>0&&(k.rule==='avg'||k.rule==='sum'))?real.length-k.drop:real.length)));
     pw+=w*Math.min(1,entered/denom);
     const r=catRes(k,mode,fill);
     if(r){ num+=w*r.pct; den+=w; }
@@ -586,7 +739,7 @@ function courseRes(c,mode,fill){
 }
 function scaleRow(c,pct){
   if(pct==null) return null;
-  const sc=SCALES[c.scale]; const adj=pct+(c.lenience||0)+1e-9;
+  const sc=scaleOf(c); const adj=pct+(c.lenience||0)+1e-9;
   return sc.find(r=>adj>=r[0])||sc[sc.length-1];
 }
 const letterOf=(c,pct)=>{const r=scaleRow(c,pct);return r?r[1]:'–';};
@@ -594,26 +747,15 @@ function remaining(c){
   let n=0; c.cats.forEach(k=>k.items.forEach(it=>{ if(!it.opt&&it.p>0&&it.e==null&&it.w==null) n++; })); return n;
 }
 function dropInfo(k){
-  const st={};
-  if(k.rule==='best'){
-    const L=[]; k.items.forEach((it,i)=>{ const r=ratio(it,'whatif',null); if(r!=null) L.push({i:i,r:r}); });
-    const sorted=L.slice().sort((a,b)=>b.r-a.r||a.i-b.i), keep=new Set(sorted.slice(0,k.n).map(x=>x.i));
-    L.forEach(x=>{ st[x.i]=keep.has(x.i)?{s:'count'}:{s:'drop'}; });
-    return {st:st,dropped:L.filter(x=>!keep.has(x.i)).map(x=>x.i),scored:L.length};
-  }
-  if(k.rule==='swap'){
-    const q=[],cs=[];
-    k.items.forEach((it,i)=>{ const r=ratio(it,'whatif',null); if(r==null) return; (it.opt?cs:q).push({i:i,r:r}); });
-    cs.sort((a,b)=>b.r-a.r);
-    const idx=q.filter(x=>x.r>0).sort((a,b)=>a.r-b.r); let ci=0; const pairs=[];
-    idx.forEach(x=>{ if(ci<cs.length&&cs[ci].r>x.r){ st[x.i]={s:'drop',by:cs[ci].i}; st[cs[ci].i]={s:'use',for:x.i}; pairs.push([cs[ci].i,x.i]); ci++; } });
-    return {st:st,pairs:pairs,scored:q.length};
-  }
-  return null;
+  const rule=k.rule||'avg';
+  if(!(rule==='swap'||rule==='best'||k.rp||k.drop>0)) return null;
+  const P=catPlan(k,'whatif',null), dropped=[], pairs=[];
+  Object.keys(P.st).forEach(i=>{ const x=P.st[i]; if(x.s==='drop'){ if(x.by==null) dropped.push(+i); else pairs.push([x.by,+i]); } });
+  return {st:P.st,dropped:dropped,pairs:pairs,scored:P.scored};
 }
 function tileNeed(c){
   if(!remaining(c)) return '';
-  const L=c.target||'A', r=SCALES[c.scale].find(x=>x[1]===L); if(!r) return '';
+  const L=c.target||'A', r=scaleOf(c).find(x=>x[1]===L); if(!r) return '';
   const n=needed(c,r[0]);
   let t;
   if(n.kind==='lock') t=L+' is locked in';
@@ -641,7 +783,7 @@ const f1=x=>(Math.round(x*10)/10).toFixed(1);
 const trim=s=>s.indexOf('.')<0?s:s.replace(/0+$/,'').replace(/\.$/,'');
 const f3=x=>trim((Math.round(x*1000)/1000).toFixed(3));
 const pctS=x=>x==null?'–':f3(x)+'%';
-const getC=id=>S.courses.find(c=>c.id===id);
+const getC=id=>S?S.courses.find(c=>c.id===id):null;
 const T=new Date();
 const TODAY=T.getFullYear()+'-'+String(T.getMonth()+1).padStart(2,'0')+'-'+String(T.getDate()).padStart(2,'0');
 function isoPlus(n){const d=new Date(T.getFullYear(),T.getMonth(),T.getDate()+n);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
@@ -679,29 +821,36 @@ function defaults(){
 
 
 function ruleText(k){
-  if(k.rule==='avg') return k.items.length>1?'Each item counts equally.':'';
-  if(k.rule==='sum') return '';
-  if(k.rule==='best') return 'Only your best '+k.n+' of '+k.items.length+' count.';
-  if(k.rule==='cap') return Math.round(k.cap*100)+'% of all points is full credit. Enter points earned and possible so far.';
-  if(k.rule==='swap') return 'A higher case study score replaces your lowest quiz. A quiz you skipped isn’t swapped.';
+  const r=k.rule||'avg';
+  const dn=k.drop>0&&(r==='avg'||r==='sum')?' Your lowest '+k.drop+(k.drop>1?' scores are':' score is')+' dropped.':'';
+  const rp=k.rp&&(r==='avg'||r==='sum')?' Items marked “replaces lowest” take the place of your lowest score when they’re higher.':'';
+  if(r==='avg') return (k.items.length>1?'Each item counts equally.':'')+dn+rp;
+  if(r==='sum') return (dn+rp).trim();
+  if(r==='best') return 'Only your best '+k.n+' of '+k.items.length+' count.';
+  if(r==='cap') return Math.round((k.cap||0)*100)+'% of all points is full credit. Enter points earned and possible so far.';
+  if(r==='swap') return 'A higher optional score replaces your lowest regular score. A score you skipped isn’t swapped.';
   return '';
 }
 function ruleLive(c,k){
   const d=dropInfo(k); if(!d) return ruleText(k);
   const nm=i=>esc(k.items[i].n), pc=i=>pctS(100*ratio(k.items[i],'whatif',null));
-  if(k.rule==='best'){
-    if(d.dropped.length) return 'Counting your best '+k.n+' of '+k.items.length+'. <b>Dropped:</b> '+d.dropped.map(i=>nm(i)+' ('+pc(i)+')').join(', ')+'.';
-    return 'Only your best '+k.n+' of '+k.items.length+' count. '+(d.scored?d.scored+' scored so far, nothing dropped yet.':'Nothing scored yet.');
-  }
-  if(!d.pairs.length) return ruleText(k);
-  return d.pairs.map(p=>'<b>'+nm(p[0])+'</b> ('+pc(p[0])+') replaces '+nm(p[1])+' ('+pc(p[1])+')').join(' · ');
+  const parts=[];
+  if(d.dropped.length) parts.push((k.rule==='best'?'Counting your best '+k.n+' of '+k.items.length+'. ':'')+'<b>Dropped:</b> '+d.dropped.map(i=>nm(i)+' ('+pc(i)+')').join(', ')+'.');
+  if(d.pairs.length) parts.push(d.pairs.map(p=>'<b>'+nm(p[0])+'</b> ('+pc(p[0])+') replaces '+nm(p[1])+' ('+pc(p[1])+')').join(' · '));
+  if(parts.length) return parts.join(' ');
+  return ruleText(k)+(k.rule==='best'?' '+(d.scored?d.scored+' scored so far, nothing dropped yet.':'Nothing scored yet.'):'');
 }
 function itemRow(c,k,i,it){
   const base='data-c="'+c.id+'" data-k="'+k+'" data-i="'+i+'"';
   const late=it.d&&it.d<TODAY&&it.e==null&&!it.opt;
   const due=it.d?'<div class="due'+(late?' late':'')+'" data-due="1">'+(it.dl?esc(it.dl)+' · ':'')+(late?'past due · ':'')+fd(it.d)+'</div>':(it.dl?'<div class="due">'+esc(it.dl)+'</div>':'');
+  const cat=c.cats[k]; let flag='';
+  if(editing&&!c.pooled){
+    if(cat.rule==='swap') flag='<button type="button" class="mini'+(it.opt?' on':'')+'" data-act="optflag" '+base+'>Optional</button>';
+    else if((cat.rule==='avg'||cat.rule==='sum')&&cat.rp) flag='<button type="button" class="mini'+(it.rp?' on':'')+'" data-act="rp" '+base+'>Replaces lowest</button>';
+  }
   return '<div class="grid" data-r="'+k+'-'+i+'">'
-    +'<div class="it"><input type="text" data-f="n" '+base+' value="'+esc(it.n)+'" aria-label="Item name">'+due+'<div class="tag" data-tag></div></div>'
+    +'<div class="it"><input type="text" data-f="n" '+base+' value="'+esc(it.n)+'" aria-label="Item name">'+due+'<div class="tag" data-tag></div>'+flag+'</div>'
     +'<input type="number" step="any" inputmode="decimal" data-f="e" '+base+' value="'+(it.e==null?'':it.e)+'" placeholder="earned" aria-label="Points earned">'
     +'<input type="number" step="any" inputmode="decimal" data-f="p" '+base+' value="'+(it.p==null?'':it.p)+'" placeholder="out of" aria-label="Points possible">'
     +'<input type="number" step="any" inputmode="decimal" data-f="w" '+base+' value="'+(it.w==null?'':it.w)+'" placeholder="what-if" aria-label="What-if score (replaces earned)">'
@@ -711,7 +860,7 @@ function itemRow(c,k,i,it){
 function needHtml(c){
   const left=remaining(c);
   if(!left) return '<h3>What you need</h3><div class="empty" style="padding:0">Everything has a score or a what-if, so the projection is final.</div>';
-  const sc=SCALES[c.scale];
+  const sc=scaleOf(c);
   const goal=c.target||'A';
   const chips='<div class="goal" role="group" aria-label="Goal grade">'+['A+','A','A-','B+','B','B-'].map(L=>'<button type="button" class="'+(L===goal?'on':'')+'" data-act="goal" data-c="'+c.id+'" data-l="'+L+'">'+L+'</button>').join('')+'</div>';
   const rows=['A+','A','A-','B+','B','B-'].map(L=>{
@@ -728,11 +877,11 @@ function needHtml(c){
   return '<h3>What you need on the '+left+' ungraded item'+(left===1?'':'s')+'</h3>'+chips+'<div class="needgrid">'+rows+'</div>';
 }
 function backupHtml(){
-  return '<details><summary>Backup and reset</summary>'
+  return aiCard(false)+'<details><summary>Backup and reset</summary>'
     +'<p class="sub">Your changes save on this device automatically. Download a backup file now and then so you can restore it on another device or after clearing your browser data.</p>'
     +'<div class="addrow" style="padding-left:0"><button class="btn pri" data-act="download">Download backup file</button>'
     +'<label class="btn" style="cursor:pointer">Upload grade file<input type="file" id="bkfile" accept=".json,application/json" hidden></label>'
-    +'<button class="btn" data-act="wipe" id="wipeBtn">Clear all scores</button></div>'
+    +'<button class="btn" data-act="wipe" id="wipeBtn">Clear scores in this semester</button></div>'
     +'<textarea id="bk" aria-label="Backup text" placeholder="Or paste backup text here"></textarea>'
     +'<div class="addrow" style="padding-left:0"><button class="btn" data-act="export">Show backup text</button><button class="btn" data-act="import">Restore from text</button></div>'
     +'<div class="sub" id="bkmsg"></div></details>';
@@ -766,7 +915,7 @@ const PRESETS=[
  {n:'Mono',main:'#1F2433',cls:{tob:'#EDEDF2',syn:'#C9CCD6',fna:'#B1B6C6',ecl:'#9DA3B7',eco:'#D8DBE3',hps:'#BEC3D0'}}
 ];
 let ACC={main:null,cls:{}};
-try{ const a=JSON.parse(localStorage.getItem('pitt-accent')||'null'); if(a&&typeof a==='object'){ ACC.main=typeof a.main==='string'?a.main:null; ACC.cls=(a.cls&&typeof a.cls==='object')?a.cls:{}; } }catch(e){}
+try{ const a=JSON.parse(localStorage.getItem('pitt-accent')||'null'); if(a&&typeof a==='object'){ ACC.main=typeof a.main==='string'?a.main:null; ACC.cls=(a.cls&&typeof a.cls==='object')?a.cls:{}; ACC.preset=typeof a.preset==='string'?a.preset:null; } }catch(e){}
 function fgFor(hex){
   const n=parseInt(hex.slice(1),16), r=n>>16&255,g=n>>8&255,b=n&255;
   const L=(0.2126*r+0.7152*g+0.0722*b)/255;
@@ -777,9 +926,11 @@ function applyAcc(){
   const root=document.documentElement;
   if(ACC.main&&ACC.main.toLowerCase()!==MAINS[0].toLowerCase()){ root.style.setProperty('--acc',ACC.main); root.setAttribute('data-acc',''); }
   else { root.style.removeProperty('--acc'); root.removeAttribute('data-acc'); }
-  Object.keys(COLORS0).forEach(id=>{
-    const o=ACC.cls[id]; if(o&&/^#[0-9a-f]{6}$/i.test(o)){ COLORS[id]=o; TILE[id]=fgFor(o); } else { COLORS[id]=COLORS0[id]; TILE[id]=TILE0[id]; }
-  });
+  if(typeof W==='undefined'||!W) return;
+  W.sems.forEach(sm=>sm.courses.forEach(c=>{
+    const o=ACC.cls[c.id], col=(o&&/^#[0-9a-f]{6}$/i.test(o))?o:(c.color||'#EDEDF2');
+    COLORS[c.id]=col; TILE[c.id]=(!o&&TILE0[c.id]&&col===COLORS0[c.id])?TILE0[c.id]:fgFor(col);
+  }));
 }
 function saveAcc(){ try{ localStorage.setItem('pitt-accent',JSON.stringify(ACC)); }catch(e){} }
 applyAcc();
@@ -791,17 +942,19 @@ let pubT=null, statT=null;
 function setStat(t,cls){ const el=document.getElementById('saveStat'); if(el){ el.textContent=t; el.className='savestat '+(cls||''); } }
 function publishSelf(){ setStat('Saved on this device','ok'); clearTimeout(statT); statT=setTimeout(function(){ setStat('',''); },1600); }
 function save(){
-  S.ts=Date.now();
-  try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){ setStat('Couldn’t save in this browser','warn'); return; }
+  W.ts=Date.now();
+  try{ localStorage.setItem(KEY3,JSON.stringify(W)); }catch(e){ setStat('Couldn’t save in this browser','warn'); return; }
   setStat('Saving…','busy');
   clearTimeout(pubT); pubT=setTimeout(publishSelf,350);
 }
 
 /* ---------- charts + home ---------- */
 function cumPoints(gp){
-  let cr=0,qp=0; const pts=[]; const lab=PRIOR.map(t=>t.short||t.t);
-  PRIOR.forEach(function(s,i){ s.c.forEach(x=>{cr+=x[1];qp+=x[1]*x[2];}); pts.push({l:lab[i],v:qp/cr}); });
-  if(gp&&gp.cr) pts.push({l:'Jr 1 (what-if)',v:gp.cum,proj:true});
+  let cr=0,qp=0; const pts=[];
+  if(W.base&&W.base.cr>0&&typeof W.base.gpa==='number'){ cr=W.base.cr; qp=cr*W.base.gpa; pts.push({l:'Before',v:W.base.gpa}); }
+  PRIOR.forEach(function(t){ t.c.forEach(x=>{cr+=x[1];qp+=x[1]*x[2];}); if(cr) pts.push({l:t.short||t.t,v:qp/cr}); });
+  W.sems.forEach(sm=>{ if(sm.done&&sm.id!==W.active){ const t=semTotals(sm); if(t.cr){ cr+=t.cr; qp+=t.qp; pts.push({l:sm.name,v:qp/cr}); } } });
+  if(gp&&gp.cr) pts.push({l:'This semester',v:gp.cum,proj:true});
   return pts;
 }
 function chartSvg(pts){
@@ -881,6 +1034,7 @@ function projHomeHtml(){
     +'<div class="card panel scroll"><table><thead><tr><th>Class</th><th class="r">Rest scores</th><th class="r">Letter</th><th class="r">Percent</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+gp;
 }
 function homeView(){
+  if(!S.courses.length) return emptyHome();
   const anyScore=S.courses.some(c=>c.cats.some(k=>k.items.some(it=>it.e!=null)));
   const tiles=S.courses.map(function(c){
     const cur=courseRes(c,'cur'), wi=courseRes(c,'whatif');
@@ -915,13 +1069,14 @@ function homeView(){
       +'<div class="semnote">Cumulative after this semester: <b>'+g2(qp/cr)+'</b>'+((OLD_X[si]||[]).length?'<br>Not in GPA (0.00 in your sheet): '+OLD_X[si].map(esc).join(', '):'')+'</div></div></section>';
   }).join('');
   const banner=anyScore?'':'<div class="banner"><b>Start with what you already have.</b> Upload a grade file, or open a class and fill in the Earned column. <label class="btn pri" style="cursor:pointer;margin-left:8px">Upload grade file<input type="file" id="bkfile2" accept=".json,application/json" hidden></label></div>';
-  return '<h1 class="page-h">Fall 2026</h1>'
+  return semTitle()
     +'<div id="heroBox">'+heroHtml()+'</div>'+banner
     +'<div class="sechead" id="classes"><h2>This semester</h2></div>'
-    +'<div class="tiles">'+tiles+'</div>'
+    +'<div class="tiles">'+tiles+'<button class="tile add" data-act="newclass"><span>＋</span>Add class</button></div>'
     +'<div class="sechead"><h2>Coming up</h2></div><div class="card panel">'+upHtml+'</div>'
     +'<div class="sechead" id="gpa"><h2>GPA planner</h2></div>'
     +'<div id="gpasum"></div><div class="card panel scroll"><table><thead><tr><th>Class</th><th>Credits</th><th class="r">Now</th><th class="r">What-if</th><th class="r">Letter to use</th></tr></thead><tbody>'+gpaRows+'</tbody></table></div>'
+    +(!PRIOR.length?baseHtml():'')
     +(PRIOR.length?'<div class="sechead" id="history"><h2>Past semesters</h2></div>'
     +'<div class="semgrid">'+cards+'</div>'
     :'')
@@ -946,24 +1101,26 @@ function courseView(c){
     const meta=c.pooled
       ?'<span>'+k.items.reduce((a,x)=>a+(x.p||0),0)+' points total</span>'
       :'<label>Weight <input type="number" step="any" inputmode="decimal" data-f="cw" data-c="'+c.id+'" data-k="'+ki+'" value="'+k.w+'" aria-label="Category weight in percent"> %</label>';
-    const rt=ruleText(k);
-    return '<section class="card cat"><div class="cathead"><h3>'+esc(k.name)+'</h3><div class="catmeta">'+meta+'<span class="cpct" data-k="'+ki+'">–</span></div></div>'
-      +(rt?'<div class="rule" data-rl="'+ki+'">'+rt+'</div>':'')
+    const rt=c.pooled?'':ruleText(k);
+    const ttl=editing?'<input type="text" class="catname" data-f="catname" data-c="'+c.id+'" data-k="'+ki+'" value="'+esc(k.name)+'" aria-label="Category name">':esc(k.name);
+    return '<section class="card cat"><div class="cathead"><h3>'+ttl+'</h3><div class="catmeta">'+meta+'<span class="cpct" data-k="'+ki+'">–</span></div></div>'
+      +(editing?catEdit(c,k,ki):'')
+      +((rt||(editing&&!c.pooled))?'<div class="rule" data-rl="'+ki+'">'+rt+'</div>':'')
       +'<div class="grid h"><div>Item</div><div>Earned</div><div>Out of</div><div>What-if</div><div style="text-align:center">Score</div><div></div></div>'
       +k.items.map((it,ii)=>itemRow(c,ki,ii,it)).join('')
       +'<div class="addrow"><button class="btn" data-act="add" data-c="'+c.id+'" data-k="'+ki+'">Add item</button>'
-      +(k.rule==='swap'?'<button class="btn" data-act="addopt" data-c="'+c.id+'" data-k="'+ki+'">Add case study</button>':'')+'</div></section>';
+      +(k.rule==='swap'?'<button class="btn" data-act="addopt" data-c="'+c.id+'" data-k="'+ki+'">Add optional item</button>':'')+'</div></section>';
   }).join('');
   const ec=ecHtml(c);
-  const notes='<div class="notes"><h2>From the syllabus</h2><ul>'+c.notes.map(n=>'<li>'+n+'</li>').join('')+'</ul></div>';
+  const notes=c.notes.length?'<div class="notes"><h2>Notes</h2><ul>'+c.notes.map(n=>'<li>'+esc(n)+'</li>').join('')+'</ul></div>':'';
   const tot=c.cats.reduce((a,k)=>a+(k.w||0),0);
   const wn=(!c.pooled&&Math.abs(tot-100)>0.01)?'<div class="banner">Category weights add up to '+f1(tot)+'%, not 100%. Grades are scaled to the weights you’ve set.</div>':'';
   const cc='<div class="cc" aria-label="Class color">'+PALETTE.map(v=>'<button type="button" style="--c:'+v+'" class="'+(v.toLowerCase()===COLORS[c.id].toLowerCase()?'on':'')+'" data-id="'+c.id+'" data-v="'+v+'" aria-label="Color '+v+'"></button>').join('')+'</div>';
   return '<div class="cpage" style="--c:'+COLORS[c.id]+';--fg:'+TILE[c.id]+'"><div class="cpbar"><button class="back" data-act="go" data-v="home">← All classes</button>'+cc+'</div>'
     +'<section class="cband"><header class="chead"><div><h1>'+esc(c.name)+'</h1><p>'+esc(c.code)+'</p></div>'
-    +'<label class="fld">Credits <input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="–"></label></header>'
+    +'<label class="fld">Credits <input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="–"></label><button type="button" class="editbtn'+(editing?' on':'')+'" data-act="edit" data-c="'+c.id+'">'+(editing?'Done':'Edit class')+'</button></header>'
     +'<div id="sum"></div></section>'
-    +ec+wn+cats
+    +(editing?editPanel(c):'')+ec+wn+cats+(editing?'<div class="addrow" style="padding:18px 0 0"><button class="btn" data-act="addcat" data-c="'+c.id+'">＋ Add category</button></div>':'')
     +'<section class="card csum" id="projcard"><h2 class="projh">Projected final</h2><div id="projsum"></div>'
     +'<div class="fillbox"><label for="fill"><span>Assume the rest of your work scores</span><b id="fillv">'+c.fill+'%</b></label>'
     +'<input type="range" id="fill" min="0" max="110" step="1" value="'+c.fill+'" data-f="fill" data-c="'+c.id+'"></div>'
@@ -1016,11 +1173,11 @@ function updateProj(c){
 }
 
 /* ---------- render + refresh ---------- */
-function render(){
+function render(quiet){
   const m=$('#main');
   if(view==='home'||!getC(view)){ view='home'; m.innerHTML=homeView(); }
   else m.innerHTML=courseView(getC(view));
-  if(!REDUCED){ m.classList.remove('enter'); void m.offsetWidth; m.classList.add('enter'); clearTimeout(m._et); m._et=setTimeout(function(){ m.classList.remove('enter'); },900); }
+  if(!REDUCED&&!quiet){ m.classList.remove('enter'); void m.offsetWidth; m.classList.add('enter'); clearTimeout(m._et); m._et=setTimeout(function(){ m.classList.remove('enter'); },900); }
   refresh();
 }
 function refresh(){
@@ -1038,8 +1195,8 @@ function refresh(){
     const k=c.cats[+el.dataset.k]; const r=catRes(k,'whatif',null);
     el.textContent=r?pctS(r.pct):'–';
   });
-  $$('[data-rl]').forEach(el=>{ el.innerHTML=ruleLive(c,c.cats[+el.dataset.rl]); });
-  const infos=c.cats.map(k=>dropInfo(k));
+  $$('[data-rl]').forEach(el=>{ el.innerHTML=c.pooled?'':ruleLive(c,c.cats[+el.dataset.rl]); });
+  const infos=c.cats.map(k=>c.pooled?null:dropInfo(k));
   $$('.grid[data-r]').forEach(row=>{
     const p=row.dataset.r.split('-'), k=c.cats[+p[0]], d=infos[+p[0]], s=d&&d.st[+p[1]], tg=row.querySelector('[data-tag]');
     row.classList.toggle('dropped',!!(s&&s.s==='drop'));
@@ -1047,7 +1204,7 @@ function refresh(){
     let t='',cl='tag';
     if(s&&s.s==='drop'){ t=s.by!=null?'Replaced by '+k.items[s.by].n:'Dropped'; cl+=' d'; }
     else if(s&&s.s==='use'){ t='Replaces '+k.items[s.for].n; cl+=' u'; }
-    else if(s&&s.s==='count'&&d.dropped.length){ t='Counts'; cl+=' c'; }
+    else if(s&&s.s==='count'&&(d.dropped.length||d.pairs.length)){ t='Counts'; cl+=' c'; }
     tg.className=cl; tg.textContent=t;
   });
   $$('.rpct').forEach(el=>{
@@ -1059,6 +1216,9 @@ function refresh(){
   });
 }
 
+const okFile=v=>!!(v&&typeof v==='object'&&(v.courses||v.sems||v.semesters||v.earlier));
+function hasData(){ return !!(W&&W.sems.some(sm=>sm.courses.length)); }
+function confirmReplace(){ return !hasData()||confirm('Loading a file replaces everything saved in this browser. Download a backup first if you want to keep it. Load the file?'); }
 /* ---------- events ---------- */
 document.addEventListener('wheel',function(ev){ const a=document.activeElement; if(a&&a.type==='number'&&ev.target===a) a.blur(); },{passive:true});
 document.addEventListener('input',function(ev){
@@ -1071,6 +1231,19 @@ document.addEventListener('input',function(ev){
   else if(f==='ece'||f==='ecw'){ c.ec[t.dataset.u][f==='ece'?'e':'w']=num(t.value); }
   else if(f==='ectotal'){ c.ec.total=num(t.value); }
   else if(f==='fill'){ c.fill=num(t.value)||0; const fv=document.getElementById('fillv'); if(fv) fv.textContent=c.fill+'%'; }
+  else if(f==='cname'){ c.name=t.value||'Untitled class'; const h=document.querySelector('.chead h1'); if(h) h.textContent=c.name; }
+  else if(f==='ccode'){ c.code=t.value; const p=document.querySelector('.chead p'); if(p) p.textContent=c.code; }
+  else if(f==='cnotes'){ c.notes=t.value.split('\n').map(x=>x.trim()).filter(Boolean); }
+  else if(f==='pooled'){ c.pooled=t.value==='1'; save(); render(true); return; }
+  else if(f==='scale'){ if(t.value==='custom'){ if(!c.cuts) c.cuts=scaleOf(c).map(r=>r.slice()); } else { c.cuts=null; c.scale=t.value; c.scaleAssumed=false; } save(); render(true); return; }
+  else if(f==='cut'){ if(!c.cuts) c.cuts=scaleOf(c).map(r=>r.slice()); const v=num(t.value); if(v!=null) c.cuts[+t.dataset.i][+t.dataset.col]=v; }
+  else if(f==='catname'){ c.cats[+t.dataset.k].name=t.value||'Category'; }
+  else if(f==='catrule'){ const k=c.cats[+t.dataset.k]; k.rule=t.value; if(k.rule==='best'&&!k.n) k.n=Math.max(1,k.items.filter(i=>!i.opt).length-1); if(k.rule==='cap'&&!k.cap) k.cap=0.8; save(); render(true); return; }
+  else if(f==='catdrop'){ c.cats[+t.dataset.k].drop=Math.max(0,Math.floor(num(t.value)||0)); }
+  else if(f==='catn'){ c.cats[+t.dataset.k].n=Math.max(1,Math.floor(num(t.value)||1)); }
+  else if(f==='catcap'){ const v=num(t.value); c.cats[+t.dataset.k].cap=(v>0?v/100:0.8); }
+  else if(f==='catrp'){ c.cats[+t.dataset.k].rp=t.checked; save(); render(true); return; }
+  else if(f==='basecr'||f==='basegpa'){ W.base=W.base||{cr:null,gpa:null}; W.base[f==='basecr'?'cr':'gpa']=num(t.value); refreshPrior(); }
   else if(f==='pick'){ S.gpaPick[c.id]=t.value; }
   if(f==='e'){
     const row=t.closest('.grid'), du=row&&row.querySelector('[data-due]');
@@ -1080,12 +1253,189 @@ document.addEventListener('input',function(ev){
   save(); refresh();
 });
 function setHash(){ try{ location.hash=(view==='home'?'':view); }catch(e){} }
+const AI_PROMPT=`I'm going to give you my grades (screenshots, a PDF, a spreadsheet, or pasted text). Turn them into ONE JSON file for my grade tracker web app, and give it back as a downloadable file named grades.json (or, if you can't make files, as a single code block I can save as grades.json). Don't invent anything: if a score isn't graded yet, use null. If something is unclear (weights, grading scale, drop rules), ask me before you write the file.
+
+Use exactly this format:
+
+{
+  "semesters": [
+    {
+      "name": "Fall 2026",
+      "current": true,
+      "finished": false,
+      "classes": [
+        {
+          "name": "Intro to Biology",
+          "code": "BIOSC 0150",
+          "credits": 3,
+          "scale": "plus-minus",
+          "categories": [
+            {
+              "name": "Homework",
+              "weight": 20,
+              "scoring": "average",
+              "dropLowest": 1,
+              "items": [
+                { "name": "HW 1", "earned": 9, "outOf": 10 },
+                { "name": "HW 2", "earned": null, "outOf": 10, "due": "2026-09-30" }
+              ]
+            },
+            {
+              "name": "Exams",
+              "weight": 80,
+              "scoring": "average",
+              "replaceLowestWithFlagged": true,
+              "items": [
+                { "name": "Midterm", "earned": 80, "outOf": 100 },
+                { "name": "Final", "earned": null, "outOf": 100, "replacesLowest": true }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "earlier": [
+    { "name": "Spring 2026", "classes": [ { "name": "Calculus I", "credits": 4, "grade": "A-" } ] }
+  ]
+}
+
+Rules:
+- "weight" is the category's share of the final grade in percent (they should add up to 100).
+- "scoring" is one of: "average" (each item counts equally), "total" (add up all points), "best" (also add "bestN", how many scores count), "capped" (also add "fullCreditPercent", e.g. 80 means 80% of all points is full credit), or "optionalReplaceLowest" (items marked "optional": true replace the lowest regular score if higher).
+- "dropLowest" is how many of the lowest scores get dropped (average or total only).
+- "scale" is "plus-minus" (A+, A, A-, B+ ...) or "plain" (A, B, C). If the syllabus lists its own cutoffs, add "cutoffs": [ {"letter":"A","min":93,"gpa":4}, ... ].
+- If a class is graded by total points instead of weighted categories, set "totalPointsGrading": true and use one category.
+- Semesters where I only know the final letter grades go under "earlier". Semesters where I have the full breakdown go under "semesters". Mark this semester "current": true.
+- Optional extra credit per class: "extraCredit": { "points": 2, "percent": null, "totalPoints": 400 }.`;
+function aiCard(open){
+  return '<details class="ai"'+(open?' open':'')+'><summary>Bring in old grades with Claude or ChatGPT</summary>'
+    +'<p class="sub">Upload your grades (screenshots, a PDF, or a spreadsheet) to an AI chat together with the prompt below. It will give you a file. Then use “Upload a grade file” here.</p>'
+    +'<textarea readonly id="aiPrompt" aria-label="Prompt to copy">'+esc(AI_PROMPT)+'</textarea>'
+    +'<div class="addrow" style="padding-left:0"><button class="btn pri" data-act="copyprompt">Copy prompt</button></div></details>';
+}
+function emptyHome(){
+  return semTitle()
+    +'<section class="card onb"><h2 class="projh">Set up your semester</h2><p class="projp">Add your classes one at a time, or bring in grades you already have. Everything stays in your browser.</p>'
+    +'<div class="onbrow"><button class="btn pri" data-act="newclass">Add a class</button><label class="btn" style="cursor:pointer">Upload a grade file<input type="file" id="bkfile2" accept=".json,application/json" hidden></label></div></section>'
+    +aiCard(true)+backupHtml();
+}
+function baseHtml(){
+  const b=W.base||{};
+  return '<div class="card base"><div class="bl"><b>Before this semester</b><small>Optional. Adds your earlier credits and GPA to the cumulative GPA.</small></div>'
+    +'<div class="basectl"><label><input type="number" step="any" min="0" inputmode="decimal" data-f="basecr" value="'+(b.cr==null?'':b.cr)+'" placeholder="0" aria-label="Earlier credits"> credits</label>'
+    +'<label><input type="number" step="0.001" min="0" max="4" inputmode="decimal" data-f="basegpa" value="'+(b.gpa==null?'':b.gpa)+'" placeholder="3.50" aria-label="Earlier GPA"> GPA</label></div></div>';
+}
+function semTitle(){
+  return '<h1 class="page-h"><button class="semtitle" id="semBtn" aria-haspopup="menu" aria-expanded="false">'+esc(S.name)+'<svg viewBox="0 0 12 8" aria-hidden="true"><path d="M1.5 1.5 6 6l4.5-4.5"/></svg></button></h1>';
+}
+/* ---------- modal + semester menu ---------- */
+function openModal(title,body,okLabel,onOk){
+  closeModal();
+  const m=document.createElement('div'); m.className='modal'; m.id='modal';
+  m.innerHTML='<div class="mbox" role="dialog" aria-modal="true" aria-label="'+esc(title)+'"><h3>'+esc(title)+'</h3><form>'+body+'<div class="mact"><button type="button" class="btn" data-m="cancel">Cancel</button><button type="submit" class="btn pri">'+esc(okLabel)+'</button></div></form></div>';
+  document.body.appendChild(m); requestAnimationFrame(function(){ m.classList.add('open'); });
+  const f=m.querySelector('form'), first=f.querySelector('input:not([type=checkbox]),select'); if(first){ first.focus(); if(first.select) first.select(); }
+  f.addEventListener('submit',function(ev){ ev.preventDefault(); const v={}; new FormData(f).forEach(function(val,k){ v[k]=val; }); if(onOk(v)!==false) closeModal(); });
+  m.addEventListener('click',function(ev){ if(ev.target===m||(ev.target.dataset&&ev.target.dataset.m==='cancel')) closeModal(); });
+}
+function closeModal(){ const m=document.getElementById('modal'); if(m) m.remove(); }
+document.addEventListener('keydown',function(ev){ if(ev.key==='Escape'){ closeModal(); closeSemMenu(); } });
+function setActive(id){
+  W.active=id; S=W.sems.find(x=>x.id===id); editing=false; view='home'; refreshPrior(); applyAcc(); save(); setHash(); render(); window.scrollTo(0,0);
+}
+function addSem(name,copy){
+  const sm={id:uid(),name:name,done:false,courses:[],gpaPick:{}};
+  if(copy) sm.courses=S.courses.map(function(c){
+    const n=JSON.parse(JSON.stringify(c)); n.id=uid(); n.color=ACC.cls[c.id]||c.color; delete n.cuts; if(c.cuts) n.cuts=c.cuts.map(r=>r.slice());
+    n.cats.forEach(k=>k.items.forEach(it=>{ it.e=null; it.w=null; it.d=null; it.dl=''; }));
+    n.ec=ecShape({label:c.ec.label,max:c.ec.max,mu:c.ec.mu}); return n;
+  });
+  W.sems.push(sm); setActive(sm.id); syncColors();
+}
+const semPop=document.createElement('div'); semPop.className='pop menu'; semPop.id='semPop'; semPop.setAttribute('role','menu'); document.body.appendChild(semPop);
+function closeSemMenu(){ semPop.classList.remove('open'); const b=document.getElementById('semBtn'); if(b) b.setAttribute('aria-expanded','false'); }
+function openSemMenu(btn){
+  semPop.innerHTML='<h4>Semesters</h4>'+W.sems.map(sm=>'<button type="button" class="mi'+(sm.id===W.active?' on':'')+'" data-m="go" data-id="'+sm.id+'"><span>'+esc(sm.name)+'</span><small>'+sm.courses.length+' class'+(sm.courses.length===1?'':'es')+(sm.done?' · finished':'')+'</small></button>').join('')
+    +'<div class="msep"></div><button type="button" class="mi act" data-m="new">＋ New semester</button><button type="button" class="mi act" data-m="rename">Rename this semester</button>'
+    +'<label class="mi tog"><span>Finished<br><small>Counts toward cumulative GPA</small></span><input type="checkbox" data-m="done"'+(S.done?' checked':'')+'></label>'
+    +(W.sems.length>1?'<button type="button" class="mi act danger" data-m="del">Delete this semester</button>':'');
+  const r=btn.getBoundingClientRect(); semPop.style.top=(r.bottom+10)+'px'; semPop.style.left=Math.max(16,r.left)+'px';
+  semPop.classList.add('open'); btn.setAttribute('aria-expanded','true');
+}
+document.addEventListener('click',function(ev){
+  const sb=ev.target.closest('#semBtn');
+  if(sb){ ev.stopPropagation(); if(semPop.classList.contains('open')) closeSemMenu(); else openSemMenu(sb); return; }
+  if(semPop.classList.contains('open')&&!semPop.contains(ev.target)) closeSemMenu();
+},true);
+semPop.addEventListener('click',function(ev){
+  const b=ev.target.closest('[data-m]'); if(!b) return; const m=b.dataset.m;
+  if(m==='done') return;
+  closeSemMenu();
+  if(m==='go'){ if(b.dataset.id!==W.active) setActive(b.dataset.id); }
+  else if(m==='new'){
+    openModal('New semester','<label class="f">Name<input name="name" type="text" value="'+esc(defaultSemName()===S.name?'Next semester':defaultSemName())+'" required></label>'
+      +(S.courses.length?'<label class="chk f"><input type="checkbox" name="copy" checked> Start with the same classes (scores cleared)</label>':''),'Create',function(v){ const n=(v.name||'').trim(); if(!n) return false; addSem(n,!!v.copy); });
+  }
+  else if(m==='rename'){
+    openModal('Rename semester','<label class="f">Name<input name="name" type="text" value="'+esc(S.name)+'" required></label>','Save',function(v){ const n=(v.name||'').trim(); if(!n) return false; S.name=n; save(); render(true); });
+  }
+  else if(m==='del'){
+    if(confirm('Delete “'+S.name+'” and its '+S.courses.length+' class'+(S.courses.length===1?'':'es')+'? This can’t be undone.')){
+      const i=W.sems.indexOf(S); W.sems.splice(i,1); setActive(W.sems[Math.max(0,i-1)].id);
+    }
+  }
+});
+semPop.addEventListener('change',function(ev){ const t=ev.target; if(t.dataset&&t.dataset.m==='done'){ S.done=t.checked; refreshPrior(); save(); refresh(); } });
+function newClassModal(){
+  openModal('Add a class',
+    '<label class="f">Class name<input name="name" type="text" placeholder="e.g. Organic Chemistry" required></label>'
+    +'<div class="two"><label class="f">Code (optional)<input name="code" type="text" placeholder="CHEM 0310"></label><label class="f">Credits<input name="credits" type="number" step="0.5" min="0" placeholder="3"></label></div>'
+    +'<label class="f">How is it graded?<select name="kind"><option value="weighted">Weighted categories (homework 30%, exams 70%…)</option><option value="points">Total points</option></select></label>'
+    +'<label class="f">Start with<select name="tpl"><option value="hmf">Homework, Midterm, Final</option><option value="blank">One blank category</option></select></label>',
+    'Add class',function(v){
+      const name=(v.name||'').trim(); if(!name) return false;
+      const mk=(n,w,rule,items)=>({name:n,w:w,rule:rule,items:items});
+      let cats, pooled=false;
+      if(v.kind==='points'){ pooled=true; cats=[mk('Assignments',100,'sum',[I('Assignment 1',100),I('Assignment 2',100)])]; }
+      else if(v.tpl==='hmf') cats=[mk('Homework',30,'avg',[I('Homework 1',100),I('Homework 2',100)]),mk('Midterm',30,'avg',[I('Midterm',100)]),mk('Final exam',40,'avg',[I('Final exam',100)])];
+      else cats=[mk('Assignments',100,'avg',[I('Assignment 1',100)])];
+      const c=normCourse({name:name,code:(v.code||'').trim(),credits:num(v.credits),pooled:pooled,scale:'std',cats:cats});
+      c.color=nextColor(); S.courses.push(c); syncColors(); view=c.id; editing=true; save(); setHash(); render(); window.scrollTo(0,0);
+    });
+}
+/* ---------- class editing ---------- */
+const scaleSel=c=>c.cuts?'custom':(c.scale==='plain'?'plain':(c.scale==='std'?'std':'custom'));
+function editPanel(c){
+  const sel=scaleSel(c), rows=scaleOf(c);
+  const op=(v,l)=>'<option value="'+v+'"'+(sel===v?' selected':'')+'>'+l+'</option>';
+  const cuts=sel==='custom'?'<div class="cuts">'+rows.map((r,i)=>'<div class="cut"><b>'+esc(r[1])+'</b><label>from <input type="number" step="any" data-f="cut" data-col="0" data-i="'+i+'" data-c="'+c.id+'" value="'+r[0]+'"'+(i===rows.length-1?' disabled':'')+'> %</label><label>GPA <input type="number" step="any" data-f="cut" data-col="2" data-i="'+i+'" data-c="'+c.id+'" value="'+r[2]+'"></label></div>').join('')+'</div>':'';
+  return '<section class="card editp"><h3>Class settings</h3>'
+    +'<div class="two"><label class="f">Name<input type="text" data-f="cname" data-c="'+c.id+'" value="'+esc(c.name)+'"></label><label class="f">Code<input type="text" data-f="ccode" data-c="'+c.id+'" value="'+esc(c.code)+'"></label></div>'
+    +'<div class="two"><label class="f">Graded by<select data-f="pooled" data-c="'+c.id+'"><option value="0"'+(c.pooled?'':' selected')+'>Weighted categories</option><option value="1"'+(c.pooled?' selected':'')+'>Total points</option></select></label>'
+    +'<label class="f">Grading scale<select data-f="scale" data-c="'+c.id+'">'+op('std','Plus/minus (A+ at 97)')+op('plain','Plain letters (A at 90)')+op('custom','Custom cutoffs')+'</select></label></div>'
+    +cuts
+    +'<label class="f">Notes<textarea data-f="cnotes" data-c="'+c.id+'" placeholder="Syllabus notes, one per line">'+esc(c.notes.join('\n'))+'</textarea></label>'
+    +'<div class="editact"><button type="button" class="btn danger" data-act="delclass" data-c="'+c.id+'">Delete class</button></div></section>';
+}
+function catEdit(c,k,ki){
+  const base='data-c="'+c.id+'" data-k="'+ki+'"', r=k.rule||'avg';
+  const del='<button type="button" class="btn danger sm" data-act="delcat" '+base+'>Delete category</button>';
+  if(c.pooled) return '<div class="catedit">'+del+'</div>';
+  const op=(v,l)=>'<option value="'+v+'"'+(r===v?' selected':'')+'>'+l+'</option>';
+  let extra='';
+  if(r==='avg'||r==='sum') extra='<label>Drop lowest <input type="number" min="0" step="1" data-f="catdrop" '+base+' value="'+(k.drop||0)+'"></label><label class="chk"><input type="checkbox" data-f="catrp" '+base+(k.rp?' checked':'')+'> Allow items to replace the lowest</label>';
+  else if(r==='best') extra='<label>Count the best <input type="number" min="1" step="1" data-f="catn" '+base+' value="'+(k.n||1)+'"> of '+k.items.length+'</label>';
+  else if(r==='cap') extra='<label>Full credit at <input type="number" min="1" step="any" data-f="catcap" '+base+' value="'+(Math.round((k.cap||0.8)*1000)/10)+'"> % of points</label>';
+  else if(r==='swap') extra='<span class="hint">Mark items “Optional” below. They replace your lowest regular score when higher.</span>';
+  return '<div class="catedit"><label>Scoring <select data-f="catrule" '+base+'>'+op('avg','Average of scores')+op('sum','Total points')+op('best','Only the best N count')+op('cap','Capped points')+op('swap','Optional items replace lowest')+'</select></label>'+extra+del+'</div>';
+}
 /* ---------- accent picker ---------- */
 (function(){
   const btn=document.getElementById('accBtn'); const pop=document.createElement('div'); pop.className='pop'; pop.id='accPop'; pop.setAttribute('role','dialog'); pop.setAttribute('aria-label','Accent colors'); document.body.appendChild(pop);
   const eq=(a,b)=>a&&b&&a.toLowerCase()===b.toLowerCase();
   const sw=(list,cur,kind,id,big)=>'<div class="sw'+(big?' big':'')+'">'+list.map(c=>'<button type="button" style="--c:'+c+'" class="'+(eq(c,cur)?'on':'')+'" data-k="'+kind+'" data-id="'+(id||'')+'" data-v="'+c+'" aria-label="'+c+'" aria-pressed="'+(eq(c,cur)?'true':'false')+'"></button>').join('')+'</div>';
-  const same=(p)=>eq(p.main||MAINS[0],ACC.main||MAINS[0])&&Object.keys(COLORS0).every(id=>eq(p.cls[id]||COLORS0[id],ACC.cls[id]||COLORS0[id]));
+  const same=p=>ACC.preset===p.n||(p.n==='Classic'&&!ACC.preset&&!ACC.main&&!Object.keys(ACC.cls).length);
   function build(){
     pop.innerHTML='<h4>Style</h4><div class="pre">'+PRESETS.map((p,i)=>'<button type="button" data-k="pre" data-i="'+i+'" class="'+(same(p)?'on':'')+'"><span class="strip"><i style="background:'+(p.main||MAINS[0])+'"></i>'+Object.keys(COLORS0).map(id=>'<i style="background:'+(p.cls[id]||COLORS0[id])+'"></i>').join('')+'</span><b>'+p.n+'</b></button>').join('')+'</div>'
       +'<h4>Main color</h4>'+sw(MAINS,ACC.main||MAINS[0],'main','',true)
@@ -1097,13 +1447,13 @@ function setHash(){ try{ location.hash=(view==='home'?'':view); }catch(e){} }
   document.addEventListener('keydown',function(ev){ if(ev.key==='Escape'&&pop.classList.contains('open')){ set(false); btn.focus(); } });
   document.addEventListener('click',function(ev){
     const b=ev.target.closest('.cc button'); if(!b) return;
-    ACC.cls[b.dataset.id]=b.dataset.v; saveAcc(); applyAcc(); render();
+    ACC.cls[b.dataset.id]=b.dataset.v; delete ACC.preset; saveAcc(); applyAcc(); render(true);
   });
   pop.addEventListener('click',function(ev){
     ev.stopPropagation();
     const b=ev.target.closest('button'); if(!b) return; const k=b.dataset.k;
-    if(k==='main') ACC.main=b.dataset.v;
-    else if(k==='pre'){ const p=PRESETS[+b.dataset.i]; ACC={main:p.main,cls:Object.assign({},p.cls)}; }
+    if(k==='main'){ ACC.main=b.dataset.v; delete ACC.preset; }
+    else if(k==='pre'){ const p=PRESETS[+b.dataset.i]; ACC={main:p.main,cls:{},preset:p.n}; const cols=Object.keys(p.cls).map(id=>p.cls[id]); if(cols.length) S.courses.forEach((c,i)=>{ ACC.cls[c.id]=cols[i%cols.length]; }); }
     else return;
     saveAcc(); applyAcc(); build(); render();
   });
@@ -1124,21 +1474,38 @@ function setHash(){ try{ location.hash=(view==='home'?'':view); }catch(e){} }
 document.addEventListener('click',function(ev){
   const b=ev.target.closest('[data-act]'); if(!b) return;
   const a=b.dataset.act;
-  if(a==='go'){ view=b.dataset.v; wipeArmed=false; setHash(); render(); window.scrollTo(0,0); return; }
+  if(a==='go'){ view=b.dataset.v; wipeArmed=false; editing=false; setHash(); render(); window.scrollTo(0,0); return; }
   if(a==='jump'){ view='home'; wipeArmed=false; setHash(); render(); const el=document.getElementById(b.dataset.t); if(el) el.scrollIntoView(); else window.scrollTo(0,0); return; }
   const c=b.dataset.c?getC(b.dataset.c):null;
   if(a==='add'){ c.cats[+b.dataset.k].items.push(I('New item',(c.pooled?5:100))); save(); render(); }
   else if(a==='addopt'){ c.cats[+b.dataset.k].items.push(I('Case study',100,null,'',true)); save(); render(); }
   else if(a==='goal'){ c.target=b.dataset.l; save(); refresh(); }
+  else if(a==='newclass'){ newClassModal(); }
+  else if(a==='edit'){ editing=!editing; render(true); }
+  else if(a==='addcat'){ c.cats.push({name:'New category',w:c.pooled?0:Math.max(0,100-c.cats.reduce((t,k)=>t+(k.w||0),0)),rule:'avg',items:[I('Item 1',c.pooled?10:100)]}); save(); render(true); }
+  else if(a==='delcat'){
+    const k=c.cats[+b.dataset.k];
+    if(c.cats.length<2){ alert('A class needs at least one category.'); return; }
+    if(!k.items.some(i=>i.e!=null||i.w!=null)||confirm('Delete “'+k.name+'” and its scores?')){ c.cats.splice(+b.dataset.k,1); save(); render(true); }
+  }
+  else if(a==='delclass'){
+    if(confirm('Delete '+c.name+' and all its scores? This can’t be undone.')){ S.courses=S.courses.filter(x=>x.id!==c.id); delete S.gpaPick[c.id]; editing=false; view='home'; save(); setHash(); render(); window.scrollTo(0,0); }
+  }
+  else if(a==='rp'||a==='optflag'){ const it=c.cats[+b.dataset.k].items[+b.dataset.i]; if(a==='rp') it.rp=!it.rp; else it.opt=!it.opt; save(); render(true); }
+  else if(a==='copyprompt'){
+    const ta=document.getElementById('aiPrompt'); const done=()=>{ b.textContent='Copied'; setTimeout(function(){ b.textContent='Copy prompt'; },1600); };
+    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(AI_PROMPT).then(done,function(){ ta.select(); document.execCommand('copy'); done(); });
+    else { ta.select(); document.execCommand('copy'); done(); }
+  }
   else if(a==='del'){ c.cats[+b.dataset.k].items.splice(+b.dataset.i,1); save(); render(); }
-  else if(a==='download'){ const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'}); const u=URL.createObjectURL(blob); const l=document.createElement('a'); l.href=u; l.download='grade-tracker-backup.json'; document.body.appendChild(l); l.click(); l.remove(); setTimeout(function(){URL.revokeObjectURL(u);},1000); }
-  else if(a==='export'){ $('#bk').value=JSON.stringify(S); $('#bkmsg').textContent='Copy all of that text and keep it somewhere safe.'; }
+  else if(a==='download'){ const blob=new Blob([JSON.stringify(W,null,2)],{type:'application/json'}); const u=URL.createObjectURL(blob); const l=document.createElement('a'); l.href=u; l.download='grade-tracker-backup.json'; document.body.appendChild(l); l.click(); l.remove(); setTimeout(function(){URL.revokeObjectURL(u);},1000); }
+  else if(a==='export'){ $('#bk').value=JSON.stringify(W); $('#bkmsg').textContent='Copy all of that text and keep it somewhere safe.'; }
   else if(a==='import'){
-    try{ const v=JSON.parse($('#bk').value); if(!v||!v.courses) throw new Error('x'); S=loadMerged(v); save(); render(); setStat('Grades loaded','ok'); }
+    try{ const v=JSON.parse($('#bk').value); if(!okFile(v)) throw new Error('x'); if(!confirmReplace()) return; adoptState(v); setStat('Grades loaded','ok'); }
     catch(e){ $('#bkmsg').textContent='That text isn’t a valid backup. Paste the full text you copied earlier.'; }
   }
   else if(a==='wipe'){
-    if(!wipeArmed){ wipeArmed=true; b.textContent='Click again to erase every score'; }
+    if(!wipeArmed){ wipeArmed=true; b.textContent='Click again to erase every score in this semester'; }
     else { wipeArmed=false; S.courses.forEach(x=>{ x.cats.forEach(k=>k.items.forEach(it=>{it.e=null;it.w=null;})); if(x.ec){ x.ec.pts.e=x.ec.pts.w=x.ec.pct.e=x.ec.pct.w=null; } }); save(); render(); }
   }
 });
@@ -1146,22 +1513,24 @@ document.addEventListener('click',function(ev){
 document.addEventListener('change',function(ev){
   const t=ev.target; if(!(t&&(t.id==='bkfile'||t.id==='bkfile2')&&t.files&&t.files[0])) return;
   const r=new FileReader();
-  r.onload=function(){ try{ const v=JSON.parse(r.result); if(!v||!v.courses) throw new Error('x'); S=loadMerged(v); save(); render(); setStat('Grades loaded','ok'); }catch(e){ const m=$('#bkmsg'); if(m) m.textContent='That file isn’t a valid grade file.'; alert('That file isn’t a valid grade file.'); } };
+  r.onload=function(){ try{ const v=JSON.parse(r.result); if(!okFile(v)) throw new Error('x'); if(!confirmReplace()) return; adoptState(v); setStat('Grades loaded','ok'); }catch(e){ const m=$('#bkmsg'); if(m) m.textContent='That file isn’t a valid grade file.'; alert('That file isn’t a valid grade file.'); } };
   r.readAsText(t.files[0]);
 });
 
 /* ---------- start ---------- */
 (function init(){
-  let emb=null; try{ emb=JSON.parse(document.getElementById('saved').textContent); }catch(e){}
-  const loc=readLocal(KEY);
-  const et=(emb&&emb.ts)||0, lt=(loc&&loc.ts)||0;
-  const src=(lt>et)?loc:emb;
-  S=loadMerged(src||null);
-  S.ts=Math.max(et,lt);
-  if(!src){
-    const o=readLocal(KEY1);
-    if(o&&o.courses) o.courses.forEach(oc=>{ const c=getC(oc.id); if(c&&oc.credits!=null) c.credits=oc.credits; });
+  let src3=readLocal(KEY3), migrated=false;
+  if(src3&&Array.isArray(src3.sems)) W=loadAny(src3);
+  else{
+    let emb=null; try{ emb=JSON.parse(document.getElementById('saved').textContent); }catch(e){}
+    const loc=readLocal(KEY), et=(emb&&emb.ts)||0, lt=(loc&&loc.ts)||0;
+    let src=(lt>et)?loc:emb;
+    if(!src){ const o=readLocal(KEY1); if(o&&o.courses) src=o; }
+    W=loadAny(src||null); migrated=!!src;
   }
+  S=W.sems.find(x=>x.id===W.active)||W.sems[0]; W.active=S.id;
+  refreshPrior(); syncColors();
+  if(migrated) save();
   const h=(location.hash||'').replace('#','');
   if(h&&getC(h)) view=h;
   render();

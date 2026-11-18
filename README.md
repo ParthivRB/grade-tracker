@@ -1,22 +1,26 @@
 # Grade Tracker
 
-One file: `index.html`. No build step, no database. Open it in a browser and it works.
+One file: `index.html`. No build step, no accounts, no server. Everything you enter stays in your own browser.
 
-The page starts with your classes but no scores. Anything you enter is saved in your browser on that device. The page has a "Download backup file" button at the bottom for moving to another device or keeping a copy.
+## Using it
+
+- **Semesters:** click the semester name at the top to switch, add a new one (optionally copying your classes), rename it, or mark it finished so it counts toward your cumulative GPA. Old semesters are never deleted when you switch.
+- **Classes:** add a class from the home page, then press **Edit class** to change its name, grading scale, categories, and how each category is scored.
+- **Scoring options per category:** average, total points, only the best N count, capped points, optional items that replace your lowest score, drop the lowest N, and let flagged items (like a final) replace your lowest score.
+- **Current grade** is the big number. **What-if** sits beside it and replaces the earned score. **Projected final** (the rest of the work at a level you choose) is at the bottom.
+- **Extra credit** takes points and percent at the same time, each with its own what-if.
+- **Style:** the color-wheel button picks a style and a main color. Each class page has its own color dots. The moon button switches dark mode.
+
+## Bring in old grades
+
+On the home page, open "Bring in old grades with Claude or ChatGPT", copy the prompt, and give it to an AI chat along with screenshots, a PDF, or a spreadsheet of your grades. It returns a file. Use **Upload a grade file** to load it.
+
+## Backups
+
+Your data lives in this browser on this device. Use "Download backup file" now and then, and "Upload a grade file" on another device. Loading a file replaces what is saved in that browser.
 
 ## Put it online with GitHub Pages (free)
 
-1. Make a new repo on GitHub, for example `grade-tracker`.
-2. Upload `index.html` to the repo (Add file, then Upload files).
-3. In the repo, go to Settings, then Pages. Set Source to "Deploy from a branch", pick `main` and `/ (root)`, and save.
-4. After a minute your page is live at `https://YOUR-USERNAME.github.io/grade-tracker/`.
-
-## Updating it
-
-- **Scores and what-ifs:** just type in the page. The big grade on each class is your **current grade**. Next to it is a **what-if final**. Type a what-if score on any row, even one you already earned (say 91 instead of the 89 you got), and it replaces the earned score on that row for the what-if only. Your real scores never change.
-- **Extra credit:** every class has an extra credit box. Switch it between **points** (added to your points, or divided by the class's total points on weighted classes) and **percent** (added straight onto your final percent). The **projected final**, which assumes the rest of the work scores at a level you set, is in its own section near the bottom. Everything saves on that device.
-- **New semester, new classes, design changes:** open the repo in Claude Code and ask it to edit `index.html`, then commit and push. GitHub Pages updates on its own.
-- **Loading your grades:** click "Upload grade file" and pick your grades `.json` file (scores, past semesters, and every old class with its categories and assignment scores). Keep that file on your computer, never in this repo.
-- **Moving to another device:** click "Download backup file" on the old one, then "Upload grade file" on the new one.
-
-Note: saved scores live in each browser separately. This repo is public, so keep scores out of `index.html` and use backup files to move them between devices.
+1. Make a public repo on GitHub and upload `index.html` (plus the icon files).
+2. Settings, Pages, deploy from the `main` branch root.
+3. Keep your own scores out of a public repo. Use backup files for those.
