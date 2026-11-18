@@ -266,6 +266,21 @@ input[type=range]{width:100%;accent-color:var(--blue);margin:14px 0 0}
 .grid .it{min-width:0}
 .grid .it input{background:transparent;padding:5px 8px;font-weight:600}
 .grid .it input:hover{background:var(--soft)}
+.banner.dismissable{position:relative;padding-right:52px;transition:opacity .3s ease,transform .3s ease}
+.banner.gone{opacity:0;transform:translateY(-6px)}
+.bx{position:absolute;top:50%;right:14px;transform:translateY(-50%);width:28px;height:28px;border-radius:99px;border:0;background:rgba(0,0,0,.12);color:inherit;font-size:19px;line-height:1;cursor:pointer;display:grid;place-items:center;transition:background-color .15s ease}
+.bx:hover{background:rgba(0,0,0,.25)}
+.uprow{margin-top:40px}
+.uplink{color:var(--mut);font-weight:600;font-size:13.5px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;transition:color .2s ease}
+.uplink:hover{color:var(--ink)}
+.tw{position:relative;display:flex}
+.tw .tile{flex:1;min-width:0}
+.tmv{position:absolute;z-index:3;top:12px;right:12px;display:flex;gap:6px}
+.tmv button{width:34px;height:34px;border-radius:99px;border:0;background:rgba(255,255,255,.92);color:#0D1226;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25);transition:transform .15s ease,opacity .15s ease}
+.tmv button:hover:not(:disabled){transform:scale(1.1)}
+.tmv button:disabled{opacity:.35;cursor:default}
+.rord{width:auto!important;padding:0 14px;font-size:13px!important}
+.rord.on{background:var(--ink)!important;color:var(--bg)!important}
 .sectoggle{all:unset;cursor:pointer;display:flex;align-items:center;gap:12px;min-width:0}
 .sectoggle:focus-visible{outline:3px solid var(--gold);outline-offset:6px;border-radius:10px}
 .schev{width:16px;height:11px;flex:0 0 auto;fill:none;stroke:var(--mut);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .35s cubic-bezier(.2,.7,.2,1),stroke .2s ease}
@@ -548,7 +563,7 @@ function baseDefaults(){
 /* ---------- state ---------- */
 const KEY='pitt-grade-tracker-fall26-v2', KEY1='pitt-grade-tracker-fall26-v1';
 const KEY3='gradetracker-v3';
-let W=null, S=null, view='home', dbDoc=null, wipeArmed=false, editing=false;
+let W=null, S=null, view='home', dbDoc=null, wipeArmed=false, editing=false, reorder=false;
 
 function ecShape(e){
   const bx=x=>({e:(x&&typeof x.e==='number')?x.e:null,w:(x&&typeof x.w==='number')?x.w:null});
@@ -1052,15 +1067,15 @@ function projHomeHtml(){
 }
 /* ---------- collapsible, reorderable sections ---------- */
 const LAY_KEY='gt-layout';
-let LAY={order:[],col:{}};
-try{ const l=JSON.parse(localStorage.getItem(LAY_KEY)||'null'); if(l&&typeof l==='object'){ LAY.order=Array.isArray(l.order)?l.order:[]; LAY.col=(l.col&&typeof l.col==='object')?l.col:{}; } }catch(e){}
+let LAY={order:[],col:{},bn:false};
+try{ const l=JSON.parse(localStorage.getItem(LAY_KEY)||'null'); if(l&&typeof l==='object'){ LAY.order=Array.isArray(l.order)?l.order:[]; LAY.col=(l.col&&typeof l.col==='object')?l.col:{}; LAY.bn=!!l.bn; } }catch(e){}
 function saveLay(){ try{ localStorage.setItem(LAY_KEY,JSON.stringify(LAY)); }catch(e){} }
 function secOrder(avail){ const o=LAY.order.filter(x=>avail.indexOf(x)>=0); avail.forEach(x=>{ if(o.indexOf(x)<0) o.push(x); }); return o; }
 function secHtml(id,title,body){
   const col=!!LAY.col[id];
   return '<section class="hsec'+(col?' col':'')+'" data-sec="'+id+'" id="'+id+'">'
     +'<div class="sechead"><button type="button" class="sectoggle" data-act="sectoggle" data-s="'+id+'" aria-expanded="'+(!col)+'"><svg class="schev" viewBox="0 0 12 8" aria-hidden="true"><path d="M1.5 1.5 6 6l4.5-4.5"/></svg><h2>'+title+'</h2></button>'
-    +'<div class="secctl"><button type="button" data-act="secmove" data-s="'+id+'" data-d="-1" aria-label="Move '+title+' up" title="Move up">↑</button><button type="button" data-act="secmove" data-s="'+id+'" data-d="1" aria-label="Move '+title+' down" title="Move down">↓</button></div></div>'
+    +'<div class="secctl">'+(id==='classes'&&S.courses.length>1?'<button type="button" class="rord'+(reorder?' on':'')+'" data-act="reorder">'+(reorder?'Done':'Reorder')+'</button>':'')+'<button type="button" data-act="secmove" data-s="'+id+'" data-d="-1" aria-label="Move '+title+' up" title="Move up">↑</button><button type="button" data-act="secmove" data-s="'+id+'" data-d="1" aria-label="Move '+title+' down" title="Move down">↓</button></div></div>'
     +'<div class="secbody"><div class="secin">'+body+'</div></div></section>';
 }
 function moveSec(id,d){
@@ -1076,18 +1091,18 @@ function moveSec(id,d){
 function homeView(){
   if(!S.courses.length) return emptyHome();
   const anyScore=S.courses.some(c=>c.cats.some(k=>k.items.some(it=>it.e!=null)));
-  const tiles=S.courses.map(function(c){
+  const tiles=S.courses.map(function(c,ci){
     const cur=courseRes(c,'cur'), wi=courseRes(c,'whatif');
     let late=0; c.cats.forEach(k=>k.items.forEach(it=>{ if(it.d&&it.d<TODAY&&it.e==null&&!it.opt) late++; }));
-    return '<button class="tile" style="--c:'+COLORS[c.id]+';--fg:'+TILE[c.id]+'" data-act="go" data-v="'+c.id+'">'
+    const mv=reorder?'<div class="tmv"><button type="button" data-act="classmove" data-c="'+c.id+'" data-d="-1" aria-label="Move '+esc(c.name)+' earlier"'+(ci===0?' disabled':'')+'>←</button><button type="button" data-act="classmove" data-c="'+c.id+'" data-d="1" aria-label="Move '+esc(c.name)+' later"'+(ci===S.courses.length-1?' disabled':'')+'>→</button></div>':'';
+    return '<div class="tw" data-id="'+c.id+'">'+mv+'<button class="tile" style="--c:'+COLORS[c.id]+';--fg:'+TILE[c.id]+'" data-act="go" data-v="'+c.id+'">'
       +'<div class="nm">'+esc(c.name)+'</div><div class="cd">'+esc(c.code)+'</div>'
       +'<div class="L">'+letterOf(c,cur.pct)+'</div>'
       +'<div class="row"><span class="p">'+(cur.pct==null?'No scores yet':pctS(cur.pct))+'</span><span class="pj">What-if <b>'+letterOf(c,wi.pct)+' · '+pctS(wi.pct)+'</b></span></div>'
       +'<div class="tbar"><i style="width:'+Math.round(cur.progress*100)+'%"></i></div>'
       +'<small>'+Math.round(cur.progress*100)+'% of the grade is in</small>'
-      +tileNeed(c)
       +(late&&cur.pct!=null?'<span class="late">'+late+' past due, no score entered</span>':'')
-      +'</button>';
+      +'</button></div>';
   }).join('');
   const lim=isoPlus(14), up=[];
   S.courses.forEach(c=>c.cats.forEach(k=>k.items.forEach(it=>{ if(it.d&&it.e==null&&!it.opt&&it.d>=TODAY&&it.d<=lim) up.push({d:it.d,dl:it.dl,c:c.name,id:c.id,n:it.n}); })));
@@ -1108,7 +1123,10 @@ function homeView(){
       +(s.x||[]).map(n=>pastRow([n],'–','no credit')).join('')
       +'<div class="semnote">Cumulative after this semester: <b>'+g2(qp/cr)+'</b>'+((OLD_X[si]||[]).length?'<br>Not in GPA (0.00 in your sheet): '+OLD_X[si].map(esc).join(', '):'')+'</div></div></section>';
   }).join('');
-  const banner=anyScore?'':'<div class="banner"><b>Start with what you already have.</b> Upload a grade file, or open a class and fill in the Earned column. <label class="btn pri" style="cursor:pointer;margin-left:8px">Upload grade file<input type="file" id="bkfile2" accept=".json,application/json" hidden></label></div>';
+  const upl='<label class="btn pri" style="cursor:pointer;margin-left:8px">Upload grade file<input type="file" id="bkfile2" accept=".json,application/json" hidden></label>';
+  const showBanner=!anyScore&&!LAY.bn;
+  const banner=showBanner?'<div class="banner dismissable"><b>Start with what you already have.</b> Upload a grade file, or open a class and fill in the Earned column. '+upl+'<button type="button" class="bx" data-act="dismissbanner" aria-label="Dismiss" title="Dismiss">×</button></div>':'';
+  const bottomUp=(!anyScore&&LAY.bn)?'<div class="uprow"><label class="uplink">Upload a grade file<input type="file" id="bkfile2" accept=".json,application/json" hidden></label></div>':'';
   const gpaTable='<div id="gpasum"></div><div class="card panel scroll"><table><thead><tr><th>Class</th><th>Credits</th><th class="r">Now</th><th class="r">What-if</th><th class="r">Letter to use</th></tr></thead><tbody>'+gpaRows+'</tbody></table></div>'+(!PRIOR.length?baseHtml():'');
   const secs={
     classes:{t:'This semester',b:'<div class="tiles">'+tiles+'</div><button class="addclass" data-act="newclass"><span>＋</span> Add class</button>'},
@@ -1120,7 +1138,7 @@ function homeView(){
   return semTitle()
     +'<div id="heroBox">'+heroHtml()+'</div>'+banner
     +secOrder(Object.keys(secs)).map(id=>secHtml(id,secs[id].t,secs[id].b)).join('')
-    +backupHtml();
+    +bottomUp+backupHtml();
 }
 
 function ecHtml(c){
@@ -1535,9 +1553,18 @@ function catEdit(c,k,ki){
 document.addEventListener('click',function(ev){
   const b=ev.target.closest('[data-act]'); if(!b) return;
   const a=b.dataset.act;
-  if(a==='go'){ view=b.dataset.v; wipeArmed=false; editing=false; setHash(); render(); window.scrollTo(0,0); return; }
+  if(a==='go'){ view=b.dataset.v; wipeArmed=false; editing=false; reorder=false; setHash(); render(); window.scrollTo(0,0); return; }
   if(a==='jump'){ view='home'; wipeArmed=false; setHash(); render(); const el=document.getElementById(b.dataset.t); if(el&&el.classList.contains('col')){ delete LAY.col[el.dataset.sec]; saveLay(); el.classList.remove('col'); } if(el) el.scrollIntoView(); else window.scrollTo(0,0); return; }
   if(a==='sectoggle'){ const id=b.dataset.s; LAY.col[id]=!LAY.col[id]; saveLay(); b.closest('.hsec').classList.toggle('col',!!LAY.col[id]); b.setAttribute('aria-expanded',String(!LAY.col[id])); return; }
+  if(a==='reorder'){ reorder=!reorder; render(true); return; }
+  if(a==='classmove'){
+    const i=S.courses.findIndex(x=>x.id===b.dataset.c), j=i+(+b.dataset.d); if(i<0||j<0||j>=S.courses.length) return;
+    const before={}; document.querySelectorAll('.tw').forEach(e=>{ before[e.dataset.id]=e.getBoundingClientRect(); });
+    const t=S.courses[i]; S.courses[i]=S.courses[j]; S.courses[j]=t; save(); render(true);
+    if(!REDUCED) document.querySelectorAll('.tw').forEach(e=>{ const o=before[e.dataset.id]; if(!o) return; const n=e.getBoundingClientRect(); const dx=o.left-n.left, dy=o.top-n.top; if(dx||dy) e.animate([{transform:'translate('+dx+'px,'+dy+'px)'},{transform:'none'}],{duration:380,easing:'cubic-bezier(.2,.7,.2,1)'}); });
+    return;
+  }
+  if(a==='dismissbanner'){ LAY.bn=true; saveLay(); const bn=b.closest('.banner'); if(bn){ bn.classList.add('gone'); setTimeout(function(){ render(true); },320); } else render(true); return; }
   if(a==='secmove'){ moveSec(b.dataset.s,+b.dataset.d); return; }
   const c=b.dataset.c?getC(b.dataset.c):null;
   if(a==='add'){ c.cats[+b.dataset.k].items.push(I('New item',(c.pooled?5:100))); save(); render(); }
