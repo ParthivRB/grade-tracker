@@ -1046,7 +1046,7 @@ function heroHtml(){
     +(gp.cr?'<p class="sub">'+gp.cr+' credits counted</p>':'<div class="after">Add credits in the GPA section to see a what-if GPA for this semester.</div>')
     +'</div></section>';
   return '<section class="hero"><div class="hl"><div class="lab">Cumulative GPA</div><div class="gnum">'+g2(PRIOR_QP/PRIOR_CR)+'</div>'
-    +'<p class="sub">Past semesters · '+PRIOR_CR+' graded credits</p>'
+    +'<p class="sub">'+(gp.cr?gp.cr+' credits this semester':'No credits set this semester')+' · '+(PRIOR_CR+gp.cr)+' total</p>'
     +(gp.cr?'<div class="after"><b>'+g2(gp.cum)+'</b> with your what-ifs</div>':'<div class="after">Add credits in the GPA section to see a what-if GPA for this semester.</div>')
     +'</div><div class="hc">'+chartSvg(cumPoints(gp))+'</div></section>';
 }
