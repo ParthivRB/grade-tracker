@@ -204,9 +204,9 @@ input[type=time]:focus,input[type=date]:focus{border-color:var(--blue);backgroun
 .dh.off{opacity:.4}
 .dlab{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);padding:6px 6px 0 0;text-align:right}
 .dues{display:flex;flex-direction:column;gap:4px;padding:2px 3px 10px;min-width:0}
-.due{all:unset;cursor:pointer;box-sizing:border-box;font:700 11px "Plus Jakarta Sans",system-ui,sans-serif;padding:4px 8px;border-radius:8px;border-left:3px solid var(--c);background:color-mix(in srgb,var(--c) 20%,transparent);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
-.due.ev2{background:var(--c);color:#111;border-left-color:transparent}
-.due.dn{opacity:.5;text-decoration:line-through}
+.cdue{all:unset;cursor:pointer;box-sizing:border-box;font:700 11px "Plus Jakarta Sans",system-ui,sans-serif;padding:4px 8px;border-radius:8px;border-left:3px solid var(--c);background:color-mix(in srgb,var(--c) 20%,transparent);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.cdue.ev2{background:var(--c);color:#111;border-left-color:transparent}
+.cdue.dn{opacity:.5;text-decoration:line-through}
 .axis{position:relative;height:var(--H)}
 .axis span{position:absolute;right:8px;transform:translateY(-50%);font-size:11px;font-weight:600;color:var(--mut)}
 .cdcol{position:relative;height:var(--H);border-left:1px solid var(--line);background-image:linear-gradient(var(--line) 1px,transparent 1px);background-size:100% var(--rh);cursor:copy;transition:background-color .2s ease}
@@ -250,7 +250,7 @@ input[type=time]:focus,input[type=date]:focus{border-color:var(--blue);backgroun
   .dh span{min-width:28px;height:28px;font-size:14px}
   .dh b{font-size:9px}
   .axis span{right:4px;font-size:9.5px}
-  .due{font-size:9.5px;padding:3px 5px}
+  .cdue{font-size:9.5px;padding:3px 5px}
   .dlab{font-size:8px;padding-right:3px}
 }
 .calbtn{display:none}
@@ -286,7 +286,7 @@ input[type=time]:focus,input[type=date]:focus{border-color:var(--blue);backgroun
 .dh b{font-size:11.5px;margin-bottom:8px}
 .dh span{min-width:42px;height:42px;font-size:20px}
 .dues{gap:6px;padding:2px 5px 14px}
-.due{padding:6px 10px;border-radius:10px;font-size:12px}
+.cdue{padding:6px 10px;border-radius:10px;font-size:12px}
 .dlab{padding:8px 10px 0 0}
 .axis span{right:12px;font-size:11.5px}
 .axis span.f0{transform:none}
@@ -310,7 +310,7 @@ input[type=time]:focus,input[type=date]:focus{border-color:var(--blue);backgroun
 .offlab{position:absolute;top:10px;left:6px;right:6px;text-align:center;pointer-events:none}
 .offlab b{display:block;font-size:12px;line-height:1.2;color:var(--ink);letter-spacing:-0.01em}
 .offlab small{display:inline-block;margin-top:5px;font:800 9.5px "Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:99px;background:var(--oc);color:#111}
-.due.offchip{background:var(--c);color:#111;border-left-color:transparent}
+.cdue.offchip{background:var(--c);color:#111;border-left-color:transparent}
 .dh.isoff span{box-shadow:inset 0 0 0 2px var(--line)}
 .wk.hasoff{position:relative}
 .wk.hasoff:after{content:"";position:absolute;right:4px;top:4px;width:6px;height:6px;border-radius:99px;background:#FF6FA8}
@@ -1883,8 +1883,8 @@ function calBody(){
   let g='<div class="calgrid" style="--n:'+nd+';--H:'+H+'px;--rh:'+CAL_RH+'px">';
   g+='<div></div>'+dayEvents.map(x=>{ const d=pd(x.d); return '<div class="dh'+(x.d===TODAY?' today':'')+(inSem(x.d)?'':' off')+(x.off?' isoff':'')+'"><b>'+DAYN[d.getDay()]+'</b><span>'+d.getDate()+'</span></div>'; }).join('');
   if(hasTop){
-    g+='<div class="dlab">Due</div>'+dayEvents.map(x=>'<div class="dues">'+(x.off?'<button type="button" class="due offchip" style="--c:'+OFFK[x.off.kind][1]+'" data-act="offedit" data-id="'+x.off.id+'" title="'+esc(x.off.t)+'">'+esc(x.off.t)+'</button>':'')+x.allDay.map(e=>'<button type="button" class="due ev2" style="--c:'+e.color+'" data-act="evedit" data-id="'+e.id+'" title="'+esc(e.t)+'">'+esc(e.t)+'</button>').join('')
-      +x.dues.map(u=>'<button type="button" class="due'+(u.it.e!=null?' dn':'')+'" style="--c:'+COLORS[u.c.id]+'" data-act="go" data-v="'+u.c.id+'" title="'+esc(u.c.name+' · '+u.it.n)+'">'+esc(u.it.n)+'</button>').join('')+'</div>').join('');
+    g+='<div class="dlab">Due</div>'+dayEvents.map(x=>'<div class="dues">'+(x.off?'<button type="button" class="cdue offchip" style="--c:'+OFFK[x.off.kind][1]+'" data-act="offedit" data-id="'+x.off.id+'" title="'+esc(x.off.t)+'">'+esc(x.off.t)+'</button>':'')+x.allDay.map(e=>'<button type="button" class="cdue ev2" style="--c:'+e.color+'" data-act="evedit" data-id="'+e.id+'" title="'+esc(e.t)+'">'+esc(e.t)+'</button>').join('')
+      +x.dues.map(u=>'<button type="button" class="cdue'+(u.it.e!=null?' dn':'')+'" style="--c:'+COLORS[u.c.id]+'" data-act="go" data-v="'+u.c.id+'" title="'+esc(u.c.name+' · '+u.it.n)+'">'+esc(u.it.n)+'</button>').join('')+'</div>').join('');
   }
   let ax=''; for(let h=h0;h<=h1;h++) ax+='<span'+(h===h0?' class="f0"':'')+' style="top:'+((h-h0)*CAL_RH)+'px">'+(h===h1?'':fmtT(h*60,true).replace(':00',''))+'</span>';
   g+='<div class="axis">'+ax+'</div>';
