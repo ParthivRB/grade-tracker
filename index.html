@@ -157,11 +157,15 @@ td select{width:116px}
 .semtop .g{font-family:var(--disp);font-size:28px;font-weight:800;letter-spacing:-0.05em;line-height:1;text-align:right}
 .semtop .g small{display:block;font:600 12px "Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:0;margin-top:6px;opacity:.85}
 .semb{padding:8px 24px 20px}
-.sem.tr{margin-top:16px;max-width:300px}
-.sem.tr .semtop{padding:10px 16px}
-.sem.tr h3{font-size:14px}
-.sem.tr .g input{width:64px;font:800 20px var(--disp);letter-spacing:-0.04em;text-align:right;background:transparent;border:0;border-bottom:1.5px solid currentColor;color:inherit;padding:0 2px;-moz-appearance:textfield}
-.sem.tr .g small{margin-top:3px;font-size:11px}
+.sem.tr{margin-top:16px}
+.sem.tr .semtop{padding:14px 24px}
+.sem.tr h3{font-size:15px}
+.sem.tr .g{display:flex;align-items:center;gap:12px;font-size:14px}
+.sem.tr .g input{width:84px;font:800 18px var(--disp);letter-spacing:-0.03em;text-align:center;background:rgba(127,127,127,.16);border:1.5px solid transparent;border-radius:10px;color:inherit;padding:8px 10px;outline:0;-moz-appearance:textfield}
+.sem.tr .g input:focus{border-color:var(--acc,currentColor)}
+.sem.tr .g input::placeholder{color:inherit;opacity:.35}
+.sem.tr .g input::-webkit-outer-spin-button,.sem.tr .g input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.sem.tr .g small{display:inline;margin:0;font-size:12px}
 .cr{display:grid;grid-template-columns:minmax(0,1fr) 42px 56px 42px;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:14.5px}
 .cr:last-of-type{border-bottom:0}
 .cr .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
