@@ -157,6 +157,11 @@ td select{width:116px}
 .semtop .g{font-family:var(--disp);font-size:28px;font-weight:800;letter-spacing:-0.05em;line-height:1;text-align:right}
 .semtop .g small{display:block;font:600 12px "Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:0;margin-top:6px;opacity:.85}
 .semb{padding:8px 24px 20px}
+.sem.tr{margin-top:16px;max-width:300px}
+.sem.tr .semtop{padding:10px 16px}
+.sem.tr h3{font-size:14px}
+.sem.tr .g input{width:64px;font:800 20px var(--disp);letter-spacing:-0.04em;text-align:right;background:transparent;border:0;border-bottom:1.5px solid currentColor;color:inherit;padding:0 2px;-moz-appearance:textfield}
+.sem.tr .g small{margin-top:3px;font-size:11px}
 .cr{display:grid;grid-template-columns:minmax(0,1fr) 42px 56px 42px;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:14.5px}
 .cr:last-of-type{border-bottom:0}
 .cr .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
@@ -660,7 +665,7 @@ function fromSimple(src){
 function loadAny(src){
   if(src&&(Array.isArray(src.semesters)||Array.isArray(src.earlier))&&!src.sems&&!src.courses){ const w=fromSimple(src); setHistory(w); return w; }
   if(src&&Array.isArray(src.sems)){
-    const w={v:3,active:src.active,sems:src.sems.map(sm=>({id:sm.id||uid(),name:sm.name||'Semester',short:sm.short||'',done:!!sm.done,gpaPick:sm.gpaPick||{},courses:(sm.courses||[]).map(normCourse)})),ts:src.ts||0,base:src.base||null};
+    const w={v:3,active:src.active,sems:src.sems.map(sm=>({id:sm.id||uid(),name:sm.name||'Semester',short:sm.short||'',done:!!sm.done,gpaPick:sm.gpaPick||{},courses:(sm.courses||[]).map(normCourse)})),ts:src.ts||0,base:src.base||null,transfer:(src.transfer>0?+src.transfer:0)};
     if(!w.sems.length){ const e=emptyW(); w.sems=e.sems; w.active=e.active; }
     if(!w.sems.some(x=>x.id===w.active)) w.active=w.sems[0].id;
     setHistory(src); w.prior=PRIOR; w.oldPct=OLD_PCT; w.oldX=OLD_X; w.history=HIST;
@@ -1046,7 +1051,7 @@ function heroHtml(){
     +(gp.cr?'<p class="sub">'+gp.cr+' credits counted</p>':'<div class="after">Add credits in the GPA section to see a what-if GPA for this semester.</div>')
     +'</div></section>';
   return '<section class="hero"><div class="hl"><div class="lab">Cumulative GPA</div><div class="gnum">'+g2(PRIOR_QP/PRIOR_CR)+'</div>'
-    +'<p class="sub">'+(gp.cr?gp.cr+' credits this semester':'No credits set this semester')+' · '+(PRIOR_CR+gp.cr)+' total</p>'
+    +'<p class="sub">'+(gp.cr?gp.cr+' credits this semester':'No credits set this semester')+' · '+(PRIOR_CR+gp.cr+(W.transfer||0))+' total</p>'
     +(gp.cr?'<div class="after"><b>'+g2(gp.cum)+'</b> with your what-ifs</div>':'<div class="after">Add credits in the GPA section to see a what-if GPA for this semester.</div>')
     +'</div><div class="hc">'+chartSvg(cumPoints(gp))+'</div></section>';
 }
@@ -1148,6 +1153,7 @@ function homeView(){
       +(s.x||[]).map(n=>pastRow([n],'–','no credit')).join('')
       +'<div class="semnote">Cumulative after this semester: <b>'+g2(qp/cr)+'</b>'+((OLD_X[si]||[]).length?'<br>Not in GPA (0.00 in your sheet): '+OLD_X[si].map(esc).join(', '):'')+'</div></div></section>';
   }).join('');
+  const trCard='<section class="card sem tr"><div class="semtop" style="--hd:var(--card2,rgba(127,127,127,.16));--hf:var(--ink)"><h3>Transfer credit</h3><div class="g"><input type="number" min="0" step="0.5" inputmode="decimal" data-f="transfer" value="'+(W.transfer||'')+'" placeholder="0" aria-label="Transfer credits"><small>credits, not in GPA</small></div></div></section>';
   const upl='<label class="btn pri" style="cursor:pointer;margin-left:8px">Upload grade file<input type="file" id="bkfile2" accept=".json,application/json" hidden></label>';
   const showBanner=!anyScore&&!LAY.bn;
   const banner=showBanner?'<div class="banner dismissable"><b>Start with what you already have.</b> Upload a grade file, or open a class and fill in the Earned column. '+upl+'<button type="button" class="bx" data-act="dismissbanner" aria-label="Dismiss" title="Dismiss">×</button></div>':'';
@@ -1159,7 +1165,7 @@ function homeView(){
     gpa:{t:'GPA planner',b:gpaTable},
     projected:{t:'Projected final',b:'<div id="projbox">'+projHomeHtml()+'</div>'}
   };
-  if(PRIOR.length) secs.history={t:'Past semesters',b:'<div class="semgrid">'+cards+'</div>'};
+  if(PRIOR.length) secs.history={t:'Past semesters',b:'<div class="semgrid">'+cards+'</div>'+trCard};
   return semTitle()
     +'<div id="heroBox">'+heroHtml()+'</div>'+banner
     +secOrder(Object.keys(secs)).map(id=>secHtml(id,secs[id].t,secs[id].b)).join('')
@@ -1434,6 +1440,7 @@ document.addEventListener('input',function(ev){
   else if(f==='catrp'){ c.cats[+t.dataset.k].rp=t.checked; save(); render(true); return; }
   else if(f==='basecr'||f==='basegpa'){ W.base=W.base||{cr:null,gpa:null}; W.base[f==='basecr'?'cr':'gpa']=num(t.value); refreshPrior(); }
   else if(f==='pick'){ S.gpaPick[c.id]=t.value; }
+  else if(f==='transfer'){ W.transfer=Math.max(0,num(t.value)||0); }
   if(f==='e'){
     const row=t.closest('.grid'), du=row&&row.querySelector('[data-due]');
     const it=c.cats[+t.dataset.k].items[+t.dataset.i];
