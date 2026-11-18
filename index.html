@@ -1197,6 +1197,20 @@ button.rpct:hover{transform:translateY(-1px);box-shadow:0 0 0 2px var(--c)}
 #rwarn .rwarn{margin-top:12px;padding:10px 14px;border-radius:14px;background:var(--warn-soft);color:var(--warn);font-weight:700;font-size:13.5px}
 .qrule{gap:10px 20px}
 @media (max-width:720px){ .crules{padding:14px 16px} .crow>b{flex:1 1 100%} }
+
+.chctl{display:flex;align-items:center;gap:10px}
+.wibtn.sm{margin-left:12px;padding:5px 11px;font-size:12px;vertical-align:middle;gap:6px}
+.wibtn.sm svg{width:13px;height:13px}
+.glabel .wibtn{font-family:inherit}
+.wipick{display:flex;flex-direction:column;gap:7px}
+.wil{font-size:11.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;opacity:.85}
+.wipills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.wip{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:99px;font-weight:700;font-size:13.5px;background:color-mix(in srgb,var(--fg) 12%,transparent);color:var(--fg);transition:background-color .15s,color .15s,transform .15s}
+.wip:hover{background:color-mix(in srgb,var(--fg) 22%,transparent)}
+.wip:active{transform:scale(.95)}
+.wip.on{background:var(--fg);color:var(--c)}
+.wip i{font-style:normal;font-size:11px;opacity:.8}
+.wiq{margin-top:12px}
 </style></head><body><header class="top" id="shell-header"><div class="wrap">
   <button class="brand" data-act="go" data-v="home" aria-label="Tally home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="22" fill="#0D1226"/><path d="M21.5 33.5 29 41 43 25" fill="none" stroke="#FFB81C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="t">Tally</span></button>
   <div class="right"><nav class="tabs" aria-label="Sections">
@@ -2010,7 +2024,7 @@ function courseView(c){
     +(editing?editPanel(c):'')+notes+'</div>';
   return '<div class="cpage" style="--c:'+COLORS[c.id]+';--fg:'+TILE[c.id]+'"><div class="cpbar"><div class="cpl"><button class="back" data-act="go" data-v="home">← All classes</button><button type="button" class="editlink'+(editing?' on':'')+'" data-act="edit" data-c="'+c.id+'">'+(editing?'Done editing':'✎ Edit')+'</button></div>'+cc+'</div>'
     +'<section class="cband"><header class="chead"><div><h1>'+esc(c.name)+'</h1><p>'+esc(subOf(c))+'</p></div>'
-    +'<div class="chctl"><button type="button" class="wibtn" data-act="wiopen" data-c="'+c.id+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/></svg>Try a what-if</button><label class="fld">Credits <input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="–"></label></div></header>'
+    +'<div class="chctl"><label class="fld">Credits <input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="–"></label></div></header>'
     +'<div id="sum"></div></section>'
     +(editing?editPanel(c):'')+classRules(c)+wn+cats+'<button type="button" class="addsec" data-act="secnew" data-c="'+c.id+'"><span>＋</span> Add a section<small>Homework, labs, exams, participation…</small></button>'+ec
     +'<section class="card csum" id="projcard"><h2 class="projh">Projected final</h2><div id="projsum"></div>'
@@ -2026,7 +2040,7 @@ function sumHtml(c){
   const as=c.scaleAssumed?' · assumed +/− scale':'';
   return '<div class="gblocks">'
     +'<div><div class="glabel">Graded so far</div><div class="gletter" data-s="cL"></div><div class="gpct" data-s="cP"></div><div class="ghint" data-s="cH"></div></div>'
-    +'<div><div class="glabel">What-if final</div><div class="gletter" data-s="wL"></div><div class="gpct" data-s="wP"></div><div class="ghint">'+as.replace(/^ · /,'')+'</div></div></div>'
+    +'<div><div class="glabel">What-if final<button type="button" class="wibtn sm" data-act="wiopen" data-c="'+c.id+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/></svg>Try a what-if</button></div><div class="gletter" data-s="wL"></div><div class="gpct" data-s="wP"></div><div class="ghint">'+as.replace(/^ · /,'')+'</div></div></div>'
     +'<div class="track" title="Share of the grade that has a score"><i data-s="bar"></i></div>';
 }
 const REDUCED=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -2439,13 +2453,17 @@ function wiOpen(c,ki,ii){
   const ov=document.createElement('div'); ov.className='wio'; ov.style.setProperty('--c',COLORS[c.id]); ov.style.setProperty('--fg',TILE[c.id]);
   ov.innerHTML='<div class="wic" role="dialog" aria-modal="true" aria-label="What-if"><div class="wih"><div><b>'+esc(c.name)+'</b><small>What-if final grade</small></div><button type="button" class="wix" data-w="x" aria-label="Close">×</button></div>'
     +'<div class="wig"><span class="wiL"></span><span class="wiP"></span><span class="wiD"></span></div>'
-    +'<label class="wisel"><span>Item</span><select>'+list.map((x,j)=>'<option value="'+j+'">'+esc(x.k.name)+' · '+esc(x.it.n||'Item')+(x.it.e!=null?' (graded)':'')+'</option>').join('')+'</select></label>'
+    +'<div class="wipick"><span class="wil">Section</span><div class="wipills" id="wiSec"></div><span class="wil">Assignment</span><div class="wipills" id="wiIt"></div></div>'
     +'<div class="wir"><span>Score</span><b class="wiV"></b></div><input type="range" class="wiR"><div class="witk"><span>0</span><span class="wimid"></span><span class="wimax"></span></div>'
     +'<div class="wiq"></div>'
     +'<div class="wia"><button type="button" class="wbtn ghost" data-w="clear">Clear what-if</button><button type="button" class="wbtn" data-w="keep">Keep it</button></div></div>';
   document.body.appendChild(ov); requestAnimationFrame(function(){ ov.classList.add('open'); });
-  const sel=ov.querySelector('select'), R=ov.querySelector('.wiR'), L=ov.querySelector('.wiL'), P=ov.querySelector('.wiP'), D=ov.querySelector('.wiD'), V=ov.querySelector('.wiV'), Q=ov.querySelector('.wiq');
-  sel.value=String(list.indexOf(cur));
+  const R=ov.querySelector('.wiR'), L=ov.querySelector('.wiL'), P=ov.querySelector('.wiP'), D=ov.querySelector('.wiD'), V=ov.querySelector('.wiV'), Q=ov.querySelector('.wiq');
+  function pills(){
+    const secs=c.cats.map((k,a)=>({a:a,k:k})).filter(x=>x.k.items.length);
+    ov.querySelector('#wiSec').innerHTML=secs.map(x=>'<button type="button" class="wip'+(x.a===cur.a?' on':'')+'" data-w="sec" data-a="'+x.a+'">'+esc(x.k.name)+'</button>').join('');
+    ov.querySelector('#wiIt').innerHTML=cur.k.items.map((it,b)=>'<button type="button" class="wip'+(b===cur.b?' on':'')+(it.e!=null?' done':'')+'" data-w="item" data-b="'+b+'">'+esc(it.n||'Item')+(it.e!=null?'<i>✓</i>':it.w!=null?'<i>◆</i>':'')+'</button>').join('');
+  }
   const baseRes=()=>courseRes(c,'whatif').pct;
   function setItem(){
     const p=cur.it.p||100, st=p>=40?1:0.5; R.min=0; R.max=p; R.step=st;
@@ -2467,17 +2485,18 @@ function wiOpen(c,ki,ii){
   function close(){ ov.classList.remove('open'); document.removeEventListener('keydown',kd,true); setTimeout(function(){ ov.remove(); },260); }
   const kd=function(e){ if(e.key==='Escape'){ e.stopPropagation(); close(); } };
   document.addEventListener('keydown',kd,true);
-  sel.addEventListener('change',function(){ cur=list[+sel.value]; setItem(); });
   R.addEventListener('input',upd);
   ov.addEventListener('click',function(e){
     if(e.target===ov){ close(); return; }
     const b=e.target.closest('[data-w]'); if(!b) return; const w=b.dataset.w;
     if(w==='x') close();
+    else if(w==='sec'){ const a=+b.dataset.a, k=c.cats[a]; const nb=Math.max(0,k.items.findIndex(x=>x.e==null&&!x.opt)); cur=list.find(x=>x.a===a&&x.b===nb)||list.find(x=>x.a===a); pills(); setItem(); }
+    else if(w==='item'){ cur=list.find(x=>x.a===cur.a&&x.b===+b.dataset.b); pills(); setItem(); }
     else if(w==='q'){ R.value=b.dataset.v; upd(); }
     else if(w==='keep'){ cur.it.w=+R.value; save(); close(); render(true); }
     else if(w==='clear'){ cur.it.w=null; save(); close(); render(true); }
   });
-  setItem(); setTimeout(function(){ R.focus({preventScroll:true}); },200);
+  pills(); setItem(); setTimeout(function(){ R.focus({preventScroll:true}); },200);
 }
 function secModal(c){
   openModal('Add a section',
