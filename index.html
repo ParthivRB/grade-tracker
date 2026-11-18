@@ -233,27 +233,7 @@ input[type=time]:focus,input[type=date]:focus{border-color:var(--blue);backgroun
 .evc input:checked+i{box-shadow:0 0 0 3px var(--elev),0 0 0 5px var(--ink);transform:scale(1.05)}
 .chk2{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
 .chk2 input{width:20px;height:20px;accent-color:var(--blue)}
-@media (max-width:720px){
-  .calgrid{grid-template-columns:32px repeat(var(--n),minmax(0,1fr));min-width:0}
-  .calscroll{padding:0 4px 16px}
-  .caltb{padding:18px 14px 12px}
-  .dh span{min-width:30px!important;height:30px!important}
-  .cal .calhead{padding:16px 10px}
-  .caltop,.calsum,.calprog,.wks{padding-left:6px;padding-right:6px}
-  .calcard{border-radius:20px}
-  .tabs button[data-act=jump]{display:none}
-  .tabs button{padding:8px 10px}
-  .ev{padding:5px 6px;border-radius:10px}
-  .ev .nm{font-size:11px}
-  .ev .tm{font-size:9.5px}
-  .ev .lc{display:none}
-  .dh span{min-width:28px;height:28px;font-size:14px}
-  .dh b{font-size:9px}
-  .axis span{right:4px;font-size:9.5px}
-  .cdue{font-size:9.5px;padding:3px 5px}
-  .dlab{font-size:8px;padding-right:3px}
-}
-.calbtn{display:none}
+.tg.calbtn{display:none}
 .tp{display:inline-block}
 .tpbtn{all:unset;cursor:pointer;box-sizing:border-box;padding:9px 14px;min-width:108px;text-align:center;border-radius:12px;background:var(--soft);font-weight:700;font-size:14px;color:var(--ink);border:2px solid transparent;transition:border-color .18s ease,background-color .18s ease}
 .tpbtn:hover{border-color:var(--line)}
@@ -328,7 +308,7 @@ input[type=time]:focus,input[type=date]:focus{border-color:var(--blue);backgroun
 .lg i{width:14px;height:14px;margin-top:3px}
 .cdcol.offday{border-left-color:color-mix(in srgb,var(--oc) 45%,var(--line))}
 .cdcol.offday.joined{border-left-color:transparent}
-.offbg{position:absolute;top:0;bottom:0;left:0;z-index:0;pointer-events:none;background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--oc) 11%,transparent) 0 9px,transparent 9px 18px),linear-gradient(180deg,color-mix(in srgb,var(--oc) 16%,transparent),color-mix(in srgb,var(--oc) 5%,transparent))}
+.offbg{position:absolute;top:0;bottom:0;left:0;z-index:0;pointer-events:none;background:linear-gradient(180deg,color-mix(in srgb,var(--oc) 14%,transparent),color-mix(in srgb,var(--oc) 4%,transparent) 70%);border-radius:0 0 4px 4px}
 .offrow{grid-column:2 / -1;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));padding:0 0 12px}
 .offban{all:unset;cursor:pointer;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;gap:1px;min-height:46px;margin:0 4px;padding:8px 16px;border-radius:16px;background:linear-gradient(165deg,color-mix(in srgb,var(--c) 82%,#fff),var(--c));color:#10131c;box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 10px 22px -14px var(--c);transition:transform .18s ease}
 .offban:hover{transform:translateY(-1px)}
@@ -347,7 +327,7 @@ input[type=time]:focus,input[type=date]:focus{border-color:var(--blue);backgroun
 .off{all:unset;cursor:pointer;box-sizing:border-box;display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:18px;background:var(--elev);border:1px solid var(--line);position:relative;overflow:hidden;transition:transform .18s ease,border-color .18s ease}
 .off:hover{transform:translateY(-2px);border-color:var(--c)}
 .off:before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:var(--c)}
-.off i{width:38px;height:38px;border-radius:12px;flex:0 0 auto;margin-left:6px;background:repeating-linear-gradient(135deg,var(--c) 0 5px,color-mix(in srgb,var(--c) 45%,transparent) 5px 10px)}
+.off i{width:38px;height:38px;border-radius:12px;flex:0 0 auto;margin-left:6px;background:linear-gradient(160deg,color-mix(in srgb,var(--c) 80%,#fff),var(--c))}
 .off div{flex:1;min-width:0}
 .off b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .off small{display:block;color:var(--mut);font-size:12.5px;margin-top:2px}
@@ -653,6 +633,59 @@ textarea{width:100%;min-height:120px;background:var(--soft);border:1px solid var
   .cathead,.rule,.addrow{padding-left:16px;padding-right:16px}
   .up{grid-template-columns:1fr}
   .brand span.t{display:none}
+}
+@media (max-width:720px){
+  .calgrid{grid-template-columns:46px minmax(0,1fr);min-width:0}
+  .calscroll{padding:0 12px 20px;overflow:visible}
+  .cal .calhead{padding:20px 18px}
+  .caltop{align-items:stretch;gap:12px;margin-bottom:18px}
+  .calname{width:100%}
+  .caldates{width:100%;gap:10px}
+  .caldates>div{flex:1;min-width:0}
+  .dpbtn{width:100%;min-width:0}
+  .calwk{font-size:40px}
+  .caltb{padding:18px 16px 10px;gap:10px}
+  .caltitle{flex:1 1 100%;order:-1;font-size:22px}
+  .calnav{order:0}
+  .caltb .btn{flex:1 1 calc(50% - 6px);white-space:nowrap;text-align:center;padding-left:8px;padding-right:8px}
+  .caltb .btn[data-w=today]{flex:1 1 calc(100% - 120px)}
+  .tabs button[data-act=jump]{display:none}
+  .tabs button{padding:8px 11px}
+  .calnav .tg{width:40px;height:40px}
+  .daystrip{display:flex;gap:6px;padding:6px 12px 12px}
+  .dsb{all:unset;cursor:pointer;flex:1;min-width:0;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 8px;border-radius:16px;background:var(--soft);color:var(--mut);transition:background-color .15s ease,color .15s ease}
+  .dsb b{font:700 10px "Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase}
+  .dsb span{font:800 18px var(--disp);letter-spacing:-0.04em;color:var(--ink)}
+  .dsb i{width:5px;height:5px;border-radius:99px;background:var(--blue)}
+  .dsb i.nil{background:transparent}
+  .dsb.tod span{color:var(--blue)}
+  .dsb.hasoff{box-shadow:inset 0 0 0 2px color-mix(in srgb,#FF6FA8 55%,transparent)}
+  .dsb.on{background:var(--blue)}
+  .dsb.on b,.dsb.on span{color:#fff}
+  .dsb.on i{background:#fff}
+  .dsb.on i.nil{background:transparent}
+  .offrow{grid-column:1 / -1;padding:2px 0 12px}
+  .dues,.dlab{padding-bottom:10px}
+  .cdue{font-size:12.5px;padding:7px 11px}
+  .ev .tm{font-size:12px}
+  .ev .lc{display:block}
+  .ev .nm{font-size:15px}
+  .axis span{font-size:11px;right:8px}
+  .offs{margin-top:24px}
+  .offact{width:100%}
+  .offact .btn{flex:1}
+  .offgrid,.callg{grid-template-columns:1fr}
+}
+@media (max-width:720px){
+  .gblocks{grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+  .gletter{font-size:clamp(46px,15vw,64px)}
+  .gpct{font-size:19px;margin-top:6px}
+  .glabel{font-size:13px}
+  .ghint{font-size:12px}
+  .cband{border-radius:28px;padding:22px 20px}
+  .ecsel{min-width:116px;margin-left:0}
+  .grid input[data-f=w]::placeholder{font-size:11px;letter-spacing:-0.02em}
+  .grid input{padding-left:8px;padding-right:6px}
 }
 </style></head><body><header class="top" id="shell-header"><div class="wrap">
   <button class="brand" data-act="go" data-v="home" aria-label="Grade Tracker home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="22" fill="#0D1226"/><path d="M21.5 33.5 29 41 43 25" fill="none" stroke="#FFB81C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="t">Grade Tracker</span></button>
@@ -1843,7 +1876,9 @@ function newClassModal(){
 }
 /* ---------- calendar ---------- */
 const DAYN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MONN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], CAL_RH=100;
-let calWk=null;
+let calWk=null, calDay=null;
+const calMQ=window.matchMedia('(max-width:720px)');
+calMQ.addEventListener?calMQ.addEventListener('change',function(){ if(view==='cal') calRedraw(); }):0;
 const pd=i=>new Date(i+'T12:00:00');
 const isoD=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const addD=(i,n)=>{ const d=pd(i); d.setDate(d.getDate()+n); return isoD(d); };
@@ -1889,10 +1924,11 @@ function calBody(){
   let lo=8*60,hi=17*60; meets.forEach(x=>{ lo=Math.min(lo,x.a); hi=Math.max(hi,x.b); }); evs.forEach(e=>{ if(!e.allDay){ const a=tMin(e.st), b=tMin(e.en); if(a!=null){ lo=Math.min(lo,a); hi=Math.max(hi,b!=null&&b>a?b:a+60); } } });
   const h0=Math.max(0,Math.floor(lo/60)), h1=Math.min(24,Math.ceil(hi/60)), H=(h1-h0)*CAL_RH;
   const wkend=meets.some(x=>x.m.days.includes(0)||x.m.days.includes(6))||evs.some(e=>{ for(let i=5;i<7;i++) if(evOn(e,addD(calWk,i))) return true; return false; });
-  const nd=wkend?7:5, days=[]; for(let i=0;i<nd;i++) days.push(addD(calWk,i));
+  const nd0=wkend?7:5, days=[]; for(let i=0;i<nd0;i++) days.push(addD(calWk,i));
+  const mob=calMQ.matches; if(!calDay||!days.includes(calDay)) calDay=days.includes(TODAY)?TODAY:days[0];
   const inSem=d=>!okR||(d>=st&&d<=en);
   const offOn=d=>offs.filter(o=>d>=o.start&&d<=o.end).sort((a,b)=>dayDiff(a.start,a.end)-dayDiff(b.start,b.end))[0];
-  const dayEvents=days.map(d=>{
+  const dayEventsAll=days.map(d=>{
     const L=[], offH=offOn(d); if(inSem(d)&&!offH) meets.forEach(x=>{ if(x.m.days.includes(pd(d).getDay())) L.push({a:x.a,b:x.b,col:COLORS[x.c.id],fg:TILE[x.c.id],t:x.c.name,loc:x.m.loc,go:'go',id:x.c.id}); });
     const allDay=[];
     evs.forEach(e=>{ if(!evOn(e,d)) return; if(e.allDay||tMin(e.st)==null) allDay.push(e); else { const a=tMin(e.st); let b=tMin(e.en); if(b==null||b<=a) b=a+60; L.push({a:a,b:b,col:e.color,fg:fgFor(e.color),t:e.t,loc:e.loc,go:'evedit',id:e.id}); } });
@@ -1903,14 +1939,15 @@ function calBody(){
     const dues=[]; S.courses.forEach(c=>c.cats.forEach(k=>k.items.forEach(it=>{ if(it.d===d&&!it.opt) dues.push({c:c,it:it}); })));
     return {d:d,blocks:out,allDay:allDay,dues:dues,off:offH};
   });
+  const dayEvents=mob?dayEventsAll.filter(x=>x.d===calDay):dayEventsAll, nd=dayEvents.length, vdays=dayEvents.map(x=>x.d);
   const hasTop=dayEvents.some(x=>x.allDay.length||x.dues.length);
   const segs=[]; dayEvents.forEach((x,i)=>{ if(!x.off) return; const prev=i>0&&dayEvents[i-1].off&&dayEvents[i-1].off.id===x.off.id; if(prev){ segs[segs.length-1].n++; } else segs.push({o:x.off,a:i,n:1}); });
   const segAt={}; segs.forEach(sg=>{ segAt[sg.a]=sg; });
   const nowM=(new Date()).getHours()*60+(new Date()).getMinutes();
   let g='<div class="calgrid" style="--n:'+nd+';--H:'+H+'px;--rh:'+CAL_RH+'px">';
-  g+='<div></div>'+dayEvents.map(x=>{ const d=pd(x.d); return '<div class="dh'+(x.d===TODAY?' today':'')+(inSem(x.d)?'':' off')+(x.off?' isoff':'')+'"><b>'+DAYN[d.getDay()]+'</b><span>'+d.getDate()+'</span></div>'; }).join('');
+  g+=(mob?'':'<div></div>')+dayEvents.map(x=>{ if(mob) return ''; const d=pd(x.d); return '<div class="dh'+(x.d===TODAY?' today':'')+(inSem(x.d)?'':' off')+(x.off?' isoff':'')+'"><b>'+DAYN[d.getDay()]+'</b><span>'+d.getDate()+'</span></div>'; }).join('');
   if(segs.length){
-    g+='<div></div><div class="offrow">'+segs.map(sg=>{ const o=sg.o, k=OFFK[o.kind], A=pd(o.start), B=pd(o.end), n=dayDiff(o.start,o.end)+1, cl=o.start<days[sg.a], cr=o.end>days[sg.a+sg.n-1];
+    g+='<div></div><div class="offrow">'+segs.map(sg=>{ const o=sg.o, k=OFFK[o.kind], A=pd(o.start), B=pd(o.end), n=dayDiff(o.start,o.end)+1, cl=o.start<vdays[sg.a], cr=o.end>vdays[sg.a+sg.n-1];
       const rng=n===1?MONN[A.getMonth()]+' '+A.getDate():MONN[A.getMonth()]+' '+A.getDate()+' – '+(A.getMonth()===B.getMonth()?'':MONN[B.getMonth()]+' ')+B.getDate();
       return '<button type="button" class="offban'+(cl?' contl':'')+(cr?' contr':'')+'" style="--c:'+k[1]+';grid-column:'+(sg.a+1)+' / '+(sg.a+sg.n+1)+'" data-act="offedit" data-id="'+o.id+'"><b>'+esc(o.t)+'</b><span>'+(sg.n>1?k[0]+' · '+rng+(n>1?' · '+n+' days':''):k[0])+'</span></button>'; }).join('')+'</div>';
   }
@@ -1942,8 +1979,9 @@ function calBody(){
       const rng=same?DAYN[A.getDay()]+', '+MONN[A.getMonth()]+' '+A.getDate():MONN[A.getMonth()]+' '+A.getDate()+' – '+(A.getMonth()===B.getMonth()?'':MONN[B.getMonth()]+' ')+B.getDate(), n=dayDiff(o.start,o.end)+1;
       return '<button type="button" class="off'+(past?' past':'')+'" style="--c:'+k[1]+'" data-act="offedit" data-id="'+o.id+'"><i></i><div><b>'+esc(o.t)+'</b><small>'+rng+(n>1?' · '+n+' days':'')+'</small></div><span>'+k[0]+'</span></button>'; }).join('')+'</div>'
       :'<p class="calhint">Add holidays, breaks and days off. Classes are hidden on those days.</p>')+'</section>';
+  const strip=mob?'<div class="daystrip">'+dayEventsAll.map(x=>{ const d=pd(x.d), has=x.blocks.length||x.allDay.length||x.dues.length; return '<button type="button" class="dsb'+(x.d===calDay?' on':'')+(x.d===TODAY?' tod':'')+(x.off?' hasoff':'')+'" data-act="calday" data-d="'+x.d+'" aria-label="'+DAYN[d.getDay()]+' '+d.getDate()+'"><b>'+DAYN[d.getDay()].slice(0,3)+'</b><span>'+d.getDate()+'</span><i'+(has||x.off?'':' class="nil"')+'></i></button>'; }).join('')+'</div>':'';
   const empty=any?'':'<div class="calempty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="4"/><path d="M8 3v3.5M16 3v3.5M3.5 10h17"/></svg><b>Nothing scheduled yet</b><p>Add when each class meets under ✎ Edit on the class page, or add your own event.</p><button type="button" class="btn pri" data-act="evadd">＋ Add an event</button></div>';
-  return {sum:sum,rest:'<div class="calcard">'+tb+'<div class="calscroll'+(any?'':' dim')+'">'+g+'</div>'+empty+'</div>'+offList+legend};
+  return {sum:sum,rest:'<div class="calcard">'+tb+strip+'<div class="calscroll'+(any?'':' dim')+'">'+g+'</div>'+empty+'</div>'+offList+legend};
 }
 function offModal(e,edit){
   const v=Object.assign({t:'',kind:'holiday',start:TODAY,end:''},e||{});
@@ -2142,7 +2180,8 @@ document.addEventListener('click',function(ev){
   if(a==='mday'){ const c=getC(b.dataset.c), m=c&&c.meets[+b.dataset.mi]; if(m){ const d=+b.dataset.d; m.days=m.days.includes(d)?m.days.filter(x=>x!==d):m.days.concat(d).sort((x,y)=>x-y); save(); render(true); } return; }
   if(a==='madd'){ const c=getC(b.dataset.c); if(c){ c.meets.push(normMeet({})); save(); render(true); } return; }
   if(a==='mdel'){ const c=getC(b.dataset.c); if(c){ c.meets.splice(+b.dataset.mi,1); save(); render(true); } return; }
-  if(a==='calwk'){ const w=b.dataset.w; if(w==='prev') calWk=addD(calWk,-7); else if(w==='next') calWk=addD(calWk,7); else if(w==='today') calWk=null; else calWk=w; calRedraw(); return; }
+  if(a==='calday'){ calDay=b.dataset.d; calRedraw(); return; }
+  if(a==='calwk'){ const w=b.dataset.w; if(w==='prev'){ calWk=addD(calWk,-7); if(calDay) calDay=addD(calDay,-7); } else if(w==='next'){ calWk=addD(calWk,7); if(calDay) calDay=addD(calDay,7); } else if(w==='today'){ calWk=null; calDay=null; } else { calWk=w; calDay=null; } calRedraw(); return; }
   if(a==='evnew'){ const r=b.getBoundingClientRect(), mins=Math.round(((ev.clientY-r.top)/CAL_RH*60+(+b.dataset.h0)*60)/30)*30; evModal({date:b.dataset.date,st:minT(mins),en:minT(mins+60)}); return; }
   if(a==='offadd'){ offModal({start:b.dataset.date||calWk||TODAY}); return; }
   if(a==='offedit'){ const o=(S.off||[]).find(x=>x.id===b.dataset.id); if(o) offModal(o,true); return; }
