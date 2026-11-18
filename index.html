@@ -292,11 +292,13 @@ input[type=time]:focus,input[type=date]:focus{border-color:var(--blue);backgroun
 .axis span.f0{transform:none}
 .cdcol{background-image:linear-gradient(var(--line) 1px,transparent 1px)}
 .cdcol.today{background-color:color-mix(in srgb,var(--blue) 7%,transparent)}
-.ev{padding:12px 14px;border-radius:18px;gap:3px;background:linear-gradient(165deg,color-mix(in srgb,var(--c) 84%,#fff),var(--c));box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 12px 24px -14px var(--c);left:5px}
+.ev{overflow:visible;padding:11px 14px 12px;border-radius:18px;gap:3px;background:linear-gradient(165deg,color-mix(in srgb,var(--c) 84%,#fff),var(--c));box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 12px 24px -14px var(--c);left:5px}
 .ev .nm{font-size:14.5px;letter-spacing:-0.02em}
 .ev .tm{font-size:12px;opacity:.82}
 .ev .lc{font-size:11.5px;opacity:.7;margin-top:1px}
 .ev.sm{padding:5px 12px}
+.ev.sm .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev:hover{z-index:5}
 .ev:hover{transform:translateY(-2px) scale(1.01)}
 .calempty{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);text-align:center;max-width:360px;width:calc(100% - 48px);padding:28px 26px;border-radius:24px;background:var(--elev);border:1px solid var(--line);box-shadow:var(--shadow);z-index:6}
 .calempty svg{width:34px;height:34px;color:var(--blue);margin-bottom:10px}
@@ -1817,7 +1819,7 @@ function newClassModal(){
     });
 }
 /* ---------- calendar ---------- */
-const DAYN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MONN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], CAL_RH=76;
+const DAYN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MONN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], CAL_RH=100;
 let calWk=null;
 const pd=i=>new Date(i+'T12:00:00');
 const isoD=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
@@ -1891,8 +1893,8 @@ function calBody(){
   dayEvents.forEach(x=>{
     g+='<div class="cdcol'+(x.d===TODAY?' today':'')+(inSem(x.d)?'':' off')+(x.off?' offday':'')+'"'+(x.off?' style="--oc:'+OFFK[x.off.kind][1]+'"':'')+' data-act="evnew" data-date="'+x.d+'" data-h0="'+h0+'">';
     x.blocks.forEach(b=>{
-      const top=(b.a/60-h0)*CAL_RH, ht=Math.max(26,(b.b-b.a)/60*CAL_RH-3), w=100/b.n;
-      g+='<button type="button" class="ev'+(ht<44?' sm':'')+'" style="--c:'+b.col+';--fg:'+b.fg+';top:'+top.toFixed(1)+'px;height:'+ht.toFixed(1)+'px;left:calc('+(b.lane*w).toFixed(2)+'% + 3px);width:calc('+w.toFixed(2)+'% - 6px)" data-act="'+b.go+'" data-'+(b.go==='go'?'v':'id')+'="'+b.id+'"><span class="nm">'+esc(b.t)+'</span><span class="tm">'+fmtR(b.a,b.b)+'</span>'+(b.loc?'<span class="lc">'+esc(b.loc)+'</span>':'')+'</button>';
+      const top=(b.a/60-h0)*CAL_RH, ht=Math.max(30,(b.b-b.a)/60*CAL_RH-3), w=100/b.n;
+      g+='<button type="button" class="ev'+(ht<44?' sm':'')+'" style="--c:'+b.col+';--fg:'+b.fg+';top:'+top.toFixed(1)+'px;min-height:'+ht.toFixed(1)+'px;left:calc('+(b.lane*w).toFixed(2)+'% + 3px);width:calc('+w.toFixed(2)+'% - 6px)" data-act="'+b.go+'" data-'+(b.go==='go'?'v':'id')+'="'+b.id+'"><span class="nm">'+esc(b.t)+'</span><span class="tm">'+fmtR(b.a,b.b)+'</span>'+(b.loc?'<span class="lc">'+esc(b.loc)+'</span>':'')+'</button>';
     });
     if(x.off) g+='<div class="offlab"><b>'+esc(x.off.t)+'</b><small>'+OFFK[x.off.kind][0]+'</small></div>';
     if(x.d===TODAY&&nowM>=h0*60&&nowM<=h1*60) g+='<div class="nowl" style="top:'+((nowM/60-h0)*CAL_RH).toFixed(1)+'px"></div>';
