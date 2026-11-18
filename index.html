@@ -806,6 +806,22 @@ body.calview main .wrap,body.calview .top .wrap{max-width:1560px}
   .cal .calscroll{padding:6px 12px 22px}
   .cal .caltb{border-radius:28px 28px 0 0}
 }
+.tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.tile{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:18px;min-height:0;padding:22px 26px 18px;border-radius:28px}
+.tile .tl{grid-column:1;grid-row:1;min-width:0}
+.tile .L{grid-column:2;grid-row:1;margin:0;padding:0;font-size:clamp(46px,5.2vw,64px);text-align:right}
+.tile .row{margin-top:10px;gap:4px 12px}
+.tile .p{font-size:17px}
+.tile .pj{font-size:13px}
+.tile .tbar{grid-column:1 / -1;margin-top:16px}
+.tile .tfoot{grid-column:1 / -1;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
+.tile .tfoot small{margin:0;font-size:12.5px}
+.tile .tfoot .late{margin:0;padding:2px 10px}
+@media (max-width:720px){
+  .tiles{grid-template-columns:1fr}
+  .tile{padding:18px 20px 16px;border-radius:24px}
+  .tile .L{font-size:50px}
+}
 </style></head><body><header class="top" id="shell-header"><div class="wrap">
   <button class="brand" data-act="go" data-v="home" aria-label="Grade Tracker home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="22" fill="#0D1226"/><path d="M21.5 33.5 29 41 43 25" fill="none" stroke="#FFB81C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="t">Grade Tracker</span></button>
   <div class="right"><nav class="tabs" aria-label="Sections">
@@ -1503,12 +1519,12 @@ function homeView(){
     let late=0; c.cats.forEach(k=>k.items.forEach(it=>{ if(it.d&&it.d<TODAY&&it.e==null&&!it.opt) late++; }));
     const mv=reorder?'<div class="tmv"><button type="button" data-act="classmove" data-c="'+c.id+'" data-d="-1" aria-label="Move '+esc(c.name)+' earlier"'+(ci===0?' disabled':'')+'>←</button><button type="button" data-act="classmove" data-c="'+c.id+'" data-d="1" aria-label="Move '+esc(c.name)+' later"'+(ci===S.courses.length-1?' disabled':'')+'>→</button></div>':'';
     return '<div class="tw" data-id="'+c.id+'">'+mv+'<button class="tile" style="--c:'+COLORS[c.id]+';--fg:'+TILE[c.id]+'" data-act="go" data-v="'+c.id+'">'
-      +'<div class="nm">'+esc(c.name)+'</div><div class="cd">'+esc(subOf(c))+'</div>'
+      +'<div class="tl"><div class="nm">'+esc(c.name)+'</div><div class="cd">'+esc(subOf(c))+'</div>'
+      +'<div class="row"><span class="p">'+(cur.pct==null?'No scores yet':pctS(cur.pct))+'</span><span class="pj">What-if <b>'+letterOf(c,wi.pct)+' · '+pctS(wi.pct)+'</b></span></div></div>'
       +'<div class="L">'+letterOf(c,cur.pct)+'</div>'
-      +'<div class="row"><span class="p">'+(cur.pct==null?'No scores yet':pctS(cur.pct))+'</span><span class="pj">What-if <b>'+letterOf(c,wi.pct)+' · '+pctS(wi.pct)+'</b></span></div>'
       +'<div class="tbar"><i style="width:'+Math.round(cur.progress*100)+'%"></i></div>'
-      +'<small>'+Math.round(cur.progress*100)+'% of the grade is in</small>'
-      +(late&&cur.pct!=null?'<span class="late">'+late+' past due, no score entered</span>':'')
+      +'<div class="tfoot"><small>'+Math.round(cur.progress*100)+'% of the grade is in</small>'
+      +(late&&cur.pct!=null?'<span class="late">'+late+' past due</span>':'')+'</div>'
       +'</button></div>';
   }).join('');
   const lim=isoPlus(14), up=[];
