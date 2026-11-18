@@ -1000,7 +1000,7 @@ function normEvent(e){
   e=e||{}; return {id:e.id||uid(),t:String(e.t||e.title||'Event'),date:/^\d{4}-\d{2}-\d{2}$/.test(e.date||'')?e.date:TODAY,allDay:!!e.allDay,st:normT(e.st),en:normT(e.en),loc:String(e.loc||''),note:String(e.note||''),color:/^#[0-9a-f]{6}$/i.test(e.color||'')?e.color:'#FF7A59',rep:['none','daily','weekly','biweekly','monthly'].includes(e.rep)?e.rep:'none',until:/^\d{4}-\d{2}-\d{2}$/.test(e.until||'')?e.until:'',skip:(Array.isArray(e.skip)?e.skip:[]).filter(isD)};
 }
 function normCourse(c){
-  c.meets=(Array.isArray(c.meets)?c.meets:[]).map(normMeet); c.skip=(Array.isArray(c.skip)?c.skip:[]).filter(w=>/^\d{4}-\d{2}-\d{2}$/.test(w));
+  c.noGpa=!!c.noGpa; c.meets=(Array.isArray(c.meets)?c.meets:[]).map(normMeet); c.skip=(Array.isArray(c.skip)?c.skip:[]).filter(w=>/^\d{4}-\d{2}-\d{2}$/.test(w));
   c.id=c.id||uid(); c.name=c.name||'Untitled class'; c.code=c.code||''; c.prof=c.prof||''; if(c.credits===undefined) c.credits=null;
   c.scale=c.scale||'std'; c.pooled=!!c.pooled; c.lenience=c.lenience||0; c.fill=(typeof c.fill==='number')?c.fill:90; c.target=c.target||'A';
   c.ec=ecShape(c.ec||{}); c.notes=Array.isArray(c.notes)?c.notes:[]; c.cats=Array.isArray(c.cats)?c.cats:[];
@@ -1055,7 +1055,7 @@ function loadAny(src){
 function semTotals(sm){
   let cr=0,qp=0;
   sm.courses.forEach(c=>{
-    if(!(c.credits>0)) return;
+    if(!(c.credits>0)||c.noGpa) return;
     const pick=sm.gpaPick[c.id];
     const g=(pick&&GPAOF[pick]!==undefined)?GPAOF[pick]:gpaOf(c,courseRes(c,pick==='proj'?'proj':'whatif').pct);
     if(g==null) return; cr+=c.credits; qp+=c.credits*g;
@@ -1327,6 +1327,7 @@ function gpaCalc(kind){
   S.courses.forEach(c=>{
     if(!(c.credits>0)){ missing.push(c.name); return; }
     all+=c.credits;
+    if(c.noGpa) return;
     let g=null;
     if(kind==='cur') g=gpaOf(c,courseRes(c,'cur').pct);
     else if(kind==='proj') g=gpaOf(c,courseRes(c,'proj').pct);
@@ -1518,7 +1519,7 @@ function homeView(){
   const gpaRows=S.courses.map(c=>{
     const cur=courseRes(c,'cur'),wi=courseRes(c,'whatif'), pick=S.gpaPick[c.id]||'whatif';
     const opts='<option value="whatif"'+(pick==='whatif'?' selected':'')+'>What-if</option><option value="proj"'+(pick==='proj'?' selected':'')+'>Projected</option>'+LETTERS.map(L=>'<option value="'+L+'"'+(pick===L?' selected':'')+'>'+L+'</option>').join('');
-    return '<tr><td><i class="dot" style="background:'+COLORS[c.id]+'"></i>'+esc(c.name)+'</td><td><input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="–" aria-label="Credits for '+esc(c.name)+'"></td>'
+    return '<tr'+(c.noGpa?' style="opacity:.5" title="Not counted in GPA"':'')+'><td><i class="dot" style="background:'+COLORS[c.id]+'"></i>'+esc(c.name)+(c.noGpa?' <small style="color:var(--mut)">· not in GPA</small>':'')+'</td><td><input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="–" aria-label="Credits for '+esc(c.name)+'"></td>'
       +'<td class="r">'+letterOf(c,cur.pct)+'</td><td class="r">'+letterOf(c,wi.pct)+'</td><td class="r"><select data-f="pick" data-c="'+c.id+'" aria-label="Letter to use for '+esc(c.name)+'">'+opts+'</select></td></tr>';
   }).join('');
   const cards=PRIOR.map(function(s,si){
@@ -1819,6 +1820,7 @@ document.addEventListener('input',function(ev){
   else if(f==='catcap'){ const v=num(t.value); c.cats[+t.dataset.k].cap=(v>0?v/100:0.8); }
   else if(f==='catrp'){ c.cats[+t.dataset.k].rp=t.checked; save(); render(true); return; }
   else if(f==='basecr'||f==='basegpa'){ W.base=W.base||{cr:null,gpa:null}; W.base[f==='basecr'?'cr':'gpa']=num(t.value); refreshPrior(); }
+  else if(f==='nogpa'){ c.noGpa=!t.checked; save(); render(true); return; }
   else if(f==='pick'){ S.gpaPick[c.id]=t.value; }
   else if(f==='mst'||f==='men'||f==='mloc'){ const m=c.meets[+t.dataset.mi]; if(m) m[f==='mst'?'st':f==='men'?'en':'loc']=t.value; }
   else if(f==='semstart'||f==='semend'){ S[f==='semstart'?'start':'end']=t.value; save(); calRedraw(); return; }
@@ -2192,6 +2194,7 @@ function editPanel(c){
     +'<div class="two"><label class="f">Graded by<select data-f="pooled" data-c="'+c.id+'"><option value="0"'+(c.pooled?'':' selected')+'>Weighted categories</option><option value="1"'+(c.pooled?' selected':'')+'>Total points</option></select></label>'
     +'<label class="f">Grading scale<select data-f="scale" data-c="'+c.id+'">'+op('std','Plus/minus (A+ at 97)')+op('plain','Plain letters (A at 90)')+op('custom','Custom cutoffs')+'</select></label></div>'
     +cuts
+    +'<label class="swrow" style="margin:2px 0 14px"><span>Count in GPA<small style="display:block;font-weight:500;font-size:12.5px;color:var(--mut);margin-top:2px">Turn off for pass/fail or audit classes. Credits still count toward your total.</small></span><input type="checkbox" class="swi" data-f="nogpa" data-c="'+c.id+'"'+(c.noGpa?'':' checked')+'><i></i></label>'
     +meetsEdit(c)
     +'<label class="f">Notes<textarea data-f="cnotes" data-c="'+c.id+'" placeholder="Syllabus notes, one per line">'+esc(c.notes.join('\n'))+'</textarea></label>'
     +'<div class="editact"><button type="button" class="btn danger" data-act="delclass" data-c="'+c.id+'">Delete class</button></div></section>';
