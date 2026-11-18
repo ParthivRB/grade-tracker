@@ -849,6 +849,13 @@ body.calview main .wrap,body.calview .top .wrap{max-width:1560px}
 .tile.nog .mo{font-weight:700;font-size:12.5px;opacity:.8}
 @media (max-width:720px){ .tiles.tmini{grid-template-columns:1fr} .tile.nog{min-height:0;padding:12px 18px} }
 .secin>.tiles{width:100%;box-sizing:border-box}
+#privBtn .eyeoff{opacity:0;transform:scale(.55) rotate(-20deg)}
+#privBtn .eye{transition:transform .35s cubic-bezier(.2,.7,.2,1),opacity .25s ease}
+#privBtn .eyeoff{transition:transform .35s cubic-bezier(.2,.7,.2,1),opacity .25s ease}
+html[data-priv] #privBtn .eye{opacity:0;transform:scale(.55) rotate(20deg)}
+html[data-priv] #privBtn .eyeoff{opacity:1;transform:none}
+html[data-priv] #privBtn{background:var(--blue-soft);color:var(--blue)}
+.gnum{width:fit-content}
 </style></head><body><header class="top" id="shell-header"><div class="wrap">
   <button class="brand" data-act="go" data-v="home" aria-label="Grade Tracker home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="22" fill="#0D1226"/><path d="M21.5 33.5 29 41 43 25" fill="none" stroke="#FFB81C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="t">Grade Tracker</span></button>
   <div class="right"><nav class="tabs" aria-label="Sections">
@@ -858,6 +865,7 @@ body.calview main .wrap,body.calview .top .wrap{max-width:1560px}
     <button data-act="go" data-v="cal" id="calTab">Calendar</button>
   </nav>
   <button class="tg calbtn" data-act="go" data-v="cal" aria-label="Calendar" title="Calendar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="4"/><path d="M8 3v3.5M16 3v3.5M3.5 10h17"/></svg></button>
+  <button class="tg" id="privBtn" aria-label="Hide grades" aria-pressed="false" title="Hide grades"><svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eyeoff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.6 5.7A9.6 9.6 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a16 16 0 0 1-2.9 3.7M6.6 6.9A15.700 15.700 0 0 0 2.5 12S6 18.500 12 18.500c1.600 0 3-.4 4.200-1M9.900 9.900a3 3 0 0 0 4.200 4.200M3 3l18 18"/></svg></button>
   <button class="tg" id="accBtn" aria-label="Accent colors" title="Accent colors" aria-expanded="false" aria-controls="accPop"><span class="dotc"></span></button>
   <button class="tg" id="themeBtn" aria-label="Toggle dark mode" title="Toggle dark mode"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg><svg class="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1z"/></svg></button></div>
 </div></header><main><div class="wrap" id="main"></div></main><div id="saveStat" class="savestat" role="status" aria-live="polite"></div><script id="saved" type="application/json">null</script><script id="app-js">
@@ -2472,6 +2480,29 @@ document.addEventListener('change',function(ev){
 });
 
 /* ---------- start ---------- */
+(function(){
+  const SEL=['.gnum','.hero .after b','.hc svg','.semtop .g','.semnote b','.gp .v','.gp .s','.tile .L','.tile .p','.tile .pj','.tile .mr','.gletter','.gpct','.ghint','.cpct','.rpct','.grid input[data-f=e]','.grid input[data-f=w]','td.r','.projres','.cr .gg','.cr .m','.chip','.need','.fillbox b'].join(',');
+  const st=document.createElement('style'); st.id='privCss';
+  st.textContent=':is('+SEL+'){transition:filter .32s cubic-bezier(.2,.7,.2,1)}'
+    +'html[data-priv] :is('+SEL+'){filter:blur(max(6px,.2em));user-select:none;-webkit-user-select:none}'
+    +'html[data-priv] .hc svg{filter:blur(7px)}'
+    +'html[data-priv] :is('+SEL+'):is(:hover,:focus,:focus-within,.rv){filter:blur(0);user-select:auto;-webkit-user-select:auto}';
+  document.head.appendChild(st);
+  const root=document.documentElement, btn=document.getElementById('privBtn');
+  function set(on,save){
+    if(on) root.setAttribute('data-priv',''); else root.removeAttribute('data-priv');
+    btn.setAttribute('aria-pressed',on?'true':'false'); const l=on?'Show grades':'Hide grades'; btn.setAttribute('aria-label',l); btn.title=l;
+    if(save){ try{ localStorage.setItem('gt-priv',on?'1':'0'); }catch(e){} }
+  }
+  let init=false; try{ init=localStorage.getItem('gt-priv')==='1'; }catch(e){}
+  set(init,false);
+  btn.addEventListener('click',function(){ set(!root.hasAttribute('data-priv'),true); });
+  document.addEventListener('click',function(ev){
+    if(!root.hasAttribute('data-priv')||!matchMedia('(hover:none)').matches) return;
+    const t=ev.target.closest&&ev.target.closest(SEL); if(!t) return;
+    t.classList.add('rv'); clearTimeout(t._rt); t._rt=setTimeout(function(){ t.classList.remove('rv'); },3200);
+  },true);
+})();
 (function init(){
   let src3=readLocal(KEY3), migrated=false;
   if(src3&&Array.isArray(src3.sems)) W=loadAny(src3);
