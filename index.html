@@ -835,6 +835,20 @@ body.calview main .wrap,body.calview .top .wrap{max-width:1560px}
 .tile{min-height:172px;align-content:center}
 @media (max-width:720px){ .tile{min-height:160px} }
 .mbox input[type=number]{height:48px;box-sizing:border-box;border-radius:14px;padding:0 14px;font-size:15px;font-weight:600}
+.goff{margin-top:18px;opacity:.85;font-weight:600;max-width:520px;line-height:1.45}
+.tiles.tmini{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+@media (min-width:721px){ .tiles.tmini>.tw:last-child:nth-child(odd){grid-column:1 / -1} }
+.tile.nog{display:flex;flex-direction:row;align-items:center;text-align:left;justify-content:space-between;gap:14px;min-height:0;padding:13px 20px;border-radius:20px}
+.tw .tile.nog{height:auto}
+.tile.nog .tl{flex:1;min-width:0}
+.tile.nog .nm{font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile.nog .cd{font-size:12px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile.nog .mr{display:flex;align-items:baseline;gap:10px;flex:0 0 auto}
+.tile.nog .ml{font-family:var(--disp);font-weight:800;font-size:26px;letter-spacing:-0.05em}
+.tile.nog .mp{font-weight:700;font-size:13px;opacity:.85}
+.tile.nog .mo{font-weight:700;font-size:12.5px;opacity:.8}
+@media (max-width:720px){ .tiles.tmini{grid-template-columns:1fr} .tile.nog{min-height:0;padding:12px 18px} }
+.secin>.tiles{width:100%;box-sizing:border-box}
 </style></head><body><header class="top" id="shell-header"><div class="wrap">
   <button class="brand" data-act="go" data-v="home" aria-label="Grade Tracker home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="22" fill="#0D1226"/><path d="M21.5 33.5 29 41 43 25" fill="none" stroke="#FFB81C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="t">Grade Tracker</span></button>
   <div class="right"><nav class="tabs" aria-label="Sections">
@@ -1029,7 +1043,7 @@ function normEvent(e){
   e=e||{}; return {id:e.id||uid(),t:String(e.t||e.title||'Event'),date:/^\d{4}-\d{2}-\d{2}$/.test(e.date||'')?e.date:TODAY,allDay:!!e.allDay,st:normT(e.st),en:normT(e.en),loc:String(e.loc||''),note:String(e.note||''),color:/^#[0-9a-f]{6}$/i.test(e.color||'')?e.color:'#FF7A59',rep:['none','daily','weekly','biweekly','monthly'].includes(e.rep)?e.rep:'none',until:/^\d{4}-\d{2}-\d{2}$/.test(e.until||'')?e.until:'',skip:(Array.isArray(e.skip)?e.skip:[]).filter(isD)};
 }
 function normCourse(c){
-  c.noGpa=!!c.noGpa; c.meets=(Array.isArray(c.meets)?c.meets:[]).map(normMeet); c.skip=(Array.isArray(c.skip)?c.skip:[]).filter(w=>/^\d{4}-\d{2}-\d{2}$/.test(w));
+  c.noGpa=!!c.noGpa; c.noGrades=!!c.noGrades; c.meets=(Array.isArray(c.meets)?c.meets:[]).map(normMeet); c.skip=(Array.isArray(c.skip)?c.skip:[]).filter(w=>/^\d{4}-\d{2}-\d{2}$/.test(w));
   c.id=c.id||uid(); c.name=c.name||'Untitled class'; c.code=c.code||''; c.prof=c.prof||''; if(c.credits===undefined) c.credits=null;
   c.scale=c.scale||'std'; c.pooled=!!c.pooled; c.lenience=c.lenience||0; c.fill=(typeof c.fill==='number')?c.fill:90; c.target=c.target||'A';
   c.ec=ecShape(c.ec||{}); c.notes=Array.isArray(c.notes)?c.notes:[]; c.cats=Array.isArray(c.cats)?c.cats:[];
@@ -1527,21 +1541,26 @@ function moveSec(id,d){
 function homeView(){
   if(!S.courses.length) return emptyHome();
   const anyScore=S.courses.some(c=>c.cats.some(k=>k.items.some(it=>it.e!=null)));
-  const tiles=S.courses.map(function(c,ci){
+  const tileList=S.courses.map(function(c,ci){
     const cur=courseRes(c,'cur'), wi=courseRes(c,'whatif');
     let late=0; c.cats.forEach(k=>k.items.forEach(it=>{ if(it.d&&it.d<TODAY&&it.e==null&&!it.opt) late++; }));
     const mv=reorder?'<div class="tmv"><button type="button" data-act="classmove" data-c="'+c.id+'" data-d="-1" aria-label="Move '+esc(c.name)+' earlier"'+(ci===0?' disabled':'')+'>←</button><button type="button" data-act="classmove" data-c="'+c.id+'" data-d="1" aria-label="Move '+esc(c.name)+' later"'+(ci===S.courses.length-1?' disabled':'')+'>→</button></div>':'';
     return '<div class="tw" data-id="'+c.id+'">'+mv+'<button class="tile'+(c.noGpa?' nog':'')+'" style="--c:'+COLORS[c.id]+';--fg:'+TILE[c.id]+'" data-act="go" data-v="'+c.id+'">'
-      +'<div class="tl"><div class="nm">'+esc(c.name)+(c.noGpa?'<span class="ngb">Not in GPA</span>':'')+'</div><div class="cd">'+esc(subOf(c))+'</div>'
-      +'<div class="row"><span class="p">'+(cur.pct==null?'No scores yet':pctS(cur.pct))+'</span><span class="pj">What-if <b>'+letterOf(c,wi.pct)+' · '+pctS(wi.pct)+'</b></span></div></div>'
-      +'<div class="L">'+letterOf(c,cur.pct)+'</div>'
-      +'<div class="tbar"><i style="width:'+Math.round(cur.progress*100)+'%"></i></div>'
-      +'<div class="tfoot"><small>'+Math.round(cur.progress*100)+'% of the grade is in</small>'
-      +(late&&cur.pct!=null?'<span class="late">'+late+' past due</span>':'')+'</div>'
+      +(c.noGpa
+        ?'<div class="tl"><div class="nm">'+esc(c.name)+'</div><div class="cd">'+(subOf(c)?esc(subOf(c))+' · ':'')+'Not in GPA</div></div>'
+          +'<div class="mr">'+(gradesOff(c)?'<span class="mo">Grades off</span>':'<span class="ml">'+letterOf(c,cur.pct)+'</span><span class="mp">'+(cur.pct==null?'No scores':pctS(cur.pct))+'</span>')+'</div>'
+        :'<div class="tl"><div class="nm">'+esc(c.name)+'</div><div class="cd">'+esc(subOf(c))+'</div>'
+        +'<div class="row"><span class="p">'+(cur.pct==null?'No scores yet':pctS(cur.pct))+'</span><span class="pj">What-if <b>'+letterOf(c,wi.pct)+' · '+pctS(wi.pct)+'</b></span></div></div>'
+        +'<div class="L">'+letterOf(c,cur.pct)+'</div>'
+        +'<div class="tbar"><i style="width:'+Math.round(cur.progress*100)+'%"></i></div>'
+        +'<div class="tfoot"><small>'+Math.round(cur.progress*100)+'% of the grade is in</small>'
+        +(late&&cur.pct!=null?'<span class="late">'+late+' past due</span>':'')+'</div>')
       +'</button></div>';
-  }).join('');
+  });
+  const tilesMain=tileList.filter((t,i)=>!S.courses[i].noGpa).join(''), tilesMini=tileList.filter((t,i)=>S.courses[i].noGpa).join('');
+  const tiles=tilesMain+(tilesMini?'</div><div class="tiles tmini">'+tilesMini:'');
   const lim=isoPlus(14), up=[];
-  S.courses.forEach(c=>c.cats.forEach(k=>k.items.forEach(it=>{ if(it.d&&it.e==null&&!it.opt&&it.d>=TODAY&&it.d<=lim) up.push({d:it.d,dl:it.dl,c:c.name,id:c.id,n:it.n}); })));
+  S.courses.forEach(c=>gradesOff(c)?0:c.cats.forEach(k=>k.items.forEach(it=>{ if(it.d&&it.e==null&&!it.opt&&it.d>=TODAY&&it.d<=lim) up.push({d:it.d,dl:it.dl,c:c.name,id:c.id,n:it.n}); })));
   up.sort((a,b)=>a.d<b.d?-1:a.d>b.d?1:0);
   const upHtml=up.length?up.map(u=>'<div class="up"><div class="d">'+fd(u.d)+'</div><div><div style="font-weight:700">'+esc(u.n)+'</div><div class="c"><i class="dot" style="background:'+COLORS[u.id]+'"></i>'+esc(u.c)+(u.dl?' · '+esc(u.dl):'')+'</div></div></div>').join('')
     :'<div class="empty">Nothing with a due date in the next two weeks.</div>';
@@ -1612,6 +1631,11 @@ function courseView(c){
   const tot=c.cats.reduce((a,k)=>a+(k.w||0),0);
   const wn=(!c.pooled&&Math.abs(tot-100)>0.01)?'<div class="banner">Category weights add up to '+f1(tot)+'%, not 100%. Grades are scaled to the weights you’ve set.</div>':'';
   const cc='<div class="cc" aria-label="Class color">'+PALETTE.map(v=>'<button type="button" style="--c:'+v+'" class="'+(v.toLowerCase()===COLORS[c.id].toLowerCase()?'on':'')+'" data-id="'+c.id+'" data-v="'+v+'" aria-label="Color '+v+'"></button>').join('')+'</div>';
+  if(gradesOff(c)) return '<div class="cpage" style="--c:'+COLORS[c.id]+';--fg:'+TILE[c.id]+'"><div class="cpbar"><div class="cpl"><button class="back" data-act="go" data-v="home">← All classes</button><button type="button" class="editlink'+(editing?' on':'')+'" data-act="edit" data-c="'+c.id+'">'+(editing?'Done editing':'✎ Edit')+'</button></div>'+cc+'</div>'
+    +'<section class="cband"><header class="chead"><div><h1>'+esc(c.name)+'</h1><p>'+esc(subOf(c))+'</p></div>'
+    +'<div class="chctl"><label class="fld">Credits <input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="–"></label></div></header>'
+    +'<p class="goff">Grades are off for this class. It isn’t counted in your GPA and its scores aren’t tracked. Turn grades back on under ✎ Edit.</p></section>'
+    +(editing?editPanel(c):'')+notes+'</div>';
   return '<div class="cpage" style="--c:'+COLORS[c.id]+';--fg:'+TILE[c.id]+'"><div class="cpbar"><div class="cpl"><button class="back" data-act="go" data-v="home">← All classes</button><button type="button" class="editlink'+(editing?' on':'')+'" data-act="edit" data-c="'+c.id+'">'+(editing?'Done editing':'✎ Edit')+'</button></div>'+cc+'</div>'
     +'<section class="cband"><header class="chead"><div><h1>'+esc(c.name)+'</h1><p>'+esc(subOf(c))+'</p></div>'
     +'<div class="chctl"><label class="fld">Credits <input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="–"></label></div></header>'
@@ -1687,7 +1711,7 @@ function refresh(){
     const pb=$('#projbox'); if(pb) pb.innerHTML=projHomeHtml();
     return;
   }
-  const c=getC(view); if(!c) return;
+  const c=getC(view); if(!c||gradesOff(c)) return;
   updateSum(c);
   updateProj(c);
   $('#need').innerHTML=needHtml(c);
@@ -1850,6 +1874,7 @@ document.addEventListener('input',function(ev){
   else if(f==='catrp'){ c.cats[+t.dataset.k].rp=t.checked; save(); render(true); return; }
   else if(f==='basecr'||f==='basegpa'){ W.base=W.base||{cr:null,gpa:null}; W.base[f==='basecr'?'cr':'gpa']=num(t.value); refreshPrior(); }
   else if(f==='nogpa'){ c.noGpa=!t.checked; save(); render(true); return; }
+  else if(f==='nograde'){ c.noGrades=!t.checked; save(); render(true); return; }
   else if(f==='pick'){ S.gpaPick[c.id]=t.value; }
   else if(f==='mst'||f==='men'||f==='mloc'){ const m=c.meets[+t.dataset.mi]; if(m) m[f==='mst'?'st':f==='men'?'en':'loc']=t.value; }
   else if(f==='semstart'||f==='semend'){ S[f==='semstart'?'start':'end']=t.value; save(); calRedraw(); return; }
@@ -2015,7 +2040,8 @@ function newClassModal(){
     +'<label class="f">Credits<input name="credits" type="number" step="0.5" min="0" placeholder="3"></label>'
     +'<label class="f">How is it graded?<select name="kind"><option value="weighted">Weighted categories (homework 30%, exams 70%…)</option><option value="points">Total points</option></select></label>'
     +'<label class="f">Start with<select name="tpl"><option value="hmf">Homework, Midterm, Final</option><option value="blank">One blank category</option></select></label>'
-    +'<label class="swrow"><span>Count in GPA<small style="display:block;font-weight:500;font-size:12.5px;color:var(--mut);margin-top:2px">Turn off for pass/fail or audit classes.</small></span><input type="checkbox" class="swi" name="gpa" checked><i></i></label>',
+    +'<label class="swrow"><span>Count in GPA<small style="display:block;font-weight:500;font-size:12.5px;color:var(--mut);margin-top:2px">Turn off for pass/fail or audit classes.</small></span><input type="checkbox" class="swi" name="gpa" id="ncGpa" checked><i></i></label>'
+    +'<label class="swrow" id="ncTrack" style="display:none"><span>Track grades<small style="display:block;font-weight:500;font-size:12.5px;color:var(--mut);margin-top:2px">Turn off to hide scores and grades completely.</small></span><input type="checkbox" class="swi" name="grades" checked><i></i></label>',
     'Add class',function(v){
       const name=(v.name||'').trim(); if(!name) return false;
       const mk=(n,w,rule,items)=>({name:n,w:w,rule:rule,items:items});
@@ -2023,9 +2049,11 @@ function newClassModal(){
       if(v.kind==='points'){ pooled=true; cats=[mk('Assignments',100,'sum',[I('Assignment 1',100),I('Assignment 2',100)])]; }
       else if(v.tpl==='hmf') cats=[mk('Homework',30,'avg',[I('Homework 1',100),I('Homework 2',100)]),mk('Midterm',30,'avg',[I('Midterm',100)]),mk('Final exam',40,'avg',[I('Final exam',100)])];
       else cats=[mk('Assignments',100,'avg',[I('Assignment 1',100)])];
-      const c=normCourse({name:name,code:(v.code||'').trim(),prof:(v.prof||'').trim(),credits:num(v.credits),pooled:pooled,scale:'std',cats:cats,noGpa:v.gpa!=='on'});
+      const c=normCourse({name:name,code:(v.code||'').trim(),prof:(v.prof||'').trim(),credits:num(v.credits),pooled:pooled,scale:'std',cats:cats,noGpa:v.gpa!=='on',noGrades:v.gpa!=='on'&&v.grades!=='on'});
       c.color=nextColor(); S.courses.push(c); syncColors(); view=c.id; editing=true; save(); setHash(); render(); window.scrollTo(0,0);
     });
+  const g=document.getElementById('ncGpa'), tr=document.getElementById('ncTrack');
+  if(g&&tr) g.addEventListener('change',function(){ tr.style.display=g.checked?'none':''; });
 }
 /* ---------- calendar ---------- */
 const DAYN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MONN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], CAL_RH=100;
@@ -2212,6 +2240,7 @@ function evModal(e,edit){
   const all=document.getElementById('evAll'); if(all) all.addEventListener('change',function(){ const t=document.getElementById('evTimes'); if(t) t.style.display=all.checked?'none':''; });
 }
 /* ---------- class editing ---------- */
+const gradesOff=c=>!!(c.noGpa&&c.noGrades);
 const scaleSel=c=>c.cuts?'custom':(c.scale==='plain'?'plain':(c.scale==='std'?'std':'custom'));
 function editPanel(c){
   const sel=scaleSel(c), rows=scaleOf(c);
@@ -2225,6 +2254,7 @@ function editPanel(c){
     +'<label class="f">Grading scale<select data-f="scale" data-c="'+c.id+'">'+op('std','Plus/minus (A+ at 97)')+op('plain','Plain letters (A at 90)')+op('custom','Custom cutoffs')+'</select></label></div>'
     +cuts
     +'<label class="swrow" style="margin:2px 0 14px"><span>Count in GPA<small style="display:block;font-weight:500;font-size:12.5px;color:var(--mut);margin-top:2px">Turn off for pass/fail or audit classes. Credits still count toward your total.</small></span><input type="checkbox" class="swi" data-f="nogpa" data-c="'+c.id+'"'+(c.noGpa?'':' checked')+'><i></i></label>'
+    +(c.noGpa?'<label class="swrow" style="margin:-4px 0 14px"><span>Track grades<small style="display:block;font-weight:500;font-size:12.5px;color:var(--mut);margin-top:2px">Turn off to hide scores and grades for this class completely.</small></span><input type="checkbox" class="swi" data-f="nograde" data-c="'+c.id+'"'+(c.noGrades?'':' checked')+'><i></i></label>':'')
     +meetsEdit(c)
     +'<label class="f">Notes<textarea data-f="cnotes" data-c="'+c.id+'" placeholder="Syllabus notes, one per line">'+esc(c.notes.join('\n'))+'</textarea></label>'
     +'<div class="editact"><button type="button" class="btn danger" data-act="delclass" data-c="'+c.id+'">Delete class</button></div></section>';
