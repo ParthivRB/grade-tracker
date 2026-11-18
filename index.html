@@ -275,6 +275,24 @@ input[type=time]:focus,input[type=date]:focus{border-color:var(--blue);backgroun
 .tpfoot{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
 .tpclear{all:unset;cursor:pointer;color:var(--mut);font-weight:700;font-size:13px;padding:8px 6px}
 .tpclear:hover{color:var(--ink)}
+.dpbtn{min-width:150px}
+.caldates label,.caldates>div{display:flex;flex-direction:column;gap:4px;font-size:11px;font-weight:700;color:var(--mut);letter-spacing:.06em;text-transform:uppercase}
+.dpop{position:fixed;z-index:300;width:300px;background:var(--elev);border:1px solid var(--line);border-radius:26px;padding:16px;box-shadow:0 30px 80px -20px rgba(0,0,0,.65),0 2px 6px rgba(0,0,0,.2);animation:tpin .18s cubic-bezier(.2,.8,.2,1)}
+.dph{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.dpt{font-family:var(--disp);font-weight:800;font-size:18px;letter-spacing:-0.04em}
+.dpt small{font:600 13px "Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:0;color:var(--mut);margin-left:4px}
+.dpnav{all:unset;cursor:pointer;width:34px;height:34px;border-radius:99px;display:grid;place-items:center;background:var(--soft);color:var(--ink);transition:background-color .15s ease}
+.dpnav:hover{background:var(--line)}
+.dpnav svg{width:17px;height:17px}
+.dpw{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:4px}
+.dpw span{text-align:center;font:700 11px "Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:.06em;color:var(--mut);padding:4px 0}
+.dpg{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.dpg button{all:unset;cursor:pointer;height:36px;border-radius:12px;display:grid;place-items:center;font-weight:600;font-size:14px;color:var(--ink);transition:background-color .12s ease}
+.dpg button:hover{background:var(--soft)}
+.dpg button.o{color:var(--mut);opacity:.45}
+.dpg button.t{box-shadow:inset 0 0 0 2px var(--blue)}
+.dpg button.on{background:var(--blue);color:#fff;font-weight:800;box-shadow:0 8px 18px -8px var(--blue);opacity:1}
+.dpt0{color:var(--blue)!important}
 .cal .calhead{padding:clamp(22px,3.4vw,36px)}
 .cal .caltop{margin-bottom:24px}
 .calcard{position:relative;margin-top:24px;background:var(--card);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);overflow:hidden}
@@ -308,11 +326,16 @@ input[type=time]:focus,input[type=date]:focus{border-color:var(--blue);backgroun
 .callg{margin-top:24px;gap:12px}
 .lg{padding:18px 20px;border-radius:22px;background:var(--card)}
 .lg i{width:14px;height:14px;margin-top:3px}
-.cdcol.offday{background-image:repeating-linear-gradient(135deg,color-mix(in srgb,var(--oc) 15%,transparent) 0 10px,color-mix(in srgb,var(--oc) 5%,transparent) 10px 20px);border-left-color:color-mix(in srgb,var(--oc) 50%,var(--line))}
-.offlab{position:absolute;top:10px;left:6px;right:6px;text-align:center;pointer-events:none}
-.offlab b{display:block;font-size:12px;line-height:1.2;color:var(--ink);letter-spacing:-0.01em}
-.offlab small{display:inline-block;margin-top:5px;font:800 9.5px "Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:99px;background:var(--oc);color:#111}
-.cdue.offchip{background:var(--c);color:#111;border-left-color:transparent}
+.cdcol.offday{border-left-color:color-mix(in srgb,var(--oc) 45%,var(--line))}
+.cdcol.offday.joined{border-left-color:transparent}
+.offbg{position:absolute;top:0;bottom:0;left:0;z-index:0;pointer-events:none;background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--oc) 11%,transparent) 0 9px,transparent 9px 18px),linear-gradient(180deg,color-mix(in srgb,var(--oc) 16%,transparent),color-mix(in srgb,var(--oc) 5%,transparent))}
+.offrow{grid-column:2 / -1;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));padding:0 0 12px}
+.offban{all:unset;cursor:pointer;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;gap:1px;min-height:46px;margin:0 4px;padding:8px 16px;border-radius:16px;background:linear-gradient(165deg,color-mix(in srgb,var(--c) 82%,#fff),var(--c));color:#10131c;box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 10px 22px -14px var(--c);transition:transform .18s ease}
+.offban:hover{transform:translateY(-1px)}
+.offban b{font-size:14px;letter-spacing:-0.02em;line-height:1.15;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.offban span{font-size:11.5px;font-weight:700;opacity:.72;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.offban.contl{margin-left:0;border-top-left-radius:6px;border-bottom-left-radius:6px}
+.offban.contr{margin-right:0;border-top-right-radius:6px;border-bottom-right-radius:6px}
 .dh.isoff span{box-shadow:inset 0 0 0 2px var(--line)}
 .wk.hasoff{position:relative}
 .wk.hasoff:after{content:"";position:absolute;right:4px;top:4px;width:6px;height:6px;border-radius:99px;background:#FF6FA8}
@@ -1841,7 +1864,7 @@ function meetSum(c){ return c.meets.filter(m=>m.days.length&&m.st&&m.en).map(m=>
 function calView(){
   return '<div class="cal"><div class="cpbar"><button class="back" data-act="go" data-v="home">← All classes</button></div>'
     +'<h1 class="page-h">Calendar</h1>'
-    +'<section class="card calhead"><div class="caltop"><div class="calname">'+esc(S.name)+'</div><div class="caldates"><label>Starts<input type="date" data-f="semstart" value="'+esc(S.start||'')+'" aria-label="Semester start"></label><label>Ends<input type="date" data-f="semend" value="'+esc(S.end||'')+'" aria-label="Semester end"></label></div></div><div id="calSum"></div></section><div id="calBody"></div></div>';
+    +'<section class="card calhead"><div class="caltop"><div class="calname">'+esc(S.name)+'</div><div class="caldates"><div><span>Starts</span>'+dateField('data-f="semstart"',S.start,'Semester start','Pick a date')+'</div><div><span>Ends</span>'+dateField('data-f="semend"',S.end,'Semester end','Pick a date')+'</div></div></div><div id="calSum"></div></section><div id="calBody"></div></div>';
 }
 function calRedraw(){ const b=document.getElementById('calBody'), u=document.getElementById('calSum'); if(b&&u&&view==='cal'){ const p=calBody(); u.innerHTML=p.sum; b.innerHTML=p.rest; } }
 function calBody(){
@@ -1868,7 +1891,7 @@ function calBody(){
   const wkend=meets.some(x=>x.m.days.includes(0)||x.m.days.includes(6))||evs.some(e=>{ for(let i=5;i<7;i++) if(evOn(e,addD(calWk,i))) return true; return false; });
   const nd=wkend?7:5, days=[]; for(let i=0;i<nd;i++) days.push(addD(calWk,i));
   const inSem=d=>!okR||(d>=st&&d<=en);
-  const offOn=d=>offs.find(o=>d>=o.start&&d<=o.end);
+  const offOn=d=>offs.filter(o=>d>=o.start&&d<=o.end).sort((a,b)=>dayDiff(a.start,a.end)-dayDiff(b.start,b.end))[0];
   const dayEvents=days.map(d=>{
     const L=[], offH=offOn(d); if(inSem(d)&&!offH) meets.forEach(x=>{ if(x.m.days.includes(pd(d).getDay())) L.push({a:x.a,b:x.b,col:COLORS[x.c.id],fg:TILE[x.c.id],t:x.c.name,loc:x.m.loc,go:'go',id:x.c.id}); });
     const allDay=[];
@@ -1880,23 +1903,30 @@ function calBody(){
     const dues=[]; S.courses.forEach(c=>c.cats.forEach(k=>k.items.forEach(it=>{ if(it.d===d&&!it.opt) dues.push({c:c,it:it}); })));
     return {d:d,blocks:out,allDay:allDay,dues:dues,off:offH};
   });
-  const hasTop=dayEvents.some(x=>x.allDay.length||x.dues.length||x.off);
+  const hasTop=dayEvents.some(x=>x.allDay.length||x.dues.length);
+  const segs=[]; dayEvents.forEach((x,i)=>{ if(!x.off) return; const prev=i>0&&dayEvents[i-1].off&&dayEvents[i-1].off.id===x.off.id; if(prev){ segs[segs.length-1].n++; } else segs.push({o:x.off,a:i,n:1}); });
+  const segAt={}; segs.forEach(sg=>{ segAt[sg.a]=sg; });
   const nowM=(new Date()).getHours()*60+(new Date()).getMinutes();
   let g='<div class="calgrid" style="--n:'+nd+';--H:'+H+'px;--rh:'+CAL_RH+'px">';
   g+='<div></div>'+dayEvents.map(x=>{ const d=pd(x.d); return '<div class="dh'+(x.d===TODAY?' today':'')+(inSem(x.d)?'':' off')+(x.off?' isoff':'')+'"><b>'+DAYN[d.getDay()]+'</b><span>'+d.getDate()+'</span></div>'; }).join('');
+  if(segs.length){
+    g+='<div></div><div class="offrow">'+segs.map(sg=>{ const o=sg.o, k=OFFK[o.kind], A=pd(o.start), B=pd(o.end), n=dayDiff(o.start,o.end)+1, cl=o.start<days[sg.a], cr=o.end>days[sg.a+sg.n-1];
+      const rng=n===1?MONN[A.getMonth()]+' '+A.getDate():MONN[A.getMonth()]+' '+A.getDate()+' – '+(A.getMonth()===B.getMonth()?'':MONN[B.getMonth()]+' ')+B.getDate();
+      return '<button type="button" class="offban'+(cl?' contl':'')+(cr?' contr':'')+'" style="--c:'+k[1]+';grid-column:'+(sg.a+1)+' / '+(sg.a+sg.n+1)+'" data-act="offedit" data-id="'+o.id+'"><b>'+esc(o.t)+'</b><span>'+(sg.n>1?k[0]+' · '+rng+(n>1?' · '+n+' days':''):k[0])+'</span></button>'; }).join('')+'</div>';
+  }
   if(hasTop){
-    g+='<div class="dlab">Due</div>'+dayEvents.map(x=>'<div class="dues">'+(x.off?'<button type="button" class="cdue offchip" style="--c:'+OFFK[x.off.kind][1]+'" data-act="offedit" data-id="'+x.off.id+'" title="'+esc(x.off.t)+'">'+esc(x.off.t)+'</button>':'')+x.allDay.map(e=>'<button type="button" class="cdue ev2" style="--c:'+e.color+'" data-act="evedit" data-id="'+e.id+'" title="'+esc(e.t)+'">'+esc(e.t)+'</button>').join('')
+    g+='<div class="dlab">Due</div>'+dayEvents.map(x=>'<div class="dues">'+x.allDay.map(e=>'<button type="button" class="cdue ev2" style="--c:'+e.color+'" data-act="evedit" data-id="'+e.id+'" title="'+esc(e.t)+'">'+esc(e.t)+'</button>').join('')
       +x.dues.map(u=>'<button type="button" class="cdue'+(u.it.e!=null?' dn':'')+'" style="--c:'+COLORS[u.c.id]+'" data-act="go" data-v="'+u.c.id+'" title="'+esc(u.c.name+' · '+u.it.n)+'">'+esc(u.it.n)+'</button>').join('')+'</div>').join('');
   }
   let ax=''; for(let h=h0;h<=h1;h++) ax+='<span'+(h===h0?' class="f0"':'')+' style="top:'+((h-h0)*CAL_RH)+'px">'+(h===h1?'':fmtT(h*60,true).replace(':00',''))+'</span>';
   g+='<div class="axis">'+ax+'</div>';
   dayEvents.forEach(x=>{
-    g+='<div class="cdcol'+(x.d===TODAY?' today':'')+(inSem(x.d)?'':' off')+(x.off?' offday':'')+'"'+(x.off?' style="--oc:'+OFFK[x.off.kind][1]+'"':'')+' data-act="evnew" data-date="'+x.d+'" data-h0="'+h0+'">';
+    g+='<div class="cdcol'+(x.d===TODAY?' today':'')+(inSem(x.d)?'':' off')+(x.off?' offday':'')+((x.off&&dayEvents[dayEvents.indexOf(x)-1]&&dayEvents[dayEvents.indexOf(x)-1].off&&dayEvents[dayEvents.indexOf(x)-1].off.id===x.off.id)?' joined':'')+'"'+(x.off?' style="--oc:'+OFFK[x.off.kind][1]+'"':'')+' data-act="evnew" data-date="'+x.d+'" data-h0="'+h0+'">';
+    { const si=dayEvents.indexOf(x); if(segAt[si]) g+='<div class="offbg" style="width:calc(100% * '+segAt[si].n+')"></div>'; }
     x.blocks.forEach(b=>{
       const top=(b.a/60-h0)*CAL_RH, ht=Math.max(30,(b.b-b.a)/60*CAL_RH-3), w=100/b.n;
       g+='<button type="button" class="ev'+(ht<44?' sm':'')+'" style="--c:'+b.col+';--fg:'+b.fg+';top:'+top.toFixed(1)+'px;min-height:'+ht.toFixed(1)+'px;left:calc('+(b.lane*w).toFixed(2)+'% + 3px);width:calc('+w.toFixed(2)+'% - 6px)" data-act="'+b.go+'" data-'+(b.go==='go'?'v':'id')+'="'+b.id+'"><span class="nm">'+esc(b.t)+'</span><span class="tm">'+fmtR(b.a,b.b)+'</span>'+(b.loc?'<span class="lc">'+esc(b.loc)+'</span>':'')+'</button>';
     });
-    if(x.off) g+='<div class="offlab"><b>'+esc(x.off.t)+'</b><small>'+OFFK[x.off.kind][0]+'</small></div>';
     if(x.d===TODAY&&nowM>=h0*60&&nowM<=h1*60) g+='<div class="nowl" style="top:'+((nowM/60-h0)*CAL_RH).toFixed(1)+'px"></div>';
     g+='</div>';
   });
@@ -1919,7 +1949,7 @@ function offModal(e,edit){
   const v=Object.assign({t:'',kind:'holiday',start:TODAY,end:''},e||{});
   const body='<label class="f">Name<input type="text" name="t" value="'+esc(v.t)+'" placeholder="Thanksgiving break, Spring recess…" required></label>'
     +'<div class="f"><span>Type</span><div class="kinds">'+Object.keys(OFFK).map(k=>'<label class="kd" style="--c:'+OFFK[k][1]+'"><input type="radio" name="kind" value="'+k+'"'+(v.kind===k?' checked':'')+'><span>'+OFFK[k][0]+'</span></label>').join('')+'</div></div>'
-    +'<div class="two"><label class="f">First day<input type="date" name="start" value="'+v.start+'" required></label><label class="f">Last day<input type="date" name="end" value="'+(v.end&&v.end!==v.start?v.end:'')+'"></label></div>'
+    +'<div class="two"><div class="f"><span>First day</span>'+dateField('name="start"',v.start,'First day','Pick a date')+'</div><div class="f"><span>Last day</span>'+dateField('name="end"',v.end&&v.end!==v.start?v.end:'','Last day','Same day')+'</div></div>'
     +'<span class="hint">Leave the last day empty for a single day. Classes won’t show on these days.</span>'
     +(edit?'<div><button type="button" class="btn danger sm" data-act="offdel" data-id="'+v.id+'">Delete</button></div>':'');
   openModal(edit?'Edit day off':'Add a day off',body,edit?'Save':'Add',function(f){
@@ -1945,10 +1975,10 @@ function evModal(e,edit){
   const v=Object.assign({t:'',date:TODAY,allDay:false,st:'09:00',en:'10:00',loc:'',note:'',color:'#FF7A59',rep:'none',until:''},e||{});
   const ro=(val,l)=>'<option value="'+val+'"'+(v.rep===val?' selected':'')+'>'+l+'</option>';
   const body='<label class="f">Title<input type="text" name="t" value="'+esc(v.t)+'" placeholder="Study group, office hours, exam…" required></label>'
-    +'<div class="two"><label class="f">Date<input type="date" name="date" value="'+v.date+'" required></label><label class="f chk2"><span>All day</span><input type="checkbox" name="allDay" id="evAll"'+(v.allDay?' checked':'')+'></label></div>'
+    +'<div class="two"><div class="f"><span>Date</span>'+dateField('name="date"',v.date,'Date','Pick a date')+'</div><label class="f chk2"><span>All day</span><input type="checkbox" name="allDay" id="evAll"'+(v.allDay?' checked':'')+'></label></div>'
     +'<div class="two" id="evTimes"'+(v.allDay?' style="display:none"':'')+'><div class="f"><span>Starts</span>'+timeField('name="st"',v.st,'Start time')+'</div><div class="f"><span>Ends</span>'+timeField('name="en"',v.en,'End time')+'</div></div>'
     +'<label class="f">Location<input type="text" name="loc" value="'+esc(v.loc)+'" placeholder="Optional"></label>'
-    +'<div class="two"><label class="f">Repeats<select name="rep">'+ro('none','Does not repeat')+ro('daily','Every day')+ro('weekly','Every week')+ro('biweekly','Every 2 weeks')+ro('monthly','Every month')+'</select></label><label class="f">Until<input type="date" name="until" value="'+v.until+'"></label></div>'
+    +'<div class="two"><label class="f">Repeats<select name="rep">'+ro('none','Does not repeat')+ro('daily','Every day')+ro('weekly','Every week')+ro('biweekly','Every 2 weeks')+ro('monthly','Every month')+'</select></label><div class="f"><span>Until</span>'+dateField('name="until"',v.until,'Repeat until','Never')+'</div></div>'
     +'<div class="f"><span>Color</span><div class="evcs">'+PALETTE.map(p=>'<label class="evc"><input type="radio" name="color" value="'+p+'"'+(p.toLowerCase()===v.color.toLowerCase()?' checked':'')+'><i style="background:'+p+'"></i></label>').join('')+'</div></div>'
     +'<label class="f">Notes<textarea name="note" placeholder="Optional">'+esc(v.note)+'</textarea></label>'
     +(edit?'<div><button type="button" class="btn danger sm" data-act="evdel" data-id="'+v.id+'">Delete event</button></div>':'');
@@ -1978,6 +2008,36 @@ function editPanel(c){
     +'<div class="editact"><button type="button" class="btn danger" data-act="delclass" data-c="'+c.id+'">Delete class</button></div></section>';
 }
 function timeField(attrs,val,label){ return '<span class="tp"><input type="hidden" '+attrs+' value="'+esc(val||'')+'"><button type="button" class="tpbtn'+(val?'':' empty')+'" data-tp aria-label="'+label+'">'+(val?fmtT(tMin(val)):'Set time')+'</button></span>'; }
+const fmtDL=i=>{ const d=pd(i); return MONN[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear(); };
+function dateField(attrs,val,label,ph){ return '<span class="tp"><input type="hidden" '+attrs+' value="'+esc(val||'')+'"><button type="button" class="tpbtn dpbtn'+(val?'':' empty')+'" data-dp data-ph="'+esc(ph||'Pick a date')+'" aria-label="'+label+'">'+(val?fmtDL(val):esc(ph||'Pick a date'))+'</button></span>'; }
+let dpEl=null;
+function dpClose(){ if(dpEl){ dpEl.remove(); dpEl=null; } }
+function dpOpen(btn){
+  dpClose(); tpClose(); const inp=btn.parentNode.querySelector('input'); if(!inp) return;
+  let sel=inp.value||'', vm=pd(sel||TODAY); vm=new Date(vm.getFullYear(),vm.getMonth(),1,12);
+  const el=document.createElement('div'); el.className='dpop'; el.setAttribute('role','dialog'); el.setAttribute('aria-label','Pick a date'); document.body.appendChild(el); dpEl=el;
+  function set(v){ inp.value=v; btn.textContent=v?fmtDL(v):btn.dataset.ph; btn.classList.toggle('empty',!v); inp.dispatchEvent(new Event('input',{bubbles:true})); }
+  function draw(){
+    const first=new Date(vm.getFullYear(),vm.getMonth(),1,12), lead=(first.getDay()+6)%7, start=new Date(first); start.setDate(1-lead);
+    let cells='';
+    for(let i=0;i<42;i++){ const d=new Date(start); d.setDate(start.getDate()+i); const iso=isoD(d), cls=(d.getMonth()!==vm.getMonth()?'o ':'')+(iso===TODAY?'t ':'')+(iso===sel?'on ':'');
+      cells+='<button type="button" class="'+cls+'" data-d="'+iso+'">'+d.getDate()+'</button>'; }
+    el.innerHTML='<div class="dph"><button type="button" class="dpnav" data-n="-1" aria-label="Previous month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 6 8.5 12l6 6"/></svg></button><div class="dpt">'+['January','February','March','April','May','June','July','August','September','October','November','December'][vm.getMonth()]+' <small>'+vm.getFullYear()+'</small></div><button type="button" class="dpnav" data-n="1" aria-label="Next month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 6l6 6-6 6"/></svg></button></div>'
+      +'<div class="dpw">'+['M','T','W','T','F','S','S'].map(x=>'<span>'+x+'</span>').join('')+'</div><div class="dpg">'+cells+'</div>'
+      +'<div class="tpfoot"><button type="button" class="tpclear" data-x="1">Clear</button><button type="button" class="tpclear dpt0" data-today="1">Today</button></div>';
+  }
+  el.addEventListener('click',function(ev){
+    const b=ev.target.closest('button'); if(!b) return;
+    if(b.dataset.n){ vm=new Date(vm.getFullYear(),vm.getMonth()+(+b.dataset.n),1,12); draw(); return; }
+    if(b.dataset.x){ set(''); dpClose(); return; }
+    if(b.dataset.today){ set(TODAY); dpClose(); return; }
+    if(b.dataset.d){ sel=b.dataset.d; set(sel); dpClose(); }
+  });
+  draw();
+  const r=btn.getBoundingClientRect(), w=300, hgt=el.offsetHeight;
+  let left=Math.min(Math.max(8,r.left),innerWidth-w-8), top=r.bottom+8; if(top+hgt>innerHeight-8) top=Math.max(8,r.top-hgt-8);
+  el.style.left=left+'px'; el.style.top=top+'px';
+}
 let tpEl=null;
 function tpClose(){ if(tpEl){ tpEl.remove(); tpEl=null; } }
 function tpOpen(btn){
@@ -2012,9 +2072,9 @@ function tpOpen(btn){
   el.style.left=left+'px'; el.style.top=top+'px';
   el.querySelectorAll('.tpcol[data-c]').forEach(function(col){ const on=col.querySelector('.on'); if(on) col.scrollTop=on.offsetTop-col.clientHeight/2+on.offsetHeight/2; });
 }
-document.addEventListener('click',function(ev){ const t=ev.target.closest&&ev.target.closest('[data-tp]'); if(t){ ev.preventDefault(); ev.stopPropagation(); tpOpen(t); return; } if(tpEl&&!tpEl.contains(ev.target)) tpClose(); },true);
-document.addEventListener('keydown',function(ev){ if(ev.key==='Escape') tpClose(); });
-window.addEventListener('resize',tpClose);
+document.addEventListener('click',function(ev){ const t=ev.target.closest&&ev.target.closest('[data-tp]'); if(t){ ev.preventDefault(); ev.stopPropagation(); dpClose(); tpOpen(t); return; } const d=ev.target.closest&&ev.target.closest('[data-dp]'); if(d){ ev.preventDefault(); ev.stopPropagation(); dpOpen(d); return; } if(tpEl&&!tpEl.contains(ev.target)) tpClose(); if(dpEl&&!dpEl.contains(ev.target)) dpClose(); },true);
+document.addEventListener('keydown',function(ev){ if(ev.key==='Escape'){ tpClose(); dpClose(); } });
+window.addEventListener('resize',function(){ tpClose(); dpClose(); });
 const DCH=[[1,'M'],[2,'T'],[3,'W'],[4,'T'],[5,'F'],[6,'S'],[0,'S']];
 function meetsEdit(c){
   const rows=c.meets.map((m,i)=>'<div class="mrow"><div class="dchips">'+DCH.map(d=>'<button type="button" class="'+(m.days.includes(d[0])?'on':'')+'" data-act="mday" data-c="'+c.id+'" data-mi="'+i+'" data-d="'+d[0]+'" aria-pressed="'+m.days.includes(d[0])+'" aria-label="'+DAYN[d[0]]+'">'+d[1]+'</button>').join('')+'</div>'
