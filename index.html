@@ -250,6 +250,8 @@ input[type=range]{width:100%;accent-color:var(--blue);margin:14px 0 0}
 .eck{font-weight:700;color:var(--ink);display:flex;flex-direction:column;gap:2px}
 .eck small{display:block}
 .ecbox input{width:100%}
+.ecsel{width:auto!important;max-width:100%;padding:2px 22px 2px 9px!important;font-size:12.5px;font-weight:700;border-radius:99px!important;margin-left:4px;background-color:var(--soft)}
+.ecto{display:flex!important;align-items:center;flex-wrap:wrap;gap:2px}
 .ectot{grid-column:1/-1;display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--mut);font-weight:600}
 .ectot input{width:92px}
 @media (max-width:760px){.ecbox{grid-template-columns:1fr}}
@@ -567,7 +569,7 @@ let W=null, S=null, view='home', dbDoc=null, wipeArmed=false, editing=false, reo
 
 function ecShape(e){
   const bx=x=>({e:(x&&typeof x.e==='number')?x.e:null,w:(x&&typeof x.w==='number')?x.w:null});
-  const o={label:e.label||'Extra credit',pts:bx(e.pts),pct:bx(e.pct),total:(typeof e.total==='number'&&e.total>0)?e.total:null};
+  const o={label:e.label||'Extra credit',pts:bx(e.pts),pct:bx(e.pct),total:(typeof e.total==='number'&&e.total>0)?e.total:null,cat:(typeof e.cat==='number'&&e.cat>=0)?e.cat:null};
   if(e.max!=null){ o.max=e.max; o.mu=e.mu||e.unit||'pct'; }
   if(e.val!=null&&typeof e.val==='number'){ o[e.unit==='pts'?'pts':'pct'].e=e.val; }
   return o;
@@ -589,7 +591,7 @@ function loadMerged(saved){
     if(sc.target) c.target=sc.target;
     if(c.ec&&sc.ec){
       const m=ecShape(sc.ec);
-      c.ec.pts=m.pts; c.ec.pct=m.pct; c.ec.total=m.total;
+      c.ec.pts=m.pts; c.ec.pct=m.pct; c.ec.total=m.total; c.ec.cat=m.cat;
     }
     c.cats.forEach(k=>{
       const sk=(sc.cats||[]).find(x=>x.name===k.name);
@@ -753,6 +755,7 @@ function courseRes(c,mode,fill){
     return {pct:pct,progress:allP?done/allP:0};
   }
   let num=0,den=0,tw=0,pw=0;
+  const ecP=ecAmt(c,'pts',mode), ecK=(c.ec&&c.ec.cat!=null&&c.cats[c.ec.cat])?c.ec.cat:null;
   c.cats.forEach(k=>{
     const w=k.w||0; tw+=w;
     const real=k.items.filter(it=>!it.opt);
@@ -760,13 +763,17 @@ function courseRes(c,mode,fill){
     const denom=Math.max(1,Math.min(real.length,k.rule==='best'?(k.n||real.length):((k.drop>0&&(k.rule==='avg'||k.rule==='sum'))?real.length-k.drop:real.length)));
     pw+=w*Math.min(1,entered/denom);
     const r=catRes(k,mode,fill);
-    if(r){ num+=w*r.pct; den+=w; }
+    if(r){
+      let p=r.pct;
+      if(ecK!=null&&c.cats.indexOf(k)===ecK&&ecP){ const P=k.items.filter(it=>!it.opt).reduce((t,it)=>t+(it.p||0),0); if(P>0) p+=100*ecP/P; }
+      num+=w*p; den+=w;
+    }
   });
   let pct=null;
   if(den>0){
     pct=num/den;
     pct+=ecAmt(c,'pct',mode);
-    const T=ecTotal(c); if(T>0) pct+=100*ecAmt(c,'pts',mode)/T;
+    if(ecK==null){ const T=ecTotal(c); if(T>0) pct+=100*ecP/T; }
   }
   return {pct:pct,progress:tw?pw/tw:0};
 }
@@ -1145,11 +1152,13 @@ function ecHtml(c){
   const e=c.ec;
   const lim=k=>(e.max!=null&&e.mu===k)?' <small>max '+e.max+'</small>':'';
   const fld=(k,f,v,lab)=>'<input type="number" step="any" inputmode="decimal" data-f="'+f+'" data-u="'+k+'" data-c="'+c.id+'" value="'+(v==null?'':v)+'" placeholder="–" aria-label="'+lab+'">';
-  const tot=c.pooled?'':'<label class="ectot">out of <input type="number" step="any" inputmode="decimal" data-f="ectotal" data-c="'+c.id+'" value="'+(e.total==null?'':e.total)+'" placeholder="'+f3(ecTotal(c))+'" aria-label="Total points in this class"> total points</label>';
-  const hp=c.pooled?'Added to the points you’ve earned.':'Divided by the total points, then added to your final percent.';
+  const ecK=(!c.pooled&&e.cat!=null&&c.cats[e.cat])?e.cat:null;
+  const sel=c.pooled?'':'<select class="ecsel" data-f="eccat" data-c="'+c.id+'" aria-label="Where the extra points count"><option value="">Total grade</option>'+c.cats.map((k,i)=>'<option value="'+i+'"'+(ecK===i?' selected':'')+'>'+esc(k.name)+'</option>').join('')+'</select>';
+  const tot=(c.pooled||ecK!=null)?'':'<label class="ectot">out of <input type="number" step="any" inputmode="decimal" data-f="ectotal" data-c="'+c.id+'" value="'+(e.total==null?'':e.total)+'" placeholder="'+f3(ecTotal(c))+'" aria-label="Total points in this class"> total points</label>';
+  const hp=c.pooled?'Added to the points you’ve earned.':'Count in: '+sel;
   return '<section class="ecbox" id="ecbox"><div class="ecl"><b>'+esc(e.label)+'</b><small>Use points, percent, or both. A what-if replaces the earned amount on that row.</small></div>'
     +'<div class="ecgrid"><div></div><div class="ech">Earned</div><div class="ech">What-if</div>'
-    +'<div class="eck">Points'+lim('pts')+'<small>'+hp+'</small></div>'+fld('pts','ece',e.pts.e,'Extra credit points earned')+fld('pts','ecw',e.pts.w,'Extra credit points what-if')
+    +'<div class="eck">Points'+lim('pts')+'<small class="ecto">'+hp+'</small></div>'+fld('pts','ece',e.pts.e,'Extra credit points earned')+fld('pts','ecw',e.pts.w,'Extra credit points what-if')
     +'<div class="eck">Percent'+lim('pct')+'<small>Added straight onto your final percent.</small></div>'+fld('pct','ece',e.pct.e,'Extra credit percent earned')+fld('pct','ecw',e.pct.w,'Extra credit percent what-if')
     +'</div>'+tot+'</section>';
 }
@@ -1303,6 +1312,7 @@ document.addEventListener('input',function(ev){
   else if(f==='credits'){ c.credits=num(t.value); }
   else if(f==='ece'||f==='ecw'){ c.ec[t.dataset.u][f==='ece'?'e':'w']=num(t.value); }
   else if(f==='ectotal'){ c.ec.total=num(t.value); }
+  else if(f==='eccat'){ c.ec.cat=t.value===''?null:+t.value; save(); render(true); return; }
   else if(f==='fill'){ c.fill=num(t.value)||0; const fv=document.getElementById('fillv'); if(fv) fv.textContent=c.fill+'%'; }
   else if(f==='cname'){ c.name=t.value||'Untitled class'; const h=document.querySelector('.chead h1'); if(h) h.textContent=c.name; }
   else if(f==='ccode'){ c.code=t.value; const p=document.querySelector('.chead p'); if(p) p.textContent=c.code; }
@@ -1576,7 +1586,7 @@ document.addEventListener('click',function(ev){
   else if(a==='delcat'){
     const k=c.cats[+b.dataset.k];
     if(c.cats.length<2){ alert('A class needs at least one category.'); return; }
-    if(!k.items.some(i=>i.e!=null||i.w!=null)||confirm('Delete “'+k.name+'” and its scores?')){ c.cats.splice(+b.dataset.k,1); save(); render(true); }
+    if(!k.items.some(i=>i.e!=null||i.w!=null)||confirm('Delete “'+k.name+'” and its scores?')){ const di=+b.dataset.k; c.cats.splice(di,1); if(c.ec.cat!=null){ if(c.ec.cat===di) c.ec.cat=null; else if(c.ec.cat>di) c.ec.cat--; } save(); render(true); }
   }
   else if(a==='delclass'){
     if(confirm('Delete '+c.name+' and all its scores? This can’t be undone.')){ S.courses=S.courses.filter(x=>x.id!==c.id); delete S.gpaPick[c.id]; editing=false; view='home'; save(); setHash(); render(); window.scrollTo(0,0); }
