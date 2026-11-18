@@ -48,6 +48,20 @@ button,input,select,textarea{font:inherit;color:inherit}
 .cr2 .nm2 i{width:10px;height:10px;border-radius:99px;background:var(--c);flex:0 0 auto}
 .cr2 .sw button{width:18px;height:18px}
 .cr2 .sw{gap:4px;flex-wrap:nowrap}
+.pre{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.pre button{border:2px solid var(--line);background:var(--soft);border-radius:16px;padding:10px 8px 9px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--ink);transition:border-color .18s ease,transform .15s ease}
+.pre button:hover{transform:translateY(-2px)}
+.pre button.on{border-color:var(--ink)}
+.pre b{font-size:12.5px;font-weight:700}
+.strip{display:flex}
+.strip i{width:13px;height:13px;border-radius:99px;margin-left:-3px;box-shadow:0 0 0 2px var(--soft)}
+.strip i:first-child{margin-left:0;width:17px;height:17px;margin-top:-2px;margin-right:2px}
+.pophint{margin:14px 0 0;font-size:12.5px;color:var(--mut)}
+.cpbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.cc{display:flex;gap:6px;align-items:center}
+.cc button{width:18px;height:18px;border-radius:99px;border:0;padding:0;background:var(--c);cursor:pointer;box-shadow:inset 0 0 0 1px rgba(128,128,128,.3);transition:transform .15s ease}
+.cc button:hover{transform:scale(1.2)}
+.cc button.on{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--ink)}
 .popf{display:flex;justify-content:flex-end;margin-top:10px}
 .popf button{background:none;border:0;color:var(--mut);font-weight:700;cursor:pointer;font-size:13px;padding:6px 4px}
 .popf button:hover{color:var(--ink)}
@@ -684,6 +698,14 @@ const TILE={tob:'#2A1006',syn:'#FFFFFF',fna:'#052A24',ecl:'#1D2B04',eco:'#33240A
 const TILE0=Object.assign({},TILE), COLORS0=Object.assign({},COLORS);
 const MAINS=['#1B3FD1','#6D3AE0','#0B7A75','#D6336C','#C2410C','#1F7A3E','#1F2433'];
 const PALETTE=['#FF7A59','#FFC233','#B8E651','#19C3A5','#2DD4FF','#4C92FF','#7B5CFF','#C9A6FF','#FF6FA8','#EDEDF2'];
+const PRESETS=[
+ {n:'Classic',main:null,cls:{}},
+ {n:'Sunset',main:'#D6336C',cls:{tob:'#FF7A59',syn:'#FF6FA8',fna:'#FFC233',ecl:'#C9A6FF',eco:'#FF9F5A',hps:'#7B5CFF'}},
+ {n:'Ocean',main:'#0B7A75',cls:{tob:'#2DD4FF',syn:'#4C92FF',fna:'#19C3A5',ecl:'#7B5CFF',eco:'#B8E651',hps:'#8FD3FF'}},
+ {n:'Candy',main:'#6D3AE0',cls:{tob:'#FF6FA8',syn:'#7B5CFF',fna:'#2DD4FF',ecl:'#C9A6FF',eco:'#FFC233',hps:'#19C3A5'}},
+ {n:'Forest',main:'#1F7A3E',cls:{tob:'#B8E651',syn:'#19C3A5',fna:'#7FD18B',ecl:'#FFC233',eco:'#E8D36A',hps:'#4C92FF'}},
+ {n:'Mono',main:'#1F2433',cls:{tob:'#EDEDF2',syn:'#C9CCD6',fna:'#B1B6C6',ecl:'#9DA3B7',eco:'#D8DBE3',hps:'#BEC3D0'}}
+];
 let ACC={main:null,cls:{}};
 try{ const a=JSON.parse(localStorage.getItem('pitt-accent')||'null'); if(a&&typeof a==='object'){ ACC.main=typeof a.main==='string'?a.main:null; ACC.cls=(a.cls&&typeof a.cls==='object')?a.cls:{}; } }catch(e){}
 function fgFor(hex){
@@ -876,7 +898,8 @@ function courseView(c){
   const notes='<div class="notes"><h2>From the syllabus</h2><ul>'+c.notes.map(n=>'<li>'+n+'</li>').join('')+'</ul></div>';
   const tot=c.cats.reduce((a,k)=>a+(k.w||0),0);
   const wn=(!c.pooled&&Math.abs(tot-100)>0.01)?'<div class="banner">Category weights add up to '+f1(tot)+'%, not 100%. Grades are scaled to the weights you’ve set.</div>':'';
-  return '<div class="cpage" style="--c:'+COLORS[c.id]+';--fg:'+TILE[c.id]+'"><button class="back" data-act="go" data-v="home">← All classes</button>'
+  const cc='<div class="cc" aria-label="Class color">'+PALETTE.map(v=>'<button type="button" style="--c:'+v+'" class="'+(v.toLowerCase()===COLORS[c.id].toLowerCase()?'on':'')+'" data-id="'+c.id+'" data-v="'+v+'" aria-label="Color '+v+'"></button>').join('')+'</div>';
+  return '<div class="cpage" style="--c:'+COLORS[c.id]+';--fg:'+TILE[c.id]+'"><div class="cpbar"><button class="back" data-act="go" data-v="home">← All classes</button>'+cc+'</div>'
     +'<section class="cband"><header class="chead"><div><h1>'+esc(c.name)+'</h1><p>'+esc(c.code)+'</p></div>'
     +'<label class="fld">Credits <input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="–"></label></header>'
     +'<div id="sum"></div></section>'
@@ -990,23 +1013,25 @@ function setHash(){ try{ location.hash=(view==='home'?'':view); }catch(e){} }
   const btn=document.getElementById('accBtn'); const pop=document.createElement('div'); pop.className='pop'; pop.id='accPop'; pop.setAttribute('role','dialog'); pop.setAttribute('aria-label','Accent colors'); document.body.appendChild(pop);
   const eq=(a,b)=>a&&b&&a.toLowerCase()===b.toLowerCase();
   const sw=(list,cur,kind,id,big)=>'<div class="sw'+(big?' big':'')+'">'+list.map(c=>'<button type="button" style="--c:'+c+'" class="'+(eq(c,cur)?'on':'')+'" data-k="'+kind+'" data-id="'+(id||'')+'" data-v="'+c+'" aria-label="'+c+'" aria-pressed="'+(eq(c,cur)?'true':'false')+'"></button>').join('')+'</div>';
+  const same=(p)=>eq(p.main||MAINS[0],ACC.main||MAINS[0])&&Object.keys(COLORS0).every(id=>eq(p.cls[id]||COLORS0[id],ACC.cls[id]||COLORS0[id]));
   function build(){
-    const main=ACC.main||MAINS[0];
-    pop.innerHTML='<h4>Main color</h4>'+sw(MAINS,main,'main','',true)
-      +'<h4>Classes</h4>'+S.courses.map(c=>{ const cur=COLORS[c.id]; const list=PALETTE.some(x=>eq(x,COLORS0[c.id]))?PALETTE:[COLORS0[c.id]].concat(PALETTE);
-        return '<div class="cr2" style="--c:'+cur+'"><div class="nm2"><i></i><span>'+esc(c.name)+'</span></div>'+sw(list,cur,'cls',c.id)+'</div>'; }).join('')
-      +'<div class="popf"><button type="button" data-k="reset">Reset colors</button></div>';
+    pop.innerHTML='<h4>Style</h4><div class="pre">'+PRESETS.map((p,i)=>'<button type="button" data-k="pre" data-i="'+i+'" class="'+(same(p)?'on':'')+'"><span class="strip"><i style="background:'+(p.main||MAINS[0])+'"></i>'+Object.keys(COLORS0).map(id=>'<i style="background:'+(p.cls[id]||COLORS0[id])+'"></i>').join('')+'</span><b>'+p.n+'</b></button>').join('')+'</div>'
+      +'<h4>Main color</h4>'+sw(MAINS,ACC.main||MAINS[0],'main','',true)
+      +'<p class="pophint">To recolor one class, open it and pick a color at the top.</p>';
   }
   function set(open){ if(open) build(); pop.classList.toggle('open',open); btn.setAttribute('aria-expanded',open); }
   btn.addEventListener('click',function(ev){ ev.stopPropagation(); set(!pop.classList.contains('open')); });
   document.addEventListener('click',function(ev){ if(pop.classList.contains('open')&&!pop.contains(ev.target)) set(false); });
   document.addEventListener('keydown',function(ev){ if(ev.key==='Escape'&&pop.classList.contains('open')){ set(false); btn.focus(); } });
+  document.addEventListener('click',function(ev){
+    const b=ev.target.closest('.cc button'); if(!b) return;
+    ACC.cls[b.dataset.id]=b.dataset.v; saveAcc(); applyAcc(); render();
+  });
   pop.addEventListener('click',function(ev){
     ev.stopPropagation();
     const b=ev.target.closest('button'); if(!b) return; const k=b.dataset.k;
     if(k==='main') ACC.main=b.dataset.v;
-    else if(k==='cls') ACC.cls[b.dataset.id]=b.dataset.v;
-    else if(k==='reset') ACC={main:null,cls:{}};
+    else if(k==='pre'){ const p=PRESETS[+b.dataset.i]; ACC={main:p.main,cls:Object.assign({},p.cls)}; }
     else return;
     saveAcc(); applyAcc(); build(); render();
   });
