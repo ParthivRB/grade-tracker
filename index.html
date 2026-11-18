@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Grade Tracker · Fall 2026</title><meta name="theme-color" content="#1B3FD1"><link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Grades"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><script>try{var t=localStorage.getItem('pitt-theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t}catch(e){}</script><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><style id="app-css">:root{
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Tally</title><meta name="theme-color" content="#1B3FD1"><link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Tally"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><script>try{var t=localStorage.getItem('pitt-theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t}catch(e){}</script><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><style id="app-css">:root{
   --bg:#F6F7FB; --card:#FFFFFF; --ink:#0D1226; --ink2:#3A4360; --mut:#69728C; --line:#E4E8F2; --soft:#EFF1F8;
   --hero:#1B3FD1; --elev:#FFFFFF; --topbg:rgba(255,255,255,.95); --on:#fff;
   --blue:#1B3FD1; --blue-soft:#E8EDFD; --gold:#FFB81C; --good:#0F8A5F; --good-soft:#E1F5EA; --warn:#B8400A; --warn-soft:#FFF0E6;
@@ -857,7 +857,7 @@ html[data-priv] #privBtn .eyeoff{opacity:1;transform:none}
 html[data-priv] #privBtn{background:var(--blue-soft);color:var(--blue)}
 .gnum{width:fit-content}
 </style></head><body><header class="top" id="shell-header"><div class="wrap">
-  <button class="brand" data-act="go" data-v="home" aria-label="Grade Tracker home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="22" fill="#0D1226"/><path d="M21.5 33.5 29 41 43 25" fill="none" stroke="#FFB81C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="t">Grade Tracker</span></button>
+  <button class="brand" data-act="go" data-v="home" aria-label="Tally home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="22" fill="#0D1226"/><path d="M21.5 33.5 29 41 43 25" fill="none" stroke="#FFB81C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="t">Tally</span></button>
   <div class="right"><nav class="tabs" aria-label="Sections">
     <button data-act="go" data-v="home">Home</button>
     <button data-act="jump" data-t="classes">Classes</button>
@@ -1895,7 +1895,7 @@ document.addEventListener('input',function(ev){
   save(); refresh();
 });
 function setHash(){ try{ location.hash=(view==='home'?'':view); }catch(e){} }
-const AI_PROMPT=`I'm going to give you my syllabi and/or my grades (PDFs, screenshots, spreadsheets, Canvas exports, or pasted text). Turn everything into ONE JSON file for my grade tracker web app, and give it back as a downloadable file named grades.json (or, if you can't make files, as a single code block I can save as grades.json).
+const AI_PROMPT=`I'm going to give you my syllabi and/or my grades (PDFs, screenshots, spreadsheets, Canvas exports, or pasted text). Turn everything into ONE JSON file for my Tally web app, and give it back as a downloadable file named grades.json (or, if you can't make files, as a single code block I can save as grades.json).
 
 What to do:
 - For each syllabus: create the class, and read its grading policy carefully. Pull out every grade category and its weight, how scores are combined (average, total points, best N, dropped lowest scores, a final that replaces the lowest exam, optional extra work that replaces a low score, capped points), the grading scale cutoffs, the credits, any extra credit, and any rules worth remembering (late policy, attendance, no make-ups). Put those rules in the class "notes" as short plain sentences.
@@ -2460,7 +2460,7 @@ document.addEventListener('click',function(ev){
     else { ta.select(); document.execCommand('copy'); done(); }
   }
   else if(a==='del'){ c.cats[+b.dataset.k].items.splice(+b.dataset.i,1); save(); render(); }
-  else if(a==='download'){ const blob=new Blob([JSON.stringify(W,null,2)],{type:'application/json'}); const u=URL.createObjectURL(blob); const l=document.createElement('a'); l.href=u; l.download='grade-tracker-backup.json'; document.body.appendChild(l); l.click(); l.remove(); setTimeout(function(){URL.revokeObjectURL(u);},1000); }
+  else if(a==='download'){ const blob=new Blob([JSON.stringify(W,null,2)],{type:'application/json'}); const u=URL.createObjectURL(blob); const l=document.createElement('a'); l.href=u; l.download='tally-backup.json'; document.body.appendChild(l); l.click(); l.remove(); setTimeout(function(){URL.revokeObjectURL(u);},1000); }
   else if(a==='export'){ $('#bk').value=JSON.stringify(W); $('#bkmsg').textContent='Copy all of that text and keep it somewhere safe.'; }
   else if(a==='import'){
     try{ const v=JSON.parse($('#bk').value); if(!okFile(v)) throw new Error('x'); importFile(v); }

@@ -1,4 +1,4 @@
-# Grade Tracker
+# Tally
 
 One file: `index.html`. No build step, no accounts, no server. Everything you enter stays in your own browser.
 

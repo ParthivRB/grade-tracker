@@ -1,6 +1,6 @@
 {
-  "name": "Grade Tracker",
-  "short_name": "Grades",
+  "name": "Tally",
+  "short_name": "Tally",
   "description": "Track grades, what-ifs and GPA across semesters.",
   "start_url": "./",
   "scope": "./",
