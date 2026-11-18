@@ -2037,7 +2037,7 @@ function calBody(){
     const out=[]; let cluster=[],cend=-1;
     const flush=()=>{ const lanes=[]; cluster.forEach(x=>{ let l=0; while(lanes[l]!==undefined&&lanes[l]>x.a) l++; lanes[l]=x.b; x.lane=l; }); const n=lanes.length; cluster.forEach(x=>{ x.n=n; out.push(x); }); cluster=[]; };
     L.forEach(x=>{ if(cluster.length&&x.a>=cend){ flush(); cend=-1; } cluster.push(x); cend=Math.max(cend,x.b); }); if(cluster.length) flush();
-    const dues=[]; S.courses.forEach(c=>c.cats.forEach(k=>k.items.forEach(it=>{ if(it.d===d&&!it.opt) dues.push({c:c,it:it}); })));
+    const dues=[];
     return {d:d,blocks:out,allDay:allDay,dues:dues,off:offH};
   });
   const dayEvents=mob?dayEventsAll.filter(x=>x.d===calDay):dayEventsAll, nd=dayEvents.length, vdays=dayEvents.map(x=>x.d);
@@ -2053,7 +2053,7 @@ function calBody(){
       return '<button type="button" class="offban'+(cl?' contl':'')+(cr?' contr':'')+'" style="--c:'+k[1]+';grid-column:'+(sg.a+1)+' / '+(sg.a+sg.n+1)+'" data-act="offedit" data-id="'+o.id+'"><b>'+esc(o.t)+'</b><span>'+(sg.n>1?k[0]+' · '+rng+(n>1?' · '+n+' days':''):k[0])+'</span></button>'; }).join('')+'</div>';
   }
   if(hasTop){
-    g+='<div class="dlab">Due</div>'+dayEvents.map(x=>'<div class="dues">'+x.allDay.map(e=>'<button type="button" class="cdue ev2" style="--c:'+e.color+'" data-act="evedit" data-id="'+e.id+'" title="'+esc(e.t)+'">'+esc(e.t)+'</button>').join('')
+    g+='<div class="dlab">All day</div>'+dayEvents.map(x=>'<div class="dues">'+x.allDay.map(e=>'<button type="button" class="cdue ev2" style="--c:'+e.color+'" data-act="evedit" data-id="'+e.id+'" title="'+esc(e.t)+'">'+esc(e.t)+'</button>').join('')
       +x.dues.map(u=>'<button type="button" class="cdue'+(u.it.e!=null?' dn':'')+'" style="--c:'+COLORS[u.c.id]+'" data-act="go" data-v="'+u.c.id+'" title="'+esc(u.c.name+' · '+u.it.n)+'">'+esc(u.it.n)+'</button>').join('')+'</div>').join('');
   }
   let ax=''; for(let h=h0;h<=h1;h++) ax+='<span'+(h===h0?' class="f0"':'')+' style="top:calc(var(--rh)*'+(h-h0)+')">'+(h===h1?'':fmtT(h*60,true).replace(':00',''))+'</span>';
