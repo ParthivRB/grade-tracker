@@ -1970,7 +1970,8 @@ calMQ.addEventListener?calMQ.addEventListener('change',function(){ if(view==='ca
 const pd=i=>new Date(i+'T12:00:00');
 const isoD=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const addD=(i,n)=>{ const d=pd(i); d.setDate(d.getDate()+n); return isoD(d); };
-const mondayOf=i=>addD(i,-((pd(i).getDay()+6)%7));
+const mondayOf=i=>addD(i,-pd(i).getDay());
+const DLET=['S','M','T','W','Th','F','S'];
 const dayDiff=(a,b)=>Math.round((pd(b)-pd(a))/864e5);
 const tMin=t=>{ const p=String(t||'').split(':'); return p.length<2?null:(+p[0])*60+(+p[1]); };
 const minT=m=>{ m=Math.max(0,Math.min(1439,m)); return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'); };
@@ -1983,7 +1984,7 @@ function evOn(e,D){
   if(e.rep==='none') return n===0; if(e.rep==='daily') return true; if(e.rep==='weekly') return n%7===0; if(e.rep==='biweekly') return n%14===0;
   return pd(D).getDate()===pd(e.date).getDate();
 }
-function meetSum(c){ return c.meets.filter(m=>m.days.length&&m.st&&m.en).map(m=>{ const ds=m.days.slice().sort((a,b)=>((a+6)%7)-((b+6)%7)).map(d=>DAYN[d]).join(' '); return ds+' · '+fmtR(tMin(m.st),tMin(m.en))+(m.loc?' · '+m.loc:''); }); }
+function meetSum(c){ return c.meets.filter(m=>m.days.length&&m.st&&m.en).map(m=>{ const ds=m.days.slice().sort((a,b)=>a-b).map(d=>DAYN[d]).join(' '); return ds+' · '+fmtR(tMin(m.st),tMin(m.en))+(m.loc?' · '+m.loc:''); }); }
 function calView(){
   return '<div class="cal"><div class="calhd"><div class="calhl">'+semTitle()+'</div>'
     +'<div class="caldates"><div><span>Starts</span>'+dateField('data-f="semstart"',S.start,'Semester start','Pick a date')+'</div><div><span>Ends</span>'+dateField('data-f="semend"',S.end,'Semester end','Pick a date')+'</div></div></div>'
@@ -2023,8 +2024,8 @@ function calBody(){
   if(hi<0){ lo=9*60; hi=17*60; }
   if(hi-lo<6*60){ const c=(hi+lo)/2; lo=c-3*60; hi=c+3*60; }
   const h0=Math.max(0,Math.floor(lo/60)), h1=Math.min(24,Math.ceil(hi/60)), HRS=(h1-h0);
-  const wkend=meets.some(x=>x.m.days.includes(0)||x.m.days.includes(6))||evs.some(e=>{ for(let i=5;i<7;i++) if(evOn(e,addD(calWk,i))) return true; return false; });
-  const nd0=wkend?7:5, days=[]; for(let i=0;i<nd0;i++) days.push(addD(calWk,i));
+  const wkend=meets.some(x=>x.m.days.includes(0)||x.m.days.includes(6))||evs.some(e=>{ return evOn(e,addD(calWk,0))||evOn(e,addD(calWk,6)); });
+  const nd0=wkend?7:5, days=[]; for(let i=0;i<nd0;i++) days.push(addD(calWk,wkend?i:i+1));
   const mob=calMQ.matches; if(!calDay||!days.includes(calDay)) calDay=days.includes(TODAY)?TODAY:days[0];
   const inSem=d=>!okR||(d>=st&&d<=en);
   const offOn=d=>offs.filter(o=>d>=o.start&&d<=o.end).sort((a,b)=>dayDiff(a.start,a.end)-dayDiff(b.start,b.end))[0];
@@ -2079,7 +2080,7 @@ function calBody(){
       const rng=same?DAYN[A.getDay()]+', '+MONN[A.getMonth()]+' '+A.getDate():MONN[A.getMonth()]+' '+A.getDate()+' – '+(A.getMonth()===B.getMonth()?'':MONN[B.getMonth()]+' ')+B.getDate(), n=dayDiff(o.start,o.end)+1;
       return '<button type="button" class="off'+(past?' past':'')+'" style="--c:'+k[1]+'" data-act="offedit" data-id="'+o.id+'"><i></i><div><b>'+esc(o.t)+'</b><small>'+rng+(n>1?' · '+n+' days':'')+'</small></div><span>'+k[0]+'</span></button>'; }).join('')+'</div>'
       :'<p class="calhint">Add holidays, breaks and days off. Classes are hidden on those days.</p>')+'</section>';
-  const strip=mob?'<div class="daystrip">'+dayEventsAll.map(x=>{ const d=pd(x.d), has=x.blocks.length||x.allDay.length||x.dues.length; return '<button type="button" class="dsb'+(x.d===calDay?' on':'')+(x.d===TODAY?' tod':'')+(x.off?' hasoff':'')+'" data-act="calday" data-d="'+x.d+'" aria-label="'+DAYN[d.getDay()]+' '+d.getDate()+'"><b>'+DAYN[d.getDay()].slice(0,3)+'</b><span>'+d.getDate()+'</span><i'+(has||x.off?'':' class="nil"')+'></i></button>'; }).join('')+'</div>':'';
+  const strip=mob?'<div class="daystrip">'+dayEventsAll.map(x=>{ const d=pd(x.d), has=x.blocks.length||x.allDay.length||x.dues.length; return '<button type="button" class="dsb'+(x.d===calDay?' on':'')+(x.d===TODAY?' tod':'')+(x.off?' hasoff':'')+'" data-act="calday" data-d="'+x.d+'" aria-label="'+DAYN[d.getDay()]+' '+d.getDate()+'"><b>'+DLET[d.getDay()]+'</b><span>'+d.getDate()+'</span><i'+(has||x.off?'':' class="nil"')+'></i></button>'; }).join('')+'</div>':'';
   const empty=any?'':'<div class="calempty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="4"/><path d="M8 3v3.5M16 3v3.5M3.5 10h17"/></svg><b>Nothing scheduled yet</b><p>Add when each class meets under ✎ Edit on the class page, or add your own event.</p><button type="button" class="btn pri" data-act="evadd">＋ Add an event</button></div>';
   return {sum:sum,rest:'<div class="calcard">'+tb+strip+'<div class="calscroll'+(any?'':' dim')+'">'+g+'</div>'+empty+'</div>'+offList+legend};
 }
@@ -2157,12 +2158,12 @@ function dpOpen(btn){
   const el=document.createElement('div'); el.className='dpop'; el.setAttribute('role','dialog'); el.setAttribute('aria-label','Pick a date'); document.body.appendChild(el); dpEl=el;
   function set(v){ inp.value=v; btn.textContent=v?fmtDL(v):btn.dataset.ph; btn.classList.toggle('empty',!v); inp.dispatchEvent(new Event('input',{bubbles:true})); }
   function draw(){
-    const first=new Date(vm.getFullYear(),vm.getMonth(),1,12), lead=(first.getDay()+6)%7, start=new Date(first); start.setDate(1-lead);
+    const first=new Date(vm.getFullYear(),vm.getMonth(),1,12), lead=first.getDay(), start=new Date(first); start.setDate(1-lead);
     let cells='';
     for(let i=0;i<42;i++){ const d=new Date(start); d.setDate(start.getDate()+i); const iso=isoD(d), cls=(d.getMonth()!==vm.getMonth()?'o ':'')+(iso===TODAY?'t ':'')+(iso===sel?'on ':'');
       cells+='<button type="button" class="'+cls+'" data-d="'+iso+'">'+d.getDate()+'</button>'; }
     el.innerHTML='<div class="dph"><button type="button" class="dpnav" data-n="-1" aria-label="Previous month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 6 8.5 12l6 6"/></svg></button><div class="dpt">'+['January','February','March','April','May','June','July','August','September','October','November','December'][vm.getMonth()]+' <small>'+vm.getFullYear()+'</small></div><button type="button" class="dpnav" data-n="1" aria-label="Next month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 6l6 6-6 6"/></svg></button></div>'
-      +'<div class="dpw">'+['M','T','W','T','F','S','S'].map(x=>'<span>'+x+'</span>').join('')+'</div><div class="dpg">'+cells+'</div>'
+      +'<div class="dpw">'+DLET.map(x=>'<span>'+x+'</span>').join('')+'</div><div class="dpg">'+cells+'</div>'
       +'<div class="tpfoot"><button type="button" class="tpclear" data-x="1">Clear</button><button type="button" class="tpclear dpt0" data-today="1">Today</button></div>';
   }
   el.addEventListener('click',function(ev){
@@ -2214,7 +2215,7 @@ function tpOpen(btn){
 document.addEventListener('click',function(ev){ const t=ev.target.closest&&ev.target.closest('[data-tp]'); if(t){ ev.preventDefault(); ev.stopPropagation(); dpClose(); tpOpen(t); return; } const d=ev.target.closest&&ev.target.closest('[data-dp]'); if(d){ ev.preventDefault(); ev.stopPropagation(); dpOpen(d); return; } if(tpEl&&!tpEl.contains(ev.target)) tpClose(); if(dpEl&&!dpEl.contains(ev.target)) dpClose(); },true);
 document.addEventListener('keydown',function(ev){ if(ev.key==='Escape'){ tpClose(); dpClose(); } });
 window.addEventListener('resize',function(){ tpClose(); dpClose(); });
-const DCH=[[1,'M'],[2,'T'],[3,'W'],[4,'T'],[5,'F'],[6,'S'],[0,'S']];
+const DCH=[[0,'S'],[1,'M'],[2,'T'],[3,'W'],[4,'Th'],[5,'F'],[6,'S']];
 function meetsEdit(c){
   const rows=c.meets.map((m,i)=>'<div class="mrow"><div class="dchips">'+DCH.map(d=>'<button type="button" class="'+(m.days.includes(d[0])?'on':'')+'" data-act="mday" data-c="'+c.id+'" data-mi="'+i+'" data-d="'+d[0]+'" aria-pressed="'+m.days.includes(d[0])+'" aria-label="'+DAYN[d[0]]+'">'+d[1]+'</button>').join('')+'</div>'
     +'<div class="mtimes">'+timeField('data-f="mst" data-c="'+c.id+'" data-mi="'+i+'"',m.st,'Start time')+'<span>to</span>'+timeField('data-f="men" data-c="'+c.id+'" data-mi="'+i+'"',m.en,'End time')+'</div>'
