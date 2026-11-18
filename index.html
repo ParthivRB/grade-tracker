@@ -2182,7 +2182,8 @@ let tpEl=null;
 function tpClose(){ if(tpEl){ tpEl.remove(); tpEl=null; } }
 function tpOpen(btn){
   tpClose(); const inp=btn.parentNode.querySelector('input'); if(!inp) return;
-  let m=tMin(inp.value); if(m==null) m=540;
+  let m=tMin(inp.value);
+  if(m==null){ const isEnd=inp.dataset.f==='men'||inp.name==='en', sc=inp.closest('.mtimes')||inp.closest('form'), st=isEnd&&sc?sc.querySelector('input[data-f=mst],input[name=st]'):null; m=(st&&tMin(st.value)!=null)?tMin(st.value):540; }
   const el=document.createElement('div'); el.className='tpop'; el.setAttribute('role','dialog'); el.setAttribute('aria-label','Pick a time'); document.body.appendChild(el); tpEl=el;
   function apply(){ inp.value=minT(m); btn.textContent=fmtT(m); btn.classList.remove('empty'); inp.dispatchEvent(new Event('input',{bubbles:true})); }
   function draw(first){
