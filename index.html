@@ -1008,7 +1008,7 @@ function fromSimple(src){
 function loadAny(src){
   if(src&&(Array.isArray(src.semesters)||Array.isArray(src.earlier))&&!src.sems&&!src.courses){ const w=fromSimple(src); setHistory(w); return w; }
   if(src&&Array.isArray(src.sems)){
-    const w={v:3,active:src.active,sems:src.sems.map(sm=>({id:sm.id||uid(),name:sm.name||'Semester',short:sm.short||'',done:!!sm.done,start:/^\d{4}-\d{2}-\d{2}$/.test(sm.start||'')?sm.start:'',end:/^\d{4}-\d{2}-\d{2}$/.test(sm.end||'')?sm.end:'',events:(sm.events||[]).map(normEvent),off:(sm.off||[]).map(normOff),gpaPick:sm.gpaPick||{},courses:(sm.courses||[]).map(normCourse)})),ts:src.ts||0,base:src.base||null,transfer:(src.transfer>0?+src.transfer:0)};
+    const w={v:3,active:src.active,sems:src.sems.map(sm=>Object.assign({},sm,{id:sm.id||uid(),name:sm.name||'Semester',short:sm.short||'',done:!!sm.done,start:/^\d{4}-\d{2}-\d{2}$/.test(sm.start||'')?sm.start:'',end:/^\d{4}-\d{2}-\d{2}$/.test(sm.end||'')?sm.end:'',events:(sm.events||[]).map(normEvent),off:(sm.off||[]).map(normOff),gpaPick:sm.gpaPick||{},courses:(sm.courses||[]).map(normCourse)})),ts:src.ts||0,base:src.base||null,transfer:(src.transfer>0?+src.transfer:0)};
     if(!w.sems.length){ const e=emptyW(); w.sems=e.sems; w.active=e.active; }
     if(!w.sems.some(x=>x.id===w.active)) w.active=w.sems[0].id;
     setHistory(src); w.prior=PRIOR; w.oldPct=OLD_PCT; w.oldX=OLD_X; w.history=HIST;
