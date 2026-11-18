@@ -1436,8 +1436,7 @@ semPop.addEventListener('click',function(ev){
   closeSemMenu();
   if(m==='go'){ if(b.dataset.id!==W.active) setActive(b.dataset.id); }
   else if(m==='new'){
-    openModal('New semester','<label class="f">Name<input name="name" type="text" value="'+esc(defaultSemName()===S.name?'Next semester':defaultSemName())+'" required></label>'
-      +(S.courses.length?'<label class="chk f"><input type="checkbox" name="copy" checked> Start with the same classes (scores cleared)</label>':''),'Create',function(v){ const n=(v.name||'').trim(); if(!n) return false; addSem(n,!!v.copy); });
+    openModal('New semester','<label class="f">Name<input name="name" type="text" value="'+esc(defaultSemName()===S.name?'Next semester':defaultSemName())+'" required></label>','Create',function(v){ const n=(v.name||'').trim(); if(!n) return false; addSem(n,false); });
   }
   else if(m==='rename'){
     openModal('Rename semester','<label class="f">Name<input name="name" type="text" value="'+esc(S.name)+'" required></label>','Save',function(v){ const n=(v.name||'').trim(); if(!n) return false; S.name=n; save(); render(true); });
