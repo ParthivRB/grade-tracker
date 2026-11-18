@@ -302,6 +302,7 @@ input[type=range]{width:100%;accent-color:var(--blue);margin:14px 0 0}
 .editbtn{border:0;border-radius:99px;padding:9px 18px;font-weight:700;font-size:14px;cursor:pointer;background:color-mix(in srgb,var(--fg) 16%,transparent);color:var(--fg);transition:background-color .2s ease}
 .editbtn:hover,.editbtn.on{background:var(--fg);color:var(--c)}
 .chead{align-items:center}
+.chctl{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .editp{margin-top:16px;padding:22px clamp(18px,3vw,28px)}
 .editp h3{margin:0 0 14px;font-size:17px;font-weight:800}
 .editact{display:flex;justify-content:flex-end}
@@ -1118,7 +1119,7 @@ function courseView(c){
   const cc='<div class="cc" aria-label="Class color">'+PALETTE.map(v=>'<button type="button" style="--c:'+v+'" class="'+(v.toLowerCase()===COLORS[c.id].toLowerCase()?'on':'')+'" data-id="'+c.id+'" data-v="'+v+'" aria-label="Color '+v+'"></button>').join('')+'</div>';
   return '<div class="cpage" style="--c:'+COLORS[c.id]+';--fg:'+TILE[c.id]+'"><div class="cpbar"><button class="back" data-act="go" data-v="home">← All classes</button>'+cc+'</div>'
     +'<section class="cband"><header class="chead"><div><h1>'+esc(c.name)+'</h1><p>'+esc(c.code)+'</p></div>'
-    +'<label class="fld">Credits <input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="–"></label><button type="button" class="editbtn'+(editing?' on':'')+'" data-act="edit" data-c="'+c.id+'">'+(editing?'Done':'Edit class')+'</button></header>'
+    +'<div class="chctl"><label class="fld">Credits <input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="–"></label><button type="button" class="editbtn'+(editing?' on':'')+'" data-act="edit" data-c="'+c.id+'">'+(editing?'Done':'Edit class')+'</button></div></header>'
     +'<div id="sum"></div></section>'
     +(editing?editPanel(c):'')+ec+wn+cats+(editing?'<div class="addrow" style="padding:18px 0 0"><button class="btn" data-act="addcat" data-c="'+c.id+'">＋ Add category</button></div>':'')
     +'<section class="card csum" id="projcard"><h2 class="projh">Projected final</h2><div id="projsum"></div>'
@@ -1217,6 +1218,22 @@ function refresh(){
 }
 
 const okFile=v=>!!(v&&typeof v==='object'&&(v.courses||v.sems||v.semesters||v.earlier));
+const isSimple=v=>!!(v&&(v.semesters||v.earlier)&&!v.sems&&!v.courses);
+function mergeSimple(v){
+  const w=fromSimple(v); let jump=null, added=0;
+  if(Array.isArray(v.semesters)&&v.semesters.length) w.sems.forEach(sm=>{
+    const ex=W.sems.find(x=>x.name.trim().toLowerCase()===sm.name.trim().toLowerCase());
+    if(ex){ sm.courses.forEach(c=>{ if(!ex.courses.some(y=>y.name.trim().toLowerCase()===c.name.trim().toLowerCase())){ ex.courses.push(c); added++; } }); if(w.active===sm.id) jump=ex.id; }
+    else { W.sems.push(sm); added+=sm.courses.length; if(w.active===sm.id) jump=sm.id; }
+  });
+  W.prior=(W.prior||[]).concat(w.prior); setHistory(W);
+  W.active=jump||W.active; S=W.sems.find(x=>x.id===W.active); view='home'; editing=false; refreshPrior(); syncColors(); save(); render(); window.scrollTo(0,0);
+  setStat('Added '+added+' class'+(added===1?'':'es')+(w.prior.length?' and '+w.prior.length+' earlier semester'+(w.prior.length===1?'':'s'):''),'ok');
+}
+function importFile(v){
+  if(isSimple(v)&&hasData()){ mergeSimple(v); return; }
+  if(!confirmReplace()) return; adoptState(v); setStat('Grades loaded','ok');
+}
 function hasData(){ return !!(W&&W.sems.some(sm=>sm.courses.length)); }
 function confirmReplace(){ return !hasData()||confirm('Loading a file replaces everything saved in this browser. Download a backup first if you want to keep it. Load the file?'); }
 /* ---------- events ---------- */
@@ -1253,7 +1270,13 @@ document.addEventListener('input',function(ev){
   save(); refresh();
 });
 function setHash(){ try{ location.hash=(view==='home'?'':view); }catch(e){} }
-const AI_PROMPT=`I'm going to give you my grades (screenshots, a PDF, a spreadsheet, or pasted text). Turn them into ONE JSON file for my grade tracker web app, and give it back as a downloadable file named grades.json (or, if you can't make files, as a single code block I can save as grades.json). Don't invent anything: if a score isn't graded yet, use null. If something is unclear (weights, grading scale, drop rules), ask me before you write the file.
+const AI_PROMPT=`I'm going to give you my syllabi and/or my grades (PDFs, screenshots, spreadsheets, Canvas exports, or pasted text). Turn everything into ONE JSON file for my grade tracker web app, and give it back as a downloadable file named grades.json (or, if you can't make files, as a single code block I can save as grades.json).
+
+What to do:
+- For each syllabus: create the class, and read its grading policy carefully. Pull out every grade category and its weight, how scores are combined (average, total points, best N, dropped lowest scores, a final that replaces the lowest exam, optional extra work that replaces a low score, capped points), the grading scale cutoffs, the credits, any extra credit, and any rules worth remembering (late policy, attendance, no make-ups). Put those rules in the class "notes" as short plain sentences.
+- Create every graded item you can find in the syllabus or schedule (each exam, quiz, homework, project, reflection) as an item with its due date, "earned": null, and its point value ("outOf"). If the syllabus doesn't give points, use 100.
+- If I also give you grades, fill in "earned" for the items they match. Don't guess scores: if a score isn't graded or isn't given, use null.
+- If something is unclear or the syllabus contradicts itself (weights that don't add to 100, a missing scale), ask me before you write the file.
 
 Use exactly this format:
 
@@ -1307,10 +1330,11 @@ Rules:
 - "scale" is "plus-minus" (A+, A, A-, B+ ...) or "plain" (A, B, C). If the syllabus lists its own cutoffs, add "cutoffs": [ {"letter":"A","min":93,"gpa":4}, ... ].
 - If a class is graded by total points instead of weighted categories, set "totalPointsGrading": true and use one category.
 - Semesters where I only know the final letter grades go under "earlier". Semesters where I have the full breakdown go under "semesters". Mark this semester "current": true.
+- "due" is a date like "2026-09-30". "notes" is an array of short strings.
 - Optional extra credit per class: "extraCredit": { "points": 2, "percent": null, "totalPoints": 400 }.`;
 function aiCard(open){
-  return '<details class="ai"'+(open?' open':'')+'><summary>Bring in old grades with Claude or ChatGPT</summary>'
-    +'<p class="sub">Upload your grades (screenshots, a PDF, or a spreadsheet) to an AI chat together with the prompt below. It will give you a file. Then use “Upload a grade file” here.</p>'
+  return '<details class="ai"'+(open?' open':'')+'><summary>Set up classes and grades with Claude or ChatGPT</summary>'
+    +'<p class="sub">Give an AI chat your syllabi and any grades you have (PDFs, screenshots, spreadsheets) together with the prompt below. It builds your classes, categories, scoring rules and due dates into a file. Then use “Upload a grade file” here.</p>'
     +'<textarea readonly id="aiPrompt" aria-label="Prompt to copy">'+esc(AI_PROMPT)+'</textarea>'
     +'<div class="addrow" style="padding-left:0"><button class="btn pri" data-act="copyprompt">Copy prompt</button></div></details>';
 }
@@ -1501,7 +1525,7 @@ document.addEventListener('click',function(ev){
   else if(a==='download'){ const blob=new Blob([JSON.stringify(W,null,2)],{type:'application/json'}); const u=URL.createObjectURL(blob); const l=document.createElement('a'); l.href=u; l.download='grade-tracker-backup.json'; document.body.appendChild(l); l.click(); l.remove(); setTimeout(function(){URL.revokeObjectURL(u);},1000); }
   else if(a==='export'){ $('#bk').value=JSON.stringify(W); $('#bkmsg').textContent='Copy all of that text and keep it somewhere safe.'; }
   else if(a==='import'){
-    try{ const v=JSON.parse($('#bk').value); if(!okFile(v)) throw new Error('x'); if(!confirmReplace()) return; adoptState(v); setStat('Grades loaded','ok'); }
+    try{ const v=JSON.parse($('#bk').value); if(!okFile(v)) throw new Error('x'); importFile(v); }
     catch(e){ $('#bkmsg').textContent='That text isn’t a valid backup. Paste the full text you copied earlier.'; }
   }
   else if(a==='wipe'){
@@ -1513,7 +1537,7 @@ document.addEventListener('click',function(ev){
 document.addEventListener('change',function(ev){
   const t=ev.target; if(!(t&&(t.id==='bkfile'||t.id==='bkfile2')&&t.files&&t.files[0])) return;
   const r=new FileReader();
-  r.onload=function(){ try{ const v=JSON.parse(r.result); if(!okFile(v)) throw new Error('x'); if(!confirmReplace()) return; adoptState(v); setStat('Grades loaded','ok'); }catch(e){ const m=$('#bkmsg'); if(m) m.textContent='That file isn’t a valid grade file.'; alert('That file isn’t a valid grade file.'); } };
+  r.onload=function(){ try{ const v=JSON.parse(r.result); if(!okFile(v)) throw new Error('x'); importFile(v); }catch(e){ const m=$('#bkmsg'); if(m) m.textContent='That file isn’t a valid grade file.'; alert('That file isn’t a valid grade file.'); } };
   r.readAsText(t.files[0]);
 });
 
