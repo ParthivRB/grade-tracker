@@ -10,8 +10,8 @@
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0A0D18;--card:#131828;--ink:#EEF1FA;--ink2:#B9C1D8;--mut:#8A94B0;--line:#232A41;--soft:#1B2136;--elev:#1E2540;--topbg:rgba(10,13,24,.88);--blue:#8AA0FF;--blue-soft:rgba(138,160,255,.14);--good:#4FD6A0;--good-soft:rgba(79,214,160,.14);--warn:#FF9F66;--warn-soft:rgba(255,159,102,.14);--shadow:0 1px 2px rgba(0,0,0,.4),0 14px 32px -16px rgba(0,0,0,.75);color-scheme:dark}}
-:root[data-theme=dark]{--bg:#0A0D18;--card:#131828;--ink:#EEF1FA;--ink2:#B9C1D8;--mut:#8A94B0;--line:#232A41;--soft:#1B2136;--elev:#1E2540;--topbg:rgba(10,13,24,.88);--blue:#8AA0FF;--blue-soft:rgba(138,160,255,.14);--good:#4FD6A0;--good-soft:rgba(79,214,160,.14);--warn:#FF9F66;--warn-soft:rgba(255,159,102,.14);--shadow:0 1px 2px rgba(0,0,0,.4),0 14px 32px -16px rgba(0,0,0,.75);color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#000000;--card:#0B0C10;--ink:#EEF1FA;--ink2:#B9C1D8;--mut:#8A94B0;--line:#1E202B;--soft:#15171F;--elev:#12141B;--topbg:rgba(0,0,0,.85);--blue:#8AA0FF;--blue-soft:rgba(138,160,255,.14);--good:#4FD6A0;--good-soft:rgba(79,214,160,.14);--warn:#FF9F66;--warn-soft:rgba(255,159,102,.14);--shadow:0 1px 2px rgba(0,0,0,.4),0 14px 32px -16px rgba(0,0,0,.75);color-scheme:dark}}
+:root[data-theme=dark]{--bg:#000000;--card:#0B0C10;--ink:#EEF1FA;--ink2:#B9C1D8;--mut:#8A94B0;--line:#1E202B;--soft:#15171F;--elev:#12141B;--topbg:rgba(0,0,0,.85);--blue:#8AA0FF;--blue-soft:rgba(138,160,255,.14);--good:#4FD6A0;--good-soft:rgba(79,214,160,.14);--warn:#FF9F66;--warn-soft:rgba(255,159,102,.14);--shadow:0 1px 2px rgba(0,0,0,.4),0 14px 32px -16px rgba(0,0,0,.75);color-scheme:dark}
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 72px)}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.55 "Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
@@ -943,7 +943,7 @@ function setHash(){ try{ location.hash=(view==='home'?'':view); }catch(e){} }
 (function(){
   const root=document.documentElement, btn=document.getElementById('themeBtn'), mq=matchMedia('(prefers-color-scheme:dark)');
   const cur=()=>root.dataset.theme||(mq.matches?'dark':'light');
-  function sync(){ if(!root.dataset.theme) root.dataset.theme=cur(); btn.setAttribute('aria-pressed',cur()==='dark'); const m=document.querySelector('meta[name=theme-color]'); if(m) m.content=cur()==='dark'?'#0A0D18':'#1B3FD1'; }
+  function sync(){ if(!root.dataset.theme) root.dataset.theme=cur(); btn.setAttribute('aria-pressed',cur()==='dark'); const m=document.querySelector('meta[name=theme-color]'); if(m) m.content=cur()==='dark'?'#000000':'#1B3FD1'; }
   sync();
   btn.addEventListener('click',function(){
     const n=cur()==='dark'?'light':'dark';
