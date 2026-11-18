@@ -1310,7 +1310,7 @@ document.addEventListener('input',function(ev){
   if(f==='e'||f==='w'||f==='p'){ const it=c.cats[+t.dataset.k].items[+t.dataset.i]; it[f]=num(t.value); if(f==='p'&&it.p==null) it.p=0; }
   else if(f==='n'){ c.cats[+t.dataset.k].items[+t.dataset.i].n=t.value; }
   else if(f==='cw'){ c.cats[+t.dataset.k].w=num(t.value)||0; }
-  else if(f==='credits'){ c.credits=num(t.value); }
+  else if(f==='credits'){ c.credits=num(t.value); document.querySelectorAll('input[data-f=credits][data-c="'+c.id+'"]').forEach(i=>{ if(i!==t) i.value=t.value; }); }
   else if(f==='ece'||f==='ecw'){ c.ec[t.dataset.u][f==='ece'?'e':'w']=num(t.value); }
   else if(f==='ectotal'){ c.ec.total=num(t.value); }
   else if(f==='eccat'){ c.ec.cat=t.value===''?null:+t.value; save(); render(true); return; }
@@ -1504,7 +1504,8 @@ function editPanel(c){
   const cuts=sel==='custom'?'<div class="cuts">'+rows.map((r,i)=>'<div class="cut"><b>'+esc(r[1])+'</b><label>from <input type="number" step="any" data-f="cut" data-col="0" data-i="'+i+'" data-c="'+c.id+'" value="'+r[0]+'"'+(i===rows.length-1?' disabled':'')+'> %</label><label>GPA <input type="number" step="any" data-f="cut" data-col="2" data-i="'+i+'" data-c="'+c.id+'" value="'+r[2]+'"></label></div>').join('')+'</div>':'';
   return '<section class="card editp"><h3>Class settings</h3>'
     +'<div class="two"><label class="f">Name<input type="text" data-f="cname" data-c="'+c.id+'" value="'+esc(c.name)+'"></label><label class="f">Code<input type="text" data-f="ccode" data-c="'+c.id+'" value="'+esc(c.code)+'"></label></div>'
-    +'<label class="f">Professor<input type="text" data-f="cprof" data-c="'+c.id+'" value="'+esc(c.prof)+'" placeholder="Dr. Smith"></label>'
+    +'<div class="two"><label class="f">Professor<input type="text" data-f="cprof" data-c="'+c.id+'" value="'+esc(c.prof)+'" placeholder="Dr. Smith"></label>'
+    +'<label class="f">Credits<input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="3"></label></div>'
     +'<div class="two"><label class="f">Graded by<select data-f="pooled" data-c="'+c.id+'"><option value="0"'+(c.pooled?'':' selected')+'>Weighted categories</option><option value="1"'+(c.pooled?' selected':'')+'>Total points</option></select></label>'
     +'<label class="f">Grading scale<select data-f="scale" data-c="'+c.id+'">'+op('std','Plus/minus (A+ at 97)')+op('plain','Plain letters (A at 90)')+op('custom','Custom cutoffs')+'</select></label></div>'
     +cuts
