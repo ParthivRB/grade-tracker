@@ -266,6 +266,19 @@ input[type=range]{width:100%;accent-color:var(--blue);margin:14px 0 0}
 .grid .it{min-width:0}
 .grid .it input{background:transparent;padding:5px 8px;font-weight:600}
 .grid .it input:hover{background:var(--soft)}
+.sectoggle{all:unset;cursor:pointer;display:flex;align-items:center;gap:12px;min-width:0}
+.sectoggle:focus-visible{outline:3px solid var(--gold);outline-offset:6px;border-radius:10px}
+.schev{width:16px;height:11px;flex:0 0 auto;fill:none;stroke:var(--mut);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .35s cubic-bezier(.2,.7,.2,1),stroke .2s ease}
+.hsec.col .schev{transform:rotate(-90deg)}
+.sectoggle:hover .schev{stroke:var(--ink)}
+.secctl{display:flex;gap:6px;opacity:.5;transition:opacity .2s ease}
+.hsec:hover .secctl,.secctl:focus-within{opacity:1}
+.secctl button{width:32px;height:32px;border-radius:99px;border:0;background:var(--soft);color:var(--ink2);cursor:pointer;font-size:15px;font-weight:700;line-height:1;transition:background-color .15s ease,color .15s ease,transform .15s ease}
+.secctl button:hover{background:var(--line);color:var(--ink)}
+.secctl button:active{transform:scale(.9)}
+.secbody{display:grid;grid-template-rows:1fr;transition:grid-template-rows .45s cubic-bezier(.2,.7,.2,1),opacity .3s ease}
+.secin{overflow:hidden;min-height:0;margin:-24px;padding:24px}
+.hsec.col .secbody{grid-template-rows:0fr;opacity:0;visibility:hidden;transition:grid-template-rows .45s cubic-bezier(.2,.7,.2,1),opacity .25s ease,visibility 0s .45s}
 .semtitle{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:.28em}
 .semtitle svg{width:.34em;height:.24em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.45;transition:transform .25s ease,opacity .2s ease;margin-top:.08em}
 .semtitle:hover svg{opacity:1}
@@ -299,6 +312,10 @@ input[type=range]{width:100%;accent-color:var(--blue);margin:14px 0 0}
 .addclass{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:16px;padding:16px;border:2px dashed var(--line);border-radius:22px;background:transparent;color:var(--mut);font-weight:700;font-size:15px;cursor:pointer;transition:color .2s ease,border-color .2s ease,background-color .2s ease}
 .addclass span{font-size:20px;line-height:1;font-weight:500}
 .addclass:hover{color:var(--ink);border-color:var(--mut);background:var(--soft)}
+.cpl{display:flex;align-items:center;gap:10px}
+.editlink{border:0;background:var(--soft);color:var(--ink2);border-radius:99px;padding:4px 12px;font-size:12.5px;font-weight:700;cursor:pointer;transition:background-color .18s ease,color .18s ease}
+.editlink:hover{background:var(--line);color:var(--ink)}
+.editlink.on{background:var(--ink);color:var(--bg)}
 .editbtn{border:0;border-radius:99px;padding:9px 18px;font-weight:700;font-size:14px;cursor:pointer;background:color-mix(in srgb,var(--fg) 16%,transparent);color:var(--fg);transition:background-color .2s ease}
 .editbtn:hover,.editbtn.on{background:var(--fg);color:var(--c)}
 .chead{align-items:center}
@@ -1031,8 +1048,30 @@ function projHomeHtml(){
   const rows=S.courses.map(function(c){ const pr=courseRes(c,'proj');
     return '<tr><td><i class="dot" style="background:'+COLORS[c.id]+'"></i>'+esc(c.name)+'</td><td class="r">'+c.fill+'%</td><td class="r">'+letterOf(c,pr.pct)+'</td><td class="r">'+pctS(pr.pct)+'</td></tr>'; }).join('');
   const gp=b.cr?'<p class="semnote">Projected semester GPA <b>'+g2(b.sem)+'</b>'+(PRIOR_CR&&b.cum!=null?' · cumulative <b>'+g2(b.cum)+'</b>':'')+'</p>':'<p class="semnote">Add credits in the GPA planner to see a projected GPA.</p>';
-  return '<div class="sechead" id="projected"><h2>Projected final</h2></div>'
-    +'<div class="card panel scroll"><table><thead><tr><th>Class</th><th class="r">Rest scores</th><th class="r">Letter</th><th class="r">Percent</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+gp;
+  return '<div class="card panel scroll"><table><thead><tr><th>Class</th><th class="r">Rest scores</th><th class="r">Letter</th><th class="r">Percent</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+gp;
+}
+/* ---------- collapsible, reorderable sections ---------- */
+const LAY_KEY='gt-layout';
+let LAY={order:[],col:{}};
+try{ const l=JSON.parse(localStorage.getItem(LAY_KEY)||'null'); if(l&&typeof l==='object'){ LAY.order=Array.isArray(l.order)?l.order:[]; LAY.col=(l.col&&typeof l.col==='object')?l.col:{}; } }catch(e){}
+function saveLay(){ try{ localStorage.setItem(LAY_KEY,JSON.stringify(LAY)); }catch(e){} }
+function secOrder(avail){ const o=LAY.order.filter(x=>avail.indexOf(x)>=0); avail.forEach(x=>{ if(o.indexOf(x)<0) o.push(x); }); return o; }
+function secHtml(id,title,body){
+  const col=!!LAY.col[id];
+  return '<section class="hsec'+(col?' col':'')+'" data-sec="'+id+'" id="'+id+'">'
+    +'<div class="sechead"><button type="button" class="sectoggle" data-act="sectoggle" data-s="'+id+'" aria-expanded="'+(!col)+'"><svg class="schev" viewBox="0 0 12 8" aria-hidden="true"><path d="M1.5 1.5 6 6l4.5-4.5"/></svg><h2>'+title+'</h2></button>'
+    +'<div class="secctl"><button type="button" data-act="secmove" data-s="'+id+'" data-d="-1" aria-label="Move '+title+' up" title="Move up">↑</button><button type="button" data-act="secmove" data-s="'+id+'" data-d="1" aria-label="Move '+title+' down" title="Move down">↓</button></div></div>'
+    +'<div class="secbody"><div class="secin">'+body+'</div></div></section>';
+}
+function moveSec(id,d){
+  const els=Array.prototype.slice.call(document.querySelectorAll('.hsec')), i=els.findIndex(e=>e.dataset.sec===id), j=i+d;
+  if(i<0||j<0||j>=els.length) return;
+  const a=els[i], b=els[j], ra=a.getBoundingClientRect(), rb=b.getBoundingClientRect();
+  if(d<0) b.before(a); else b.after(a);
+  const na=a.getBoundingClientRect(), nb=b.getBoundingClientRect();
+  if(!REDUCED){ const o={duration:380,easing:'cubic-bezier(.2,.7,.2,1)'};
+    a.animate([{transform:'translateY('+(ra.top-na.top)+'px)'},{transform:'none'}],o); b.animate([{transform:'translateY('+(rb.top-nb.top)+'px)'},{transform:'none'}],o); }
+  LAY.order=Array.prototype.slice.call(document.querySelectorAll('.hsec')).map(e=>e.dataset.sec); saveLay();
 }
 function homeView(){
   if(!S.courses.length) return emptyHome();
@@ -1070,18 +1109,17 @@ function homeView(){
       +'<div class="semnote">Cumulative after this semester: <b>'+g2(qp/cr)+'</b>'+((OLD_X[si]||[]).length?'<br>Not in GPA (0.00 in your sheet): '+OLD_X[si].map(esc).join(', '):'')+'</div></div></section>';
   }).join('');
   const banner=anyScore?'':'<div class="banner"><b>Start with what you already have.</b> Upload a grade file, or open a class and fill in the Earned column. <label class="btn pri" style="cursor:pointer;margin-left:8px">Upload grade file<input type="file" id="bkfile2" accept=".json,application/json" hidden></label></div>';
+  const gpaTable='<div id="gpasum"></div><div class="card panel scroll"><table><thead><tr><th>Class</th><th>Credits</th><th class="r">Now</th><th class="r">What-if</th><th class="r">Letter to use</th></tr></thead><tbody>'+gpaRows+'</tbody></table></div>'+(!PRIOR.length?baseHtml():'');
+  const secs={
+    classes:{t:'This semester',b:'<div class="tiles">'+tiles+'</div><button class="addclass" data-act="newclass"><span>＋</span> Add class</button>'},
+    coming:{t:'Coming up',b:'<div class="card panel">'+upHtml+'</div>'},
+    gpa:{t:'GPA planner',b:gpaTable},
+    projected:{t:'Projected final',b:'<div id="projbox">'+projHomeHtml()+'</div>'}
+  };
+  if(PRIOR.length) secs.history={t:'Past semesters',b:'<div class="semgrid">'+cards+'</div>'};
   return semTitle()
     +'<div id="heroBox">'+heroHtml()+'</div>'+banner
-    +'<div class="sechead" id="classes"><h2>This semester</h2></div>'
-    +'<div class="tiles">'+tiles+'</div><button class="addclass" data-act="newclass"><span>＋</span> Add class</button>'
-    +'<div class="sechead"><h2>Coming up</h2></div><div class="card panel">'+upHtml+'</div>'
-    +'<div class="sechead" id="gpa"><h2>GPA planner</h2></div>'
-    +'<div id="gpasum"></div><div class="card panel scroll"><table><thead><tr><th>Class</th><th>Credits</th><th class="r">Now</th><th class="r">What-if</th><th class="r">Letter to use</th></tr></thead><tbody>'+gpaRows+'</tbody></table></div>'
-    +(!PRIOR.length?baseHtml():'')
-    +(PRIOR.length?'<div class="sechead" id="history"><h2>Past semesters</h2></div>'
-    +'<div class="semgrid">'+cards+'</div>'
-    :'')
-    +'<div id="projbox">'+projHomeHtml()+'</div>'
+    +secOrder(Object.keys(secs)).map(id=>secHtml(id,secs[id].t,secs[id].b)).join('')
     +backupHtml();
 }
 
@@ -1117,9 +1155,9 @@ function courseView(c){
   const tot=c.cats.reduce((a,k)=>a+(k.w||0),0);
   const wn=(!c.pooled&&Math.abs(tot-100)>0.01)?'<div class="banner">Category weights add up to '+f1(tot)+'%, not 100%. Grades are scaled to the weights you’ve set.</div>':'';
   const cc='<div class="cc" aria-label="Class color">'+PALETTE.map(v=>'<button type="button" style="--c:'+v+'" class="'+(v.toLowerCase()===COLORS[c.id].toLowerCase()?'on':'')+'" data-id="'+c.id+'" data-v="'+v+'" aria-label="Color '+v+'"></button>').join('')+'</div>';
-  return '<div class="cpage" style="--c:'+COLORS[c.id]+';--fg:'+TILE[c.id]+'"><div class="cpbar"><button class="back" data-act="go" data-v="home">← All classes</button>'+cc+'</div>'
+  return '<div class="cpage" style="--c:'+COLORS[c.id]+';--fg:'+TILE[c.id]+'"><div class="cpbar"><div class="cpl"><button class="back" data-act="go" data-v="home">← All classes</button><button type="button" class="editlink'+(editing?' on':'')+'" data-act="edit" data-c="'+c.id+'">'+(editing?'Done editing':'✎ Edit')+'</button></div>'+cc+'</div>'
     +'<section class="cband"><header class="chead"><div><h1>'+esc(c.name)+'</h1><p>'+esc(c.code)+'</p></div>'
-    +'<div class="chctl"><label class="fld">Credits <input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="–"></label><button type="button" class="editbtn'+(editing?' on':'')+'" data-act="edit" data-c="'+c.id+'">'+(editing?'Done':'Edit class')+'</button></div></header>'
+    +'<div class="chctl"><label class="fld">Credits <input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="–"></label></div></header>'
     +'<div id="sum"></div></section>'
     +(editing?editPanel(c):'')+ec+wn+cats+(editing?'<div class="addrow" style="padding:18px 0 0"><button class="btn" data-act="addcat" data-c="'+c.id+'">＋ Add category</button></div>':'')
     +'<section class="card csum" id="projcard"><h2 class="projh">Projected final</h2><div id="projsum"></div>'
@@ -1499,7 +1537,9 @@ document.addEventListener('click',function(ev){
   const b=ev.target.closest('[data-act]'); if(!b) return;
   const a=b.dataset.act;
   if(a==='go'){ view=b.dataset.v; wipeArmed=false; editing=false; setHash(); render(); window.scrollTo(0,0); return; }
-  if(a==='jump'){ view='home'; wipeArmed=false; setHash(); render(); const el=document.getElementById(b.dataset.t); if(el) el.scrollIntoView(); else window.scrollTo(0,0); return; }
+  if(a==='jump'){ view='home'; wipeArmed=false; setHash(); render(); const el=document.getElementById(b.dataset.t); if(el&&el.classList.contains('col')){ delete LAY.col[el.dataset.sec]; saveLay(); el.classList.remove('col'); } if(el) el.scrollIntoView(); else window.scrollTo(0,0); return; }
+  if(a==='sectoggle'){ const id=b.dataset.s; LAY.col[id]=!LAY.col[id]; saveLay(); b.closest('.hsec').classList.toggle('col',!!LAY.col[id]); b.setAttribute('aria-expanded',String(!LAY.col[id])); return; }
+  if(a==='secmove'){ moveSec(b.dataset.s,+b.dataset.d); return; }
   const c=b.dataset.c?getC(b.dataset.c):null;
   if(a==='add'){ c.cats[+b.dataset.k].items.push(I('New item',(c.pooled?5:100))); save(); render(); }
   else if(a==='addopt'){ c.cats[+b.dataset.k].items.push(I('Case study',100,null,'',true)); save(); render(); }
