@@ -952,9 +952,10 @@ function backupHtml(skipAi){
 }
 
 function gpaCalc(kind){
-  let cr=0,qp=0,missing=[];
+  let cr=0,qp=0,missing=[],all=0;
   S.courses.forEach(c=>{
     if(!(c.credits>0)){ missing.push(c.name); return; }
+    all+=c.credits;
     let g=null;
     if(kind==='cur') g=gpaOf(c,courseRes(c,'cur').pct);
     else if(kind==='proj') g=gpaOf(c,courseRes(c,'proj').pct);
@@ -963,7 +964,7 @@ function gpaCalc(kind){
     if(g==null) return;
     cr+=c.credits; qp+=c.credits*g;
   });
-  return {cr:cr,qp:qp,sem:cr?qp/cr:null,cum:(PRIOR_CR+cr)?(PRIOR_QP+qp)/(PRIOR_CR+cr):null,missing:missing};
+  return {cr:cr,all:all,qp:qp,sem:cr?qp/cr:null,cum:(PRIOR_CR+cr)?(PRIOR_QP+qp)/(PRIOR_CR+cr):null,missing:missing};
 }
 const LETTER_OF_GPA={'4':'A','3.75':'A-','3.25':'B+','3':'B','2.75':'B-','2.25':'C+','2':'C','1.75':'C-','1.25':'D+','1':'D','0.75':'D-','0':'F'};
 const TILE={tob:'#2A1006',syn:'#FFFFFF',fna:'#052A24',ecl:'#1D2B04',eco:'#33240A',hps:'#06173A'};
@@ -1055,8 +1056,8 @@ function heroHtml(){
     +(gp.cr?'<p class="sub">'+gp.cr+' credits counted</p>':'<div class="after">Add credits in the GPA section to see a what-if GPA for this semester.</div>')
     +'</div></section>';
   return '<section class="hero"><div class="hl"><div class="lab">Cumulative GPA</div><div class="gnum">'+g2(PRIOR_QP/PRIOR_CR)+'</div>'
-    +'<p class="sub">'+(gp.cr?gp.cr+' credits this semester':'No credits set this semester')+' · '+(PRIOR_CR+gp.cr+(W.transfer||0))+' total</p>'
-    +(gp.cr?'<div class="after"><b>'+g2(gp.cum)+'</b> with your what-ifs</div>':'<div class="after">Add credits in the GPA section to see a what-if GPA for this semester.</div>')
+    +'<p class="sub">'+(gp.all?gp.all+' credits this semester':'No credits set this semester')+' · '+(PRIOR_CR+gp.all+(W.transfer||0))+' total</p>'
+    +(gp.cr?'<div class="after"><b>'+g2(gp.cum)+'</b> with your what-ifs</div>':'<div class="after">'+(gp.all?'Enter some scores to see a what-if GPA for this semester.':'Add credits in the GPA section to see a what-if GPA for this semester.')+'</div>')
     +'</div><div class="hc">'+chartSvg(cumPoints(gp))+'</div></section>';
 }
 function gpaSumHtml(){
