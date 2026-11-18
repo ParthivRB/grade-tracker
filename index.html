@@ -283,6 +283,15 @@ input[type=range]{width:100%;accent-color:var(--blue);margin:14px 0 0}
 .tmv button:disabled{opacity:.35;cursor:default}
 .rord{width:auto!important;padding:0 14px;font-size:13px!important}
 .rord.on{background:var(--ink)!important;color:var(--bg)!important}
+.hc text.ed{cursor:pointer}
+.hc text.ed:hover{fill:#fff;text-decoration:underline}
+.chead h1,.chead p{cursor:text}
+.inl{display:block;width:100%;background:color-mix(in srgb,var(--fg) 14%,transparent);color:inherit;border:2px solid color-mix(in srgb,var(--fg) 40%,transparent);border-radius:12px;padding:4px 10px;font:inherit;outline:0}
+.inl:focus{border-color:var(--fg);background:color-mix(in srgb,var(--fg) 20%,transparent)}
+.inl::placeholder{color:inherit;opacity:.5}
+.inl.nm{font-family:var(--disp);font-weight:800;letter-spacing:-0.04em;font-size:clamp(22px,3.6vw,36px);line-height:1.1}
+.inlr{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.inlr .inl{flex:1;min-width:120px;font-size:14px;font-weight:600}
 .sectoggle{all:unset;cursor:pointer;display:flex;align-items:center;gap:12px;min-width:0}
 .sectoggle:focus-visible{outline:3px solid var(--gold);outline-offset:6px;border-radius:10px}
 .schev{width:16px;height:11px;flex:0 0 auto;fill:none;stroke:var(--mut);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .35s cubic-bezier(.2,.7,.2,1),stroke .2s ease}
@@ -993,9 +1002,10 @@ function save(){
 function cumPoints(gp){
   let cr=0,qp=0; const pts=[];
   if(W.base&&W.base.cr>0&&typeof W.base.gpa==='number'){ cr=W.base.cr; qp=cr*W.base.gpa; pts.push({l:'Before',v:W.base.gpa}); }
-  PRIOR.forEach(function(t){ t.c.forEach(x=>{cr+=x[1];qp+=x[1]*x[2];}); if(cr) pts.push({l:t.short||t.t,v:qp/cr}); });
-  const ai=W.sems.findIndex(x=>x.id===W.active); W.sems.forEach((sm,i)=>{ if(i<ai){ const t=semTotals(sm); if(t.cr){ cr+=t.cr; qp+=t.qp; pts.push({l:sm.name,v:qp/cr}); } } });
-  if(gp&&gp.cr) pts.push({l:'This semester',v:gp.cum,proj:true});
+  PRIOR.forEach(function(t,pi){ t.c.forEach(x=>{cr+=x[1];qp+=x[1]*x[2];}); if(cr) pts.push({l:t.short||t.t,v:qp/cr,k:'p'+pi}); });
+  const ai=W.sems.findIndex(x=>x.id===W.active); W.sems.forEach((sm,i)=>{ if(i<ai){ const t=semTotals(sm); if(t.cr){ cr+=t.cr; qp+=t.qp; pts.push({l:sm.name,v:qp/cr,k:'s'+sm.id}); } } });
+  if(gp&&gp.cr) pts.push({l:S.name,v:gp.cum,proj:true,k:'s'+W.active});
+  else if(pts.length) pts.push({l:S.name,v:pts[pts.length-1].v,proj:true,k:'s'+W.active});
   return pts;
 }
 function chartSvg(pts){
@@ -1019,7 +1029,8 @@ function chartSvg(pts){
   pts.forEach(function(p,i){
     s+='<circle class="ch-dot'+(p.proj?' proj':'')+'" cx="'+X(i).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="7"/>';
     s+='<text class="val" x="'+X(i).toFixed(1)+'" y="'+(Y(p.v)-16).toFixed(1)+'" text-anchor="middle">'+f3(p.v)+'</text>';
-    s+='<text x="'+X(i).toFixed(1)+'" y="'+(H-14)+'" text-anchor="middle">'+esc(p.l)+'</text>';
+    const full=String(p.l), lab=full.length>13?full.slice(0,12)+'…':full, last=(i===pts.length-1&&pts.length>1);
+    s+='<text class="lbl'+(p.k?' ed':'')+'"'+(p.k?' data-k="'+esc(p.k)+'"':'')+' x="'+(X(i)+(last?10:0)).toFixed(1)+'" y="'+(H-14)+'" text-anchor="'+(last?'end':'middle')+'">'+esc(lab)+(p.k?'<title>Double-click to rename</title>':'')+'</text>';
   });
   return s+'</svg>';
 }
@@ -1302,6 +1313,24 @@ function importFile(v){
 }
 function hasData(){ return !!(W&&W.sems.some(sm=>sm.courses.length)); }
 function confirmReplace(){ return !hasData()||confirm('Loading a file replaces everything saved in this browser. Download a backup first if you want to keep it. Load the file?'); }
+function renameLabel(k){
+  let cur='', set;
+  if(k[0]==='p'){ const t=W.prior[+k.slice(1)]; if(!t) return; cur=t.short||t.t; set=function(v){ t.short=v; t.t=v; }; }
+  else { const sm=W.sems.find(x=>x.id===k.slice(1)); if(!sm) return; cur=sm.name; set=function(v){ sm.name=v; }; }
+  openModal('Rename','<label class="f">Name<input name="name" type="text" value="'+esc(cur)+'" required></label>','Save',function(v){ const n=(v.name||'').trim(); if(!n) return false; set(n); save(); render(true); });
+}
+function inlineEditHeader(el){
+  const c=getC(view); if(!c) return; const box=el.closest('.chead>div'); if(!box||box.querySelector('input')) return;
+  const first=el.tagName==='H1'?'cname':'ccode';
+  box.innerHTML='<input class="inl nm" type="text" data-f="cname" data-c="'+c.id+'" value="'+esc(c.name)+'" aria-label="Class name"><div class="inlr"><input class="inl" type="text" data-f="ccode" data-c="'+c.id+'" value="'+esc(c.code)+'" placeholder="Code" aria-label="Code"><input class="inl" type="text" data-f="cprof" data-c="'+c.id+'" value="'+esc(c.prof)+'" placeholder="Professor" aria-label="Professor"></div>';
+  const inp=box.querySelector('[data-f='+first+']'); inp.focus(); inp.select();
+  box.addEventListener('focusout',function(){ setTimeout(function(){ if(box.contains(document.activeElement)) return; box.innerHTML='<h1>'+esc(c.name)+'</h1><p>'+esc(subOf(c))+'</p>'; },0); });
+  box.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key==='Escape'){ e.preventDefault(); document.activeElement.blur(); } });
+}
+document.addEventListener('dblclick',function(ev){
+  const t=ev.target.closest('text.ed'); if(t){ renameLabel(t.dataset.k); return; }
+  const h=ev.target.closest('.chead h1,.chead p'); if(h) inlineEditHeader(h);
+});
 /* ---------- events ---------- */
 document.addEventListener('wheel',function(ev){ const a=document.activeElement; if(a&&a.type==='number'&&ev.target===a) a.blur(); },{passive:true});
 document.addEventListener('input',function(ev){
