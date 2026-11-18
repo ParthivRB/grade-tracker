@@ -15,6 +15,17 @@ One file: `index.html`. No build step, no accounts, no server. Everything you en
 
 On the home page, open "Bring in old grades with Claude or ChatGPT", copy the prompt, and give it to an AI chat along with screenshots, a PDF, or a spreadsheet of your grades. It returns a file. Use **Upload a grade file** to load it.
 
+## Install it like an app
+
+It's an installable web app that also works offline.
+- **iPhone:** open the site in Safari, then Share, then **Add to Home Screen**.
+- **Android:** Chrome, then **Install app**.
+- **Mac or PC:** Chrome or Edge show an install icon in the address bar.
+
+## Sync your phone and computer
+
+Open **Sync across devices** at the bottom of the home page and follow the three steps. It keeps your data in a **private** GitHub repo that only you can see, using a fine-grained token limited to that one repo (Contents: read and write). Changes upload a couple of seconds after you make them, and other devices pull them when you open the app. If two devices edit at the same time, the newest edit wins. Nothing is sent anywhere until you connect, and the token is only stored in that browser.
+
 ## Backups
 
 Your data lives in this browser on this device. Use "Download backup file" now and then, and "Upload a grade file" on another device. Loading a file replaces what is saved in that browser.

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Grade Tracker · Fall 2026</title><meta name="theme-color" content="#1B3FD1"><link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="apple-touch-icon.png"><script>try{var t=localStorage.getItem('pitt-theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t}catch(e){}</script><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><style id="app-css">:root{
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Grade Tracker · Fall 2026</title><meta name="theme-color" content="#1B3FD1"><link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Grades"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><script>try{var t=localStorage.getItem('pitt-theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t}catch(e){}</script><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><style id="app-css">:root{
   --bg:#F6F7FB; --card:#FFFFFF; --ink:#0D1226; --ink2:#3A4360; --mut:#69728C; --line:#E4E8F2; --soft:#EFF1F8;
   --hero:#1B3FD1; --elev:#FFFFFF; --topbg:rgba(255,255,255,.95); --on:#fff;
   --blue:#1B3FD1; --blue-soft:#E8EDFD; --gold:#FFB81C; --good:#0F8A5F; --good-soft:#E1F5EA; --warn:#B8400A; --warn-soft:#FFF0E6;
@@ -292,6 +292,11 @@ input[type=range]{width:100%;accent-color:var(--blue);margin:14px 0 0}
 .inl.nm{font-family:var(--disp);font-weight:800;letter-spacing:-0.04em;font-size:clamp(22px,3.6vw,36px);line-height:1.1}
 .inlr{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
 .inlr .inl{flex:1;min-width:120px;font-size:14px;font-weight:600}
+.steps{margin:8px 0 14px;padding-left:20px;color:var(--ink2);font-size:14px}
+.steps li{margin:6px 0;max-width:62ch}
+.steps code,.sync code{background:var(--soft);border-radius:6px;padding:1px 6px;font-size:12.5px}
+.syncf{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 8px}
+.syncf input{flex:1;min-width:180px}
 .sectoggle{all:unset;cursor:pointer;display:flex;align-items:center;gap:12px;min-width:0}
 .sectoggle:focus-visible{outline:3px solid var(--gold);outline-offset:6px;border-radius:10px}
 .schev{width:16px;height:11px;flex:0 0 auto;fill:none;stroke:var(--mut);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .35s cubic-bezier(.2,.7,.2,1),stroke .2s ease}
@@ -927,7 +932,7 @@ function needHtml(c){
   return '<h3>What you need on the '+left+' ungraded item'+(left===1?'':'s')+'</h3>'+chips+'<div class="needgrid">'+rows+'</div>';
 }
 function backupHtml(skipAi){
-  return (skipAi?'':aiCard(false))+'<details><summary>Backup and reset</summary>'
+  return (skipAi?'':aiCard(false))+syncHtml()+'<details><summary>Backup and reset</summary>'
     +'<p class="sub">Your changes save on this device automatically. Download a backup file now and then so you can restore it on another device or after clearing your browser data.</p>'
     +'<div class="addrow" style="padding-left:0"><button class="btn pri" data-act="download">Download backup file</button>'
     +'<label class="btn" style="cursor:pointer">Upload grade file<input type="file" id="bkfile" accept=".json,application/json" hidden></label>'
@@ -996,6 +1001,7 @@ function save(){
   try{ localStorage.setItem(KEY3,JSON.stringify(W)); }catch(e){ setStat('Couldn’t save in this browser','warn'); return; }
   setStat('Saving…','busy');
   clearTimeout(pubT); pubT=setTimeout(publishSelf,350);
+  scheduleSync();
 }
 
 /* ---------- charts + home ---------- */
@@ -1294,6 +1300,76 @@ function refresh(){
   });
 }
 
+/* ---------- sync through your own private GitHub repo ---------- */
+const SYNC_KEY='gt-sync';
+function syncCfg(){ try{ return JSON.parse(localStorage.getItem(SYNC_KEY)||'null'); }catch(e){ return null; } }
+function setSyncCfg(c){ try{ if(c) localStorage.setItem(SYNC_KEY,JSON.stringify(c)); else localStorage.removeItem(SYNC_KEY); }catch(e){} }
+const b64e=t=>btoa(unescape(encodeURIComponent(t)));
+const b64d=t=>decodeURIComponent(escape(atob(String(t).replace(/\s/g,''))));
+const dataCount=d=>(d&&Array.isArray(d.sems))?d.sems.reduce((a,x)=>a+(x.courses||[]).length,0):((d&&d.courses)?d.courses.length:0);
+function ghFetch(cfg,method,body){
+  return fetch('https://api.github.com/repos/'+cfg.repo+'/contents/'+(cfg.path||'grade-tracker-data.json'),{method:method,cache:'no-store',
+    headers:{Authorization:'Bearer '+cfg.token,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'},body:body?JSON.stringify(body):undefined});
+}
+async function pullRemote(cfg){
+  const r=await ghFetch(cfg,'GET');
+  if(r.status===404) return {none:true};
+  if(r.status===401||r.status===403) throw new Error('GitHub refused the token. Check it has Contents read and write on that repo.');
+  if(!r.ok) throw new Error('GitHub said '+r.status);
+  const j=await r.json(); return {sha:j.sha,data:JSON.parse(b64d(j.content))};
+}
+async function pushRemote(cfg,sha){
+  const r=await ghFetch(cfg,'PUT',{message:'Sync grades',content:b64e(JSON.stringify(W)),sha:sha||undefined});
+  if(r.status===409||r.status===422) return {conflict:true};
+  if(r.status===401||r.status===403||r.status===404) throw new Error('GitHub refused the write. Check the repo name and the token’s Contents read and write permission.');
+  if(!r.ok) throw new Error('GitHub said '+r.status);
+  const j=await r.json(); return {sha:j.content&&j.content.sha};
+}
+function adoptRemote(v){
+  const keep=view; W=loadAny(v); W.ts=v.ts||0; S=W.sems.find(x=>x.id===W.active)||W.sems[0]; W.active=S.id;
+  refreshPrior(); syncColors(); try{ localStorage.setItem(KEY3,JSON.stringify(W)); }catch(e){}
+  if(keep!=='home'&&!getC(keep)) view='home'; editing=false; render(true);
+}
+let syncBusy=false, syncAgain=false, syncT=null;
+function syncStatus(t,warn,busy){ const m=document.getElementById('syncmsg'); if(m) m.textContent=t; setStat(t,warn?'warn':(busy?'busy':'ok')); if(!warn&&!busy){ clearTimeout(statT); statT=setTimeout(function(){ setStat('',''); },1800); } }
+function scheduleSync(){ if(!syncCfg()) return; clearTimeout(syncT); syncT=setTimeout(function(){ syncNow(); },2500); }
+async function syncNow(){
+  const cfg=syncCfg(); if(!cfg||!W) return;
+  if(syncBusy){ syncAgain=true; return; } syncBusy=true;
+  try{
+    syncStatus('Syncing…',false,true);
+    const rem=await pullRemote(cfg);
+    if(rem.none){ const p=await pushRemote(cfg,null); if(p.conflict) syncAgain=true; }
+    else{
+      const rts=(rem.data&&rem.data.ts)||0, lts=W.ts||0;
+      let useCloud=rts>lts;
+      if(!cfg.synced&&hasData()&&dataCount(rem.data)>0&&rts!==lts){
+        useCloud=confirm('This device and your cloud copy both have grades.\n\nOK: keep the CLOUD copy (replaces what is on this device).\nCancel: keep THIS device and overwrite the cloud copy.');
+      }
+      if(useCloud&&rts!==lts) adoptRemote(rem.data);
+      else if(!useCloud&&(lts>rts||!cfg.synced)){ if(lts<=rts){ W.ts=Date.now(); try{ localStorage.setItem(KEY3,JSON.stringify(W)); }catch(e){} } const p=await pushRemote(cfg,rem.sha); if(p.conflict) syncAgain=true; }
+    }
+    cfg.synced=true; cfg.last=Date.now(); setSyncCfg(cfg); syncStatus('Synced');
+    const lm=document.getElementById('synclast'); if(lm) lm.textContent='Last synced just now.';
+  }catch(e){ syncStatus(navigator.onLine===false?'Offline. It will sync when you’re back online.':('Sync problem: '+(e&&e.message||e)),true); }
+  finally{ syncBusy=false; if(syncAgain){ syncAgain=false; setTimeout(function(){ syncNow(); },400); } }
+}
+document.addEventListener('visibilitychange',function(){ if(!document.hidden&&syncCfg()) syncNow(); });
+window.addEventListener('online',function(){ if(syncCfg()) syncNow(); });
+function syncHtml(){
+  const cfg=syncCfg();
+  if(cfg) return '<details class="sync"><summary>Sync across devices · on</summary>'
+    +'<p class="sub">Connected to <b>'+esc(cfg.repo)+'</b>. Changes upload a couple of seconds after you make them, and other devices pick them up when you open the app.</p>'
+    +'<p class="sub" id="synclast">'+(cfg.last?'Last synced '+new Date(cfg.last).toLocaleString()+'.':'')+'</p>'
+    +'<div class="addrow" style="padding-left:0"><button class="btn pri" data-act="syncnow">Sync now</button><button class="btn" data-act="syncoff">Disconnect this device</button></div><div class="sub" id="syncmsg"></div></details>';
+  return '<details class="sync"><summary>Sync across devices</summary>'
+    +'<p class="sub">Keep your phone and computer in step through a private GitHub repo that only you can see. Nothing is sent anywhere until you connect.</p>'
+    +'<ol class="steps"><li>On GitHub, create a new <b>private</b> repo, for example <code>grade-data</code>.</li>'
+    +'<li>Go to GitHub, Settings, Developer settings, Fine-grained tokens. Make a token for <b>only that repo</b> with <b>Contents: Read and write</b>.</li>'
+    +'<li>Paste the repo and the token below. Do the same on your other device with the same repo and token.</li></ol>'
+    +'<div class="syncf"><input type="text" id="syncRepo" placeholder="your-username/grade-data" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="GitHub repo"><input type="password" id="syncTok" placeholder="github_pat_…" autocomplete="off" aria-label="GitHub token"><button class="btn pri" data-act="syncconnect">Connect</button></div>'
+    +'<p class="sub">The token is stored only in this browser, so keep it limited to that one repo. If you ever lose a device, revoke the token on GitHub.</p><div class="sub" id="syncmsg"></div></details>';
+}
 const okFile=v=>!!(v&&typeof v==='object'&&(v.courses||v.sems||v.semesters||v.earlier));
 const isSimple=v=>!!(v&&(v.semesters||v.earlier)&&!v.sems&&!v.courses);
 function mergeSimple(v){
@@ -1600,6 +1676,14 @@ document.addEventListener('click',function(ev){
   if(a==='go'){ view=b.dataset.v; wipeArmed=false; editing=false; reorder=false; setHash(); render(); window.scrollTo(0,0); return; }
   if(a==='jump'){ view='home'; wipeArmed=false; setHash(); render(); const el=document.getElementById(b.dataset.t); if(el&&el.classList.contains('col')){ delete LAY.col[el.dataset.sec]; saveLay(); el.classList.remove('col'); } if(el) el.scrollIntoView(); else window.scrollTo(0,0); return; }
   if(a==='sectoggle'){ const id=b.dataset.s; LAY.col[id]=!LAY.col[id]; saveLay(); b.closest('.hsec').classList.toggle('col',!!LAY.col[id]); b.setAttribute('aria-expanded',String(!LAY.col[id])); return; }
+  if(a==='syncconnect'){
+    const repo=($('#syncRepo').value||'').trim(), tok=($('#syncTok').value||'').trim(), m=$('#syncmsg');
+    if(!/^[\w.-]+\/[\w.-]+$/.test(repo)){ if(m) m.textContent='Enter the repo as your-username/repo-name.'; return; }
+    if(tok.length<20){ if(m) m.textContent='Paste the fine-grained token from GitHub.'; return; }
+    setSyncCfg({repo:repo,token:tok,path:'grade-tracker-data.json',synced:false}); render(true); syncNow(); return;
+  }
+  if(a==='syncnow'){ syncNow(); return; }
+  if(a==='syncoff'){ if(confirm('Disconnect sync on this device? Your grades stay here and in the cloud copy.')){ setSyncCfg(null); render(true); } return; }
   if(a==='reorder'){ reorder=!reorder; render(true); return; }
   if(a==='classmove'){
     const i=S.courses.findIndex(x=>x.id===b.dataset.c), j=i+(+b.dataset.d); if(i<0||j<0||j>=S.courses.length) return;
@@ -1668,6 +1752,8 @@ document.addEventListener('change',function(ev){
   const h=(location.hash||'').replace('#','');
   if(h&&getC(h)) view=h;
   render();
+  if(syncCfg()) syncNow();
+  try{ if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')) navigator.serviceWorker.register('sw.js'); }catch(e){}
   try{
     const sc=JSON.parse(sessionStorage.getItem('gt-scroll')||'null');
     if(sc&&Date.now()-sc.t<20000) window.scrollTo(0,sc.y);
