@@ -794,6 +794,18 @@ body.calview main .wrap,body.calview .top .wrap{max-width:1560px}
 .cdcol.quiet{background-color:color-mix(in srgb,var(--mut) 5%,transparent)}
 .ev .nm{overflow-wrap:break-word;hyphens:auto}
 @media (max-width:720px){ .calgrid{grid-template-columns:46px minmax(0,1fr)} }
+@media (max-width:720px){
+  .cal .calcard{overflow:visible}
+  .cal .daystrip{position:sticky;top:calc(62px + env(safe-area-inset-top,0px));z-index:15;background:var(--card);padding:10px 12px 12px;margin:0;border-bottom:1px solid var(--line);border-radius:0}
+  .dayhd{padding:16px 20px 6px}
+  .dayhd b{display:block;font-family:var(--disp);font-weight:800;font-size:26px;letter-spacing:-0.05em;line-height:1.05}
+  .dayhd span{display:block;margin-top:5px;color:var(--mut);font-weight:600;font-size:14px}
+  .dayempty{text-align:center;padding:40px 20px 34px}
+  .dayempty b{display:block;font-family:var(--disp);font-size:20px;letter-spacing:-0.04em;margin-bottom:6px}
+  .dayempty p{color:var(--mut);font-size:14px;margin-bottom:18px}
+  .cal .calscroll{padding:6px 12px 22px}
+  .cal .caltb{border-radius:28px 28px 0 0}
+}
 </style></head><body><header class="top" id="shell-header"><div class="wrap">
   <button class="brand" data-act="go" data-v="home" aria-label="Grade Tracker home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="22" fill="#0D1226"/><path d="M21.5 33.5 29 41 43 25" fill="none" stroke="#FFB81C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="t">Grade Tracker</span></button>
   <div class="right"><nav class="tabs" aria-label="Sections">
@@ -2107,7 +2119,11 @@ function calBody(){
   const empty=any?'':'<div class="calempty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="4"/><path d="M8 3v3.5M16 3v3.5M3.5 10h17"/></svg><b>Nothing scheduled yet</b><p>Add when each class meets under ✎ Edit on the class page, or add your own event.</p><button type="button" class="btn pri" data-act="evadd">＋ Add an event</button></div>';
   const skN=S.courses.filter(c=>c.meets.length&&(c.skip||[]).includes(calWk)).length+evs.filter(e=>e.rep!=='none'&&(e.skip||[]).includes(calWk)).length;
   const skRow=skN?'<div class="skrow"><span>'+skN+' skipped this week</span><button type="button" class="btn sm" data-act="calrestore">Restore</button></div>':'';
-  return {sum:sum,rest:'<div class="calcard">'+tb+skRow+strip+'<div class="calscroll'+(any?'':' dim')+'">'+g+'</div>'+empty+'</div>'+offList+legend};
+  let dayhd='';
+  if(mob&&dayEvents[0]){ const x0=dayEvents[0], n0=x0.blocks.length+x0.allDay.length, DF=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    dayhd='<div class="dayhd"><b>'+DF[pd(x0.d).getDay()]+'</b><span>'+MONN[pd(x0.d).getMonth()]+' '+pd(x0.d).getDate()+' · '+(n0?n0+' on the schedule':(x0.off?x0.off.t:'free day'))+'</span></div>';
+    if(!n0&&!x0.off) g='<div class="dayempty"><b>Nothing scheduled</b><p>Enjoy the free time, or add something.</p><button type="button" class="btn pri" data-act="evadd" data-date="'+x0.d+'">＋ Add an event</button></div>'; }
+  return {sum:sum,rest:'<div class="calcard">'+tb+skRow+strip+dayhd+'<div class="calscroll'+(any?'':' dim')+'">'+g+'</div>'+(mob?'':empty)+'</div>'+offList+legend};
 }
 function offModal(e,edit){
   const v=Object.assign({t:'',kind:'holiday',start:TODAY,end:''},e||{});
