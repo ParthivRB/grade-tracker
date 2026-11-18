@@ -201,7 +201,7 @@ input[type=time]:focus,input[type=date]:focus{border-color:var(--blue);backgroun
 .dh b{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-bottom:4px}
 .dh span{display:inline-grid;place-items:center;min-width:36px;height:36px;border-radius:99px;font:800 18px var(--disp);letter-spacing:-0.04em}
 .dh.today span{background:var(--blue);color:#fff}
-.dh.off{opacity:.4}
+.dh.outsem{opacity:.4}
 .dlab{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);padding:6px 6px 0 0;text-align:right}
 .dues{display:flex;flex-direction:column;gap:4px;padding:2px 3px 10px;min-width:0}
 .cdue{all:unset;cursor:pointer;box-sizing:border-box;font:700 11px "Plus Jakarta Sans",system-ui,sans-serif;padding:4px 8px;border-radius:8px;border-left:3px solid var(--c);background:color-mix(in srgb,var(--c) 20%,transparent);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
@@ -211,7 +211,7 @@ input[type=time]:focus,input[type=date]:focus{border-color:var(--blue);backgroun
 .axis span{position:absolute;right:8px;transform:translateY(-50%);font-size:11px;font-weight:600;color:var(--mut)}
 .cdcol{position:relative;height:var(--H);border-left:1px solid var(--line);background-image:linear-gradient(var(--line) 1px,transparent 1px);background-size:100% var(--rh);cursor:copy;transition:background-color .2s ease}
 .cdcol.today{background-color:var(--blue-soft)}
-.cdcol.off{opacity:.45}
+.cdcol.outsem{opacity:.45}
 .ev{all:unset;box-sizing:border-box;position:absolute;display:flex;flex-direction:column;gap:2px;overflow:hidden;cursor:pointer;padding:8px 10px;border-radius:14px;background:var(--c);color:var(--fg);box-shadow:0 6px 16px -8px rgba(0,0,0,.55);transition:transform .18s ease,box-shadow .18s ease;z-index:1}
 .ev:hover{transform:translateY(-2px);box-shadow:0 12px 22px -10px rgba(0,0,0,.6);z-index:3}
 .ev .nm{font-weight:800;font-size:13px;line-height:1.15;letter-spacing:-0.01em}
@@ -309,7 +309,7 @@ input[type=time]:focus,input[type=date]:focus{border-color:var(--blue);backgroun
 .cdcol.offday{border-left-color:color-mix(in srgb,var(--oc) 45%,var(--line))}
 .cdcol.offday.joined{border-left-color:transparent}
 .offbg{position:absolute;top:0;bottom:0;left:0;z-index:0;pointer-events:none;background:linear-gradient(180deg,color-mix(in srgb,var(--oc) 14%,transparent),color-mix(in srgb,var(--oc) 4%,transparent) 70%);border-radius:0 0 4px 4px}
-.offrow{grid-column:2 / -1;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));padding:0 0 12px}
+.offrow{grid-column:2 / -1;display:grid;grid-template-columns:var(--cols);padding:0 0 12px}
 .offban{all:unset;cursor:pointer;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;gap:1px;min-height:46px;margin:0 4px;padding:8px 16px;border-radius:16px;background:linear-gradient(165deg,color-mix(in srgb,var(--c) 82%,#fff),var(--c));color:#10131c;box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 10px 22px -14px var(--c);transition:transform .18s ease}
 .offban:hover{transform:translateY(-1px)}
 .offban b{font-size:14px;letter-spacing:-0.02em;line-height:1.15;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -786,6 +786,14 @@ textarea{width:100%;min-height:120px;background:var(--soft);border:1px solid var
 .cmod small{display:block;color:var(--mut);font-size:13.5px;margin-top:3px}
 @media (max-width:720px){ .skrow{margin:2px 14px 8px} }
 .cal .dlab{white-space:nowrap;font-size:9px;letter-spacing:.04em}
+body.calview main .wrap,body.calview .top .wrap{max-width:1560px}
+.calgrid{grid-template-columns:52px var(--cols)}
+.dh.quiet{opacity:.55}
+.dh.quiet span{min-width:24px;height:24px;font-size:12px}
+.dh.quiet b{font-size:8.5px;letter-spacing:.04em}
+.cdcol.quiet{background-color:color-mix(in srgb,var(--mut) 5%,transparent)}
+.ev .nm{overflow-wrap:break-word;hyphens:auto}
+@media (max-width:720px){ .calgrid{grid-template-columns:46px minmax(0,1fr)} }
 </style></head><body><header class="top" id="shell-header"><div class="wrap">
   <button class="brand" data-act="go" data-v="home" aria-label="Grade Tracker home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="22" fill="#0D1226"/><path d="M21.5 33.5 29 41 43 25" fill="none" stroke="#FFB81C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="t">Grade Tracker</span></button>
   <div class="right"><nav class="tabs" aria-label="Sections">
@@ -1621,6 +1629,7 @@ function updateProj(c){
 /* ---------- render + refresh ---------- */
 function render(quiet){
   const m=$('#main');
+  document.body.classList.toggle('calview',view==='cal');
   const ct=document.getElementById('calTab'); if(ct) ct.classList.toggle('on',view==='cal');
   if(view==='cal') m.innerHTML=calView();
   else if(view==='home'||!getC(view)){ view='home'; m.innerHTML=homeView(); }
@@ -2053,12 +2062,14 @@ function calBody(){
     return {d:d,blocks:out,allDay:allDay,dues:dues,off:offH};
   });
   const dayEvents=mob?dayEventsAll.filter(x=>x.d===calDay):dayEventsAll, nd=dayEvents.length, vdays=dayEvents.map(x=>x.d);
+  dayEvents.forEach(x=>{ const w=pd(x.d).getDay(); x.quiet=!mob&&(w===0||w===6)&&!x.blocks.length&&!x.allDay.length&&!x.off; });
+  const colsT=dayEvents.map(x=>x.quiet?'minmax(0,.34fr)':'minmax(0,1fr)').join(' '), fullN=dayEvents.filter(x=>!x.quiet).length, quietN=dayEvents.length-fullN;
   const hasTop=dayEvents.some(x=>x.allDay.length||x.dues.length);
   const segs=[]; dayEvents.forEach((x,i)=>{ if(!x.off) return; const prev=i>0&&dayEvents[i-1].off&&dayEvents[i-1].off.id===x.off.id; if(prev){ segs[segs.length-1].n++; } else segs.push({o:x.off,a:i,n:1}); });
   const segAt={}; segs.forEach(sg=>{ segAt[sg.a]=sg; });
   const nowM=(new Date()).getHours()*60+(new Date()).getMinutes();
-  let g='<div class="calgrid" style="--n:'+nd+';--hrs:'+HRS+';--rh:'+CAL_RH+'px" data-hrs="'+HRS+'">';
-  g+=(mob?'':'<div></div>')+dayEvents.map(x=>{ if(mob) return ''; const d=pd(x.d); return '<div class="dh'+(x.d===TODAY?' today':'')+(inSem(x.d)?'':' off')+(x.off?' isoff':'')+'"><b>'+DAYN[d.getDay()]+'</b><span>'+d.getDate()+'</span></div>'; }).join('');
+  let g='<div class="calgrid" style="--n:'+nd+';--cols:'+colsT+';--hrs:'+HRS+';--rh:'+CAL_RH+'px;min-width:'+(mob?0:'calc(52px + '+(fullN*128+quietN*52)+'px)')+'" data-hrs="'+HRS+'">';
+  g+=(mob?'':'<div></div>')+dayEvents.map(x=>{ if(mob) return ''; const d=pd(x.d); return '<div class="dh'+(x.d===TODAY?' today':'')+(inSem(x.d)?'':' outsem')+(x.quiet?' quiet':'')+(x.off?' isoff':'')+'"><b>'+DAYN[d.getDay()]+'</b><span>'+d.getDate()+'</span></div>'; }).join('');
   if(segs.length){
     g+='<div></div><div class="offrow">'+segs.map(sg=>{ const o=sg.o, k=OFFK[o.kind], A=pd(o.start), B=pd(o.end), n=dayDiff(o.start,o.end)+1, cl=o.start<vdays[sg.a], cr=o.end>vdays[sg.a+sg.n-1];
       const rng=n===1?MONN[A.getMonth()]+' '+A.getDate():MONN[A.getMonth()]+' '+A.getDate()+' – '+(A.getMonth()===B.getMonth()?'':MONN[B.getMonth()]+' ')+B.getDate();
@@ -2071,7 +2082,7 @@ function calBody(){
   let ax=''; for(let h=h0;h<=h1;h++) ax+='<span'+(h===h0?' class="f0"':'')+' style="top:calc(var(--rh)*'+(h-h0)+')">'+(h===h1?'':fmtT(h*60,true).replace(':00',''))+'</span>';
   g+='<div class="axis">'+ax+'</div>';
   dayEvents.forEach(x=>{
-    g+='<div class="cdcol'+(x.d===TODAY?' today':'')+(inSem(x.d)?'':' off')+(x.off?' offday':'')+((x.off&&dayEvents[dayEvents.indexOf(x)-1]&&dayEvents[dayEvents.indexOf(x)-1].off&&dayEvents[dayEvents.indexOf(x)-1].off.id===x.off.id)?' joined':'')+'"'+(x.off?' style="--oc:'+OFFK[x.off.kind][1]+'"':'')+' data-act="evnew" data-date="'+x.d+'" data-h0="'+h0+'" data-hrs="'+HRS+'">';
+    g+='<div class="cdcol'+(x.d===TODAY?' today':'')+(inSem(x.d)?'':' outsem')+(x.quiet?' quiet':'')+(x.off?' offday':'')+((x.off&&dayEvents[dayEvents.indexOf(x)-1]&&dayEvents[dayEvents.indexOf(x)-1].off&&dayEvents[dayEvents.indexOf(x)-1].off.id===x.off.id)?' joined':'')+'"'+(x.off?' style="--oc:'+OFFK[x.off.kind][1]+'"':'')+' data-act="evnew" data-date="'+x.d+'" data-h0="'+h0+'" data-hrs="'+HRS+'">';
     { const si=dayEvents.indexOf(x); if(segAt[si]) g+='<div class="offbg" style="width:calc(100% * '+segAt[si].n+')"></div>'; }
     x.blocks.forEach(b=>{
       const top=(b.a/60-h0), dur=(b.b-b.a)/60, w=100/b.n;
