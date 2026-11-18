@@ -2089,9 +2089,9 @@ function calFit(){
   const hrs=+g.dataset.hrs||9, ax=g.querySelector('.axis'); if(!ax) return;
   g.style.setProperty('--rh','60px');
   const top=ax.getBoundingClientRect().top+window.scrollY, avail=window.innerHeight-top-34;
-  const rh=Math.max(calMQ.matches?44:30,Math.min(112,Math.floor(avail/hrs)));
+  const rh=Math.max(calMQ.matches?64:72,Math.min(112,Math.floor(avail/hrs)));
   g.style.setProperty('--rh',rh+'px');
-  g.querySelectorAll('.ev[data-dur]').forEach(function(e){ e.classList.toggle('tight',(+e.dataset.dur)*rh<60); });
+  g.querySelectorAll('.ev[data-dur]').forEach(function(e){ e.classList.toggle('tight',(+e.dataset.dur)*rh<46); });
 }
 window.addEventListener('resize',function(){ if(view==='cal') calFit(); });
 function calBody(){
