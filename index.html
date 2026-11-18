@@ -296,9 +296,9 @@ input[type=range]{width:100%;accent-color:var(--blue);margin:14px 0 0}
 .mact{display:flex;justify-content:flex-end;gap:10px;margin-top:10px}
 .chk{display:flex!important;align-items:center;flex-direction:row!important;gap:8px}
 .chk input{width:auto!important}
-.tile.add{border:2px dashed var(--line);background:transparent;color:var(--mut);align-items:center;justify-content:center;box-shadow:none;font-weight:700;gap:6px;transition:color .2s ease,border-color .2s ease,transform .18s ease}
-.tile.add span{font-size:36px;line-height:1;font-weight:500}
-.tile.add:hover{color:var(--ink);border-color:var(--mut)}
+.addclass{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:16px;padding:16px;border:2px dashed var(--line);border-radius:22px;background:transparent;color:var(--mut);font-weight:700;font-size:15px;cursor:pointer;transition:color .2s ease,border-color .2s ease,background-color .2s ease}
+.addclass span{font-size:20px;line-height:1;font-weight:500}
+.addclass:hover{color:var(--ink);border-color:var(--mut);background:var(--soft)}
 .editbtn{border:0;border-radius:99px;padding:9px 18px;font-weight:700;font-size:14px;cursor:pointer;background:color-mix(in srgb,var(--fg) 16%,transparent);color:var(--fg);transition:background-color .2s ease}
 .editbtn:hover,.editbtn.on{background:var(--fg);color:var(--c)}
 .chead{align-items:center}
@@ -635,7 +635,7 @@ function semTotals(sm){
 function refreshPrior(){
   let cr=PRIOR.reduce((a,t)=>a+t.c.reduce((b,x)=>b+x[1],0),0), qp=PRIOR.reduce((a,t)=>a+t.c.reduce((b,x)=>b+x[1]*x[2],0),0);
   if(W.base&&W.base.cr>0&&typeof W.base.gpa==='number'){ cr+=W.base.cr; qp+=W.base.cr*W.base.gpa; }
-  W.sems.forEach(sm=>{ if(sm.done&&sm.id!==W.active){ const t=semTotals(sm); cr+=t.cr; qp+=t.qp; } });
+  const ai=W.sems.findIndex(x=>x.id===W.active); W.sems.forEach((sm,i)=>{ if(i<ai){ const t=semTotals(sm); cr+=t.cr; qp+=t.qp; } });
   PRIOR_CR=cr; PRIOR_QP=qp;
 }
 function nextColor(){
@@ -876,8 +876,8 @@ function needHtml(c){
   }).join('');
   return '<h3>What you need on the '+left+' ungraded item'+(left===1?'':'s')+'</h3>'+chips+'<div class="needgrid">'+rows+'</div>';
 }
-function backupHtml(){
-  return aiCard(false)+'<details><summary>Backup and reset</summary>'
+function backupHtml(skipAi){
+  return (skipAi?'':aiCard(false))+'<details><summary>Backup and reset</summary>'
     +'<p class="sub">Your changes save on this device automatically. Download a backup file now and then so you can restore it on another device or after clearing your browser data.</p>'
     +'<div class="addrow" style="padding-left:0"><button class="btn pri" data-act="download">Download backup file</button>'
     +'<label class="btn" style="cursor:pointer">Upload grade file<input type="file" id="bkfile" accept=".json,application/json" hidden></label>'
@@ -953,7 +953,7 @@ function cumPoints(gp){
   let cr=0,qp=0; const pts=[];
   if(W.base&&W.base.cr>0&&typeof W.base.gpa==='number'){ cr=W.base.cr; qp=cr*W.base.gpa; pts.push({l:'Before',v:W.base.gpa}); }
   PRIOR.forEach(function(t){ t.c.forEach(x=>{cr+=x[1];qp+=x[1]*x[2];}); if(cr) pts.push({l:t.short||t.t,v:qp/cr}); });
-  W.sems.forEach(sm=>{ if(sm.done&&sm.id!==W.active){ const t=semTotals(sm); if(t.cr){ cr+=t.cr; qp+=t.qp; pts.push({l:sm.name,v:qp/cr}); } } });
+  const ai=W.sems.findIndex(x=>x.id===W.active); W.sems.forEach((sm,i)=>{ if(i<ai){ const t=semTotals(sm); if(t.cr){ cr+=t.cr; qp+=t.qp; pts.push({l:sm.name,v:qp/cr}); } } });
   if(gp&&gp.cr) pts.push({l:'This semester',v:gp.cum,proj:true});
   return pts;
 }
@@ -1072,7 +1072,7 @@ function homeView(){
   return semTitle()
     +'<div id="heroBox">'+heroHtml()+'</div>'+banner
     +'<div class="sechead" id="classes"><h2>This semester</h2></div>'
-    +'<div class="tiles">'+tiles+'<button class="tile add" data-act="newclass"><span>＋</span>Add class</button></div>'
+    +'<div class="tiles">'+tiles+'</div><button class="addclass" data-act="newclass"><span>＋</span> Add class</button>'
     +'<div class="sechead"><h2>Coming up</h2></div><div class="card panel">'+upHtml+'</div>'
     +'<div class="sechead" id="gpa"><h2>GPA planner</h2></div>'
     +'<div id="gpasum"></div><div class="card panel scroll"><table><thead><tr><th>Class</th><th>Credits</th><th class="r">Now</th><th class="r">What-if</th><th class="r">Letter to use</th></tr></thead><tbody>'+gpaRows+'</tbody></table></div>'
@@ -1316,9 +1316,10 @@ function aiCard(open){
 }
 function emptyHome(){
   return semTitle()
+    +(PRIOR_CR?'<div id="heroBox">'+heroHtml()+'</div>':'')
     +'<section class="card onb"><h2 class="projh">Set up your semester</h2><p class="projp">Add your classes one at a time, or bring in grades you already have. Everything stays in your browser.</p>'
     +'<div class="onbrow"><button class="btn pri" data-act="newclass">Add a class</button><label class="btn" style="cursor:pointer">Upload a grade file<input type="file" id="bkfile2" accept=".json,application/json" hidden></label></div></section>'
-    +aiCard(true)+backupHtml();
+    +aiCard(true)+backupHtml(true);
 }
 function baseHtml(){
   const b=W.base||{};
@@ -1356,9 +1357,8 @@ function addSem(name,copy){
 const semPop=document.createElement('div'); semPop.className='pop menu'; semPop.id='semPop'; semPop.setAttribute('role','menu'); document.body.appendChild(semPop);
 function closeSemMenu(){ semPop.classList.remove('open'); const b=document.getElementById('semBtn'); if(b) b.setAttribute('aria-expanded','false'); }
 function openSemMenu(btn){
-  semPop.innerHTML='<h4>Semesters</h4>'+W.sems.map(sm=>'<button type="button" class="mi'+(sm.id===W.active?' on':'')+'" data-m="go" data-id="'+sm.id+'"><span>'+esc(sm.name)+'</span><small>'+sm.courses.length+' class'+(sm.courses.length===1?'':'es')+(sm.done?' · finished':'')+'</small></button>').join('')
+  semPop.innerHTML='<h4>Semesters</h4>'+W.sems.map(sm=>'<button type="button" class="mi'+(sm.id===W.active?' on':'')+'" data-m="go" data-id="'+sm.id+'"><span>'+esc(sm.name)+'</span><small>'+sm.courses.length+' class'+(sm.courses.length===1?'':'es')+''+'</small></button>').join('')
     +'<div class="msep"></div><button type="button" class="mi act" data-m="new">＋ New semester</button><button type="button" class="mi act" data-m="rename">Rename this semester</button>'
-    +'<label class="mi tog"><span>Finished<br><small>Counts toward cumulative GPA</small></span><input type="checkbox" data-m="done"'+(S.done?' checked':'')+'></label>'
     +(W.sems.length>1?'<button type="button" class="mi act danger" data-m="del">Delete this semester</button>':'');
   const r=btn.getBoundingClientRect(); semPop.style.top=(r.bottom+10)+'px'; semPop.style.left=Math.max(16,r.left)+'px';
   semPop.classList.add('open'); btn.setAttribute('aria-expanded','true');
