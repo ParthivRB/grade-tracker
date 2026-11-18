@@ -2003,7 +2003,8 @@ function newClassModal(){
     +'<div class="two"><label class="f">Code (optional)<input name="code" type="text" placeholder="CHEM 0310"></label><label class="f">Professor (optional)<input name="prof" type="text" placeholder="Dr. Smith"></label></div>'
     +'<label class="f">Credits<input name="credits" type="number" step="0.5" min="0" placeholder="3"></label>'
     +'<label class="f">How is it graded?<select name="kind"><option value="weighted">Weighted categories (homework 30%, exams 70%…)</option><option value="points">Total points</option></select></label>'
-    +'<label class="f">Start with<select name="tpl"><option value="hmf">Homework, Midterm, Final</option><option value="blank">One blank category</option></select></label>',
+    +'<label class="f">Start with<select name="tpl"><option value="hmf">Homework, Midterm, Final</option><option value="blank">One blank category</option></select></label>'
+    +'<label class="swrow"><span>Count in GPA<small style="display:block;font-weight:500;font-size:12.5px;color:var(--mut);margin-top:2px">Turn off for pass/fail or audit classes.</small></span><input type="checkbox" class="swi" name="gpa" checked><i></i></label>',
     'Add class',function(v){
       const name=(v.name||'').trim(); if(!name) return false;
       const mk=(n,w,rule,items)=>({name:n,w:w,rule:rule,items:items});
@@ -2011,7 +2012,7 @@ function newClassModal(){
       if(v.kind==='points'){ pooled=true; cats=[mk('Assignments',100,'sum',[I('Assignment 1',100),I('Assignment 2',100)])]; }
       else if(v.tpl==='hmf') cats=[mk('Homework',30,'avg',[I('Homework 1',100),I('Homework 2',100)]),mk('Midterm',30,'avg',[I('Midterm',100)]),mk('Final exam',40,'avg',[I('Final exam',100)])];
       else cats=[mk('Assignments',100,'avg',[I('Assignment 1',100)])];
-      const c=normCourse({name:name,code:(v.code||'').trim(),prof:(v.prof||'').trim(),credits:num(v.credits),pooled:pooled,scale:'std',cats:cats});
+      const c=normCourse({name:name,code:(v.code||'').trim(),prof:(v.prof||'').trim(),credits:num(v.credits),pooled:pooled,scale:'std',cats:cats,noGpa:v.gpa!=='on'});
       c.color=nextColor(); S.courses.push(c); syncColors(); view=c.id; editing=true; save(); setHash(); render(); window.scrollTo(0,0);
     });
 }
