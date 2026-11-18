@@ -702,7 +702,7 @@ textarea{width:100%;min-height:120px;background:var(--soft);border:1px solid var
 .mbox .evc i{width:30px;height:30px}
 .mbox .mact{margin-top:6px}
 .mbox .hint{text-transform:none;letter-spacing:0;font-weight:500;font-size:13px;color:var(--mut);margin-top:-6px}
-.swrow{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;height:48px;padding:0 14px;border-radius:14px;background:var(--soft);cursor:pointer;font-weight:700;font-size:15px;color:var(--ink)}
+.swrow{position:relative;display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:48px;padding:13px 16px;box-sizing:border-box;border-radius:14px;background:var(--soft);cursor:pointer;font-weight:700;font-size:15px;color:var(--ink)}
 .swi{position:absolute;opacity:0;pointer-events:none}
 .swrow i{position:relative;width:46px;height:28px;border-radius:99px;background:var(--line);transition:background-color .2s ease;flex:0 0 auto}
 .swrow i:before{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:99px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.35);transition:transform .22s cubic-bezier(.2,.8,.2,1)}
@@ -822,6 +822,8 @@ body.calview main .wrap,body.calview .top .wrap{max-width:1560px}
   .tile{padding:18px 20px 16px;border-radius:24px}
   .tile .L{font-size:50px}
 }
+.swrow>span{flex:1;min-width:0;line-height:1.3}
+.swrow i{flex:0 0 46px}
 </style></head><body><header class="top" id="shell-header"><div class="wrap">
   <button class="brand" data-act="go" data-v="home" aria-label="Grade Tracker home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="22" fill="#0D1226"/><path d="M21.5 33.5 29 41 43 25" fill="none" stroke="#FFB81C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="t">Grade Tracker</span></button>
   <div class="right"><nav class="tabs" aria-label="Sections">
@@ -2290,7 +2292,7 @@ function meetsEdit(c){
     +'<div class="mtimes">'+timeField('data-f="mst" data-c="'+c.id+'" data-mi="'+i+'"',m.st,'Start time')+'<span>to</span>'+timeField('data-f="men" data-c="'+c.id+'" data-mi="'+i+'"',m.en,'End time')+'</div>'
     +'<input type="text" class="mloc" data-f="mloc" data-c="'+c.id+'" data-mi="'+i+'" value="'+esc(m.loc)+'" placeholder="Room (optional)" aria-label="Room">'
     +'<button type="button" class="mdel" data-act="mdel" data-c="'+c.id+'" data-mi="'+i+'" aria-label="Remove this time" title="Remove">×</button></div>').join('');
-  return '<div class="f meets"><span>Class times</span>'+rows+'<div><button type="button" class="btn sm" data-act="madd" data-c="'+c.id+'">＋ '+(c.meets.length?'Add another time':'Add a time')+'</button></div><span class="hint">Shows in the calendar, which you open with the calendar icon at the top.</span></div>';
+  return '<div class="f meets"><span>Class times</span>'+rows+'<div><button type="button" class="btn sm" data-act="madd" data-c="'+c.id+'">＋ '+(c.meets.length?'Add another time':'Add a time')+'</button></div><span class="hint">Shows in the Calendar tab at the top.</span></div>';
 }
 function catEdit(c,k,ki){
   const base='data-c="'+c.id+'" data-k="'+ki+'"', r=k.rule||'avg';
