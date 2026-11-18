@@ -1099,6 +1099,80 @@ html.tour-lock,html.tour-lock body{overflow:hidden}
   .tour *,.tour{animation-duration:.01ms!important;animation-delay:0ms!important;transition-duration:.01ms!important}
   .tbg i{animation:none}
 }
+
+/* quick rules */
+.qrule{display:flex;align-items:center;flex-wrap:wrap;gap:10px 18px;padding:12px 22px 0}
+.qsw{display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-weight:700;font-size:13.5px;color:var(--ink2);position:relative}
+.qsw i{position:relative;width:38px;height:22px;border-radius:99px;background:var(--line);transition:background-color .2s ease;flex:0 0 auto}
+.qsw i:before{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:99px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.3);transition:transform .22s cubic-bezier(.2,.8,.2,1)}
+.qsw .swi:checked+i{background:var(--c,var(--blue))}
+.qsw .swi:checked+i:before{transform:translateX(16px)}
+.qsw .swi:focus-visible+i{box-shadow:0 0 0 3px var(--blue-soft)}
+.qstep{display:inline-flex;align-items:center;gap:2px;background:var(--soft);border-radius:99px;padding:3px}
+.qstep button{all:unset;cursor:pointer;width:26px;height:26px;border-radius:99px;display:grid;place-items:center;font-weight:800;color:var(--ink2);transition:background-color .15s}
+.qstep button:hover{background:var(--line);color:var(--ink)}
+.qstep b{min-width:22px;text-align:center;font-size:14px}
+.qlab{font-size:13px;color:var(--mut);font-weight:600;margin-left:-10px}
+.qlab.strong{margin-left:0;color:var(--ink2);font-weight:700}
+.qmore{all:unset;cursor:pointer;margin-left:auto;font-size:12.5px;font-weight:700;color:var(--mut);padding:6px 10px;border-radius:99px}
+.qmore:hover,.qmore.on{color:var(--ink);background:var(--soft)}
+/* add section */
+.addsec{all:unset;cursor:pointer;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:12px;margin-top:16px;padding:18px 22px;border-radius:24px;border:2px dashed var(--line);color:var(--ink2);font-weight:800;font-size:15px;transition:border-color .2s,background-color .2s,transform .2s}
+.addsec span{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--c);color:var(--fg);font-size:18px}
+.addsec small{margin-left:auto;font-weight:600;font-size:13px;color:var(--mut)}
+.addsec:hover{border-color:var(--c);background:color-mix(in srgb,var(--c) 8%,transparent);transform:translateY(-1px)}
+.cat.flash{animation:secflash 1.4s ease}
+@keyframes secflash{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--c) 70%,transparent)}40%{box-shadow:0 0 0 6px color-mix(in srgb,var(--c) 35%,transparent)}100%{box-shadow:var(--shadow)}}
+/* what-if button + popup */
+.chctl{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.wibtn{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:99px;background:var(--fg);color:var(--c);font-weight:800;font-size:14px;transition:transform .2s,opacity .2s}
+.wibtn svg{width:17px;height:17px}
+.wibtn:hover{transform:translateY(-1px)}
+.wibtn:active{transform:scale(.96)}
+button.rpct{all:unset;cursor:pointer;box-sizing:border-box;text-align:center;font-size:13.5px;font-weight:800;border-radius:99px;padding:4px 6px;color:var(--mut);transition:transform .15s,box-shadow .15s,background-color .25s,color .25s}
+button.rpct.on{background:var(--c);color:var(--fg)}
+button.rpct.wi{font-style:italic;font-weight:600;border:1px dashed var(--mut)}
+button.rpct:hover{transform:translateY(-1px);box-shadow:0 0 0 2px var(--c)}
+.wio{position:fixed;inset:0;z-index:220;display:grid;place-items:center;padding:16px;background:rgba(0,0,0,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);opacity:0;transition:opacity .25s ease}
+.wio.open{opacity:1}
+.wic{width:min(440px,100%);border-radius:30px;padding:24px 26px 22px;background:linear-gradient(160deg,color-mix(in srgb,var(--c) 86%,#fff),var(--c));color:var(--fg);box-shadow:0 40px 90px -30px rgba(0,0,0,.7);transform:translateY(18px) scale(.96);transition:transform .45s cubic-bezier(.16,1,.3,1)}
+.wio.open .wic{transform:none}
+.wih{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.wih b{display:block;font-size:17px;letter-spacing:-0.02em}
+.wih small{display:block;opacity:.75;font-size:12.5px;margin-top:2px}
+.wix{all:unset;cursor:pointer;width:32px;height:32px;border-radius:99px;display:grid;place-items:center;font-size:20px;background:color-mix(in srgb,var(--fg) 12%,transparent)}
+.wix:hover{background:color-mix(in srgb,var(--fg) 22%,transparent)}
+.wig{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:10px 0 16px}
+.wiL{font-family:var(--disp);font-weight:800;font-size:76px;letter-spacing:-0.06em;line-height:1}
+.wiL.bump{animation:tpop .45s cubic-bezier(.2,1.6,.4,1)}
+.wiP{font-weight:800;font-size:24px;letter-spacing:-0.02em}
+.wiD{font-weight:800;font-size:12.5px;padding:3px 10px;border-radius:99px;background:color-mix(in srgb,var(--fg) 14%,transparent)}
+.wiD:empty{display:none}
+.wisel{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;opacity:.95}
+.wisel select{height:44px;border-radius:14px;border:0;padding:0 12px;background:color-mix(in srgb,var(--fg) 12%,transparent);color:var(--fg);font:700 14.5px "Plus Jakarta Sans",system-ui,sans-serif;text-transform:none;letter-spacing:0}
+.wisel select option{color:#111}
+.wir{display:flex;justify-content:space-between;align-items:baseline;margin-top:16px;font-weight:700;font-size:14px}
+.wir b{white-space:pre}
+.wiR{-webkit-appearance:none;appearance:none;width:100%;height:10px;border-radius:99px;margin:12px 0 0;background:linear-gradient(90deg,var(--fg) var(--v,80%),color-mix(in srgb,var(--fg) 22%,transparent) var(--v,80%));cursor:grab;accent-color:auto}
+.wiR::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.35);transition:transform .15s}
+.wiR:active::-webkit-slider-thumb{transform:scale(1.15)}
+.wiR::-moz-range-thumb{width:28px;height:28px;border:0;border-radius:50%;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.witk{display:flex;justify-content:space-between;font-size:11px;font-weight:700;opacity:.7;margin-top:6px}
+.wiq{display:flex;gap:6px;margin-top:14px}
+.wiq button{all:unset;cursor:pointer;flex:1;text-align:center;padding:8px 0;border-radius:12px;font-weight:800;font-size:13px;background:color-mix(in srgb,var(--fg) 12%,transparent);transition:background-color .15s,transform .15s}
+.wiq button:hover{background:color-mix(in srgb,var(--fg) 22%,transparent)}
+.wiq button:active{transform:scale(.95)}
+.wia{display:flex;justify-content:space-between;gap:10px;margin-top:20px}
+.wbtn{all:unset;cursor:pointer;padding:12px 22px;border-radius:99px;font-weight:800;font-size:14.5px;background:var(--fg);color:var(--c);transition:transform .15s}
+.wbtn:active{transform:scale(.96)}
+.wbtn.ghost{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--fg) 40%,transparent)}
+@media (max-width:720px){
+  .wio{align-items:end;padding:0}
+  .wic{width:100%;border-radius:30px 30px 0 0;padding-bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateY(100%)}
+  .wiL{font-size:64px}
+  .addsec small{display:none}
+  .qmore{margin-left:0}
+}
 </style></head><body><header class="top" id="shell-header"><div class="wrap">
   <button class="brand" data-act="go" data-v="home" aria-label="Tally home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="22" fill="#0D1226"/><path d="M21.5 33.5 29 41 43 25" fill="none" stroke="#FFB81C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="t">Tally</span></button>
   <div class="right"><nav class="tabs" aria-label="Sections">
@@ -1574,7 +1648,7 @@ function itemRow(c,k,i,it){
   const late=it.d&&it.d<TODAY&&it.e==null&&!it.opt;
   const due=it.d?'<div class="due'+(late?' late':'')+'" data-due="1">'+(it.dl?esc(it.dl)+' · ':'')+(late?'past due · ':'')+fd(it.d)+'</div>':(it.dl?'<div class="due">'+esc(it.dl)+'</div>':'');
   const cat=c.cats[k]; let flag='';
-  if(editing&&!c.pooled){
+  if(!c.pooled&&(editing||cat.rp||cat.rule==='swap')){
     if(cat.rule==='swap') flag='<button type="button" class="mini'+(it.opt?' on':'')+'" data-act="optflag" '+base+'>Optional</button>';
     else if((cat.rule==='avg'||cat.rule==='sum')&&cat.rp) flag='<button type="button" class="mini'+(it.rp?' on':'')+'" data-act="rp" '+base+'>Replaces lowest</button>';
   }
@@ -1583,7 +1657,7 @@ function itemRow(c,k,i,it){
     +'<input type="number" step="any" inputmode="decimal" data-f="e" '+base+' value="'+(it.e==null?'':it.e)+'" placeholder="earned" aria-label="Points earned">'
     +'<input type="number" step="any" inputmode="decimal" data-f="p" '+base+' value="'+(it.p==null?'':it.p)+'" placeholder="out of" aria-label="Points possible">'
     +'<input type="number" step="any" inputmode="decimal" data-f="w" '+base+' value="'+(it.w==null?'':it.w)+'" placeholder="what-if" aria-label="What-if score (replaces earned)">'
-    +'<span class="rpct" data-k="'+k+'" data-i="'+i+'">–</span>'
+    +'<button type="button" class="rpct" data-act="wiopen" '+base+' title="Try a what-if for this item">–</button>'
     +'<button class="x" data-act="del" '+base+' aria-label="Remove item" title="Remove">×</button></div>';
 }
 function needHtml(c){
@@ -1871,7 +1945,8 @@ function courseView(c){
     const rt=c.pooled?'':ruleText(k);
     const ttl=editing?'<input type="text" class="catname" data-f="catname" data-c="'+c.id+'" data-k="'+ki+'" value="'+esc(k.name)+'" aria-label="Category name">':esc(k.name);
     return '<section class="card cat"><div class="cathead"><h3>'+ttl+'</h3><div class="catmeta">'+meta+'<span class="cpct" data-k="'+ki+'">–</span></div></div>'
-      +(editing?catEdit(c,k,ki):'')
+      +((editing||openCats.has(c.id+':'+ki))?catEdit(c,k,ki):'')
+      +(c.pooled?'':quickRule(c,k,ki))
       +((rt||(editing&&!c.pooled))?'<div class="rule" data-rl="'+ki+'">'+rt+'</div>':'')
       +'<div class="grid h"><div>Item</div><div>Earned</div><div>Out of</div><div>What-if</div><div style="text-align:center">Score</div><div></div></div>'
       +k.items.map((it,ii)=>itemRow(c,ki,ii,it)).join('')
@@ -1890,9 +1965,9 @@ function courseView(c){
     +(editing?editPanel(c):'')+notes+'</div>';
   return '<div class="cpage" style="--c:'+COLORS[c.id]+';--fg:'+TILE[c.id]+'"><div class="cpbar"><div class="cpl"><button class="back" data-act="go" data-v="home">← All classes</button><button type="button" class="editlink'+(editing?' on':'')+'" data-act="edit" data-c="'+c.id+'">'+(editing?'Done editing':'✎ Edit')+'</button></div>'+cc+'</div>'
     +'<section class="cband"><header class="chead"><div><h1>'+esc(c.name)+'</h1><p>'+esc(subOf(c))+'</p></div>'
-    +'<div class="chctl"><label class="fld">Credits <input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="–"></label></div></header>'
+    +'<div class="chctl"><button type="button" class="wibtn" data-act="wiopen" data-c="'+c.id+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/></svg>Try a what-if</button><label class="fld">Credits <input type="number" step="0.5" min="0" inputmode="decimal" data-f="credits" data-c="'+c.id+'" value="'+(c.credits==null?'':c.credits)+'" placeholder="–"></label></div></header>'
     +'<div id="sum"></div></section>'
-    +(editing?editPanel(c):'')+ec+wn+cats+(editing?'<div class="addrow" style="padding:18px 0 0"><button class="btn" data-act="addcat" data-c="'+c.id+'">＋ Add category</button></div>':'')
+    +(editing?editPanel(c):'')+wn+cats+'<button type="button" class="addsec" data-act="secnew" data-c="'+c.id+'"><span>＋</span> Add a section<small>Homework, labs, exams, participation…</small></button>'+ec
     +'<section class="card csum" id="projcard"><h2 class="projh">Projected final</h2><div id="projsum"></div>'
     +'<div class="fillbox"><label for="fill"><span>Assume the rest of your work scores</span><b id="fillv">'+c.fill+'%</b></label>'
     +'<input type="range" id="fill" min="0" max="110" step="1" value="'+c.fill+'" data-f="fill" data-c="'+c.id+'"></div>'
@@ -2124,6 +2199,7 @@ document.addEventListener('input',function(ev){
   else if(f==='catn'){ c.cats[+t.dataset.k].n=Math.max(1,Math.floor(num(t.value)||1)); }
   else if(f==='catcap'){ const v=num(t.value); c.cats[+t.dataset.k].cap=(v>0?v/100:0.8); }
   else if(f==='catrp'){ c.cats[+t.dataset.k].rp=t.checked; save(); render(true); return; }
+  else if(f==='qdrop'){ c.cats[+t.dataset.k].drop=t.checked?1:0; save(); render(true); return; }
   else if(f==='basecr'||f==='basegpa'){ W.base=W.base||{cr:null,gpa:null}; W.base[f==='basecr'?'cr':'gpa']=num(t.value); refreshPrior(); }
   else if(f==='nogpa'){ c.noGpa=!t.checked; save(); render(true); return; }
   else if(f==='nograde'){ c.noGrades=!t.checked; save(); render(true); return; }
@@ -2303,6 +2379,71 @@ function newClassModal(){
     });
   const g=document.getElementById('ncGpa'), tr=document.getElementById('ncTrack');
   if(g&&tr) g.addEventListener('change',function(){ tr.style.display=g.checked?'none':''; });
+}
+/* ---------- what-if popup ---------- */
+function wiOpen(c,ki,ii){
+  const list=[]; c.cats.forEach((k,a)=>k.items.forEach((it,b)=>list.push({a:a,b:b,k:k,it:it})));
+  if(!list.length){ alert('Add an item to this class first.'); return; }
+  let cur=list.find(x=>x.a===ki&&x.b===ii)||list.find(x=>x.it.e==null&&!x.it.opt)||list[0];
+  const ov=document.createElement('div'); ov.className='wio'; ov.style.setProperty('--c',COLORS[c.id]); ov.style.setProperty('--fg',TILE[c.id]);
+  ov.innerHTML='<div class="wic" role="dialog" aria-modal="true" aria-label="What-if"><div class="wih"><div><b>'+esc(c.name)+'</b><small>What-if final grade</small></div><button type="button" class="wix" data-w="x" aria-label="Close">×</button></div>'
+    +'<div class="wig"><span class="wiL"></span><span class="wiP"></span><span class="wiD"></span></div>'
+    +'<label class="wisel"><span>Item</span><select>'+list.map((x,j)=>'<option value="'+j+'">'+esc(x.k.name)+' · '+esc(x.it.n||'Item')+(x.it.e!=null?' (graded)':'')+'</option>').join('')+'</select></label>'
+    +'<div class="wir"><span>Score</span><b class="wiV"></b></div><input type="range" class="wiR"><div class="witk"><span>0</span><span class="wimid"></span><span class="wimax"></span></div>'
+    +'<div class="wiq"></div>'
+    +'<div class="wia"><button type="button" class="wbtn ghost" data-w="clear">Clear what-if</button><button type="button" class="wbtn" data-w="keep">Keep it</button></div></div>';
+  document.body.appendChild(ov); requestAnimationFrame(function(){ ov.classList.add('open'); });
+  const sel=ov.querySelector('select'), R=ov.querySelector('.wiR'), L=ov.querySelector('.wiL'), P=ov.querySelector('.wiP'), D=ov.querySelector('.wiD'), V=ov.querySelector('.wiV'), Q=ov.querySelector('.wiq');
+  sel.value=String(list.indexOf(cur));
+  const baseRes=()=>courseRes(c,'whatif').pct;
+  function setItem(){
+    const p=cur.it.p||100, st=p>=40?1:0.5; R.min=0; R.max=p; R.step=st;
+    const v0=cur.it.w!=null?cur.it.w:(cur.it.e!=null?cur.it.e:Math.round(p*0.85/st)*st); R.value=v0;
+    ov.querySelector('.wimid').textContent=trim((p/2).toFixed(1)); ov.querySelector('.wimax').textContent=trim(p.toFixed(1));
+    Q.innerHTML=[1,.9,.8,.7].map(f=>'<button type="button" data-w="q" data-v="'+(p*f)+'">'+Math.round(f*100)+'%</button>').join('');
+    upd();
+  }
+  let lastL='';
+  function upd(){
+    const v=+R.value, p=cur.it.p||100, prev=cur.it.w;
+    const before=baseRes(); cur.it.w=v; const r=courseRes(c,'whatif'); cur.it.w=prev;
+    V.textContent=trim(v.toFixed(1))+' / '+trim(p.toFixed(1))+'  ·  '+Math.round(v/p*100)+'%';
+    const nl=letterOf(c,r.pct); if(nl!==lastL){ L.textContent=nl; L.classList.remove('bump'); void L.offsetWidth; L.classList.add('bump'); lastL=nl; }
+    P.textContent=pctS(r.pct);
+    const d=(r.pct!=null&&before!=null)?r.pct-before:0; D.textContent=Math.abs(d)<0.05?'':(d>0?'+':'−')+Math.abs(d).toFixed(1)+' vs now'; D.className='wiD'+(d>0.05?' up':d<-0.05?' dn':'');
+    R.style.setProperty('--v',(v/p*100)+'%');
+  }
+  function close(){ ov.classList.remove('open'); document.removeEventListener('keydown',kd,true); setTimeout(function(){ ov.remove(); },260); }
+  const kd=function(e){ if(e.key==='Escape'){ e.stopPropagation(); close(); } };
+  document.addEventListener('keydown',kd,true);
+  sel.addEventListener('change',function(){ cur=list[+sel.value]; setItem(); });
+  R.addEventListener('input',upd);
+  ov.addEventListener('click',function(e){
+    if(e.target===ov){ close(); return; }
+    const b=e.target.closest('[data-w]'); if(!b) return; const w=b.dataset.w;
+    if(w==='x') close();
+    else if(w==='q'){ R.value=b.dataset.v; upd(); }
+    else if(w==='keep'){ cur.it.w=+R.value; save(); close(); render(true); }
+    else if(w==='clear'){ cur.it.w=null; save(); close(); render(true); }
+  });
+  setItem(); setTimeout(function(){ R.focus({preventScroll:true}); },200);
+}
+function secModal(c){
+  openModal('Add a section',
+    '<label class="f">Section name<input type="text" name="n" placeholder="e.g. Labs, Quizzes, Participation" required></label>'
+    +'<div class="two"><label class="f">'+(c.pooled?'Points each':'Weight (%)')+'<input type="number" name="w" step="any" min="0" value="'+(c.pooled?100:Math.max(0,Math.round(100-c.cats.reduce((t,k)=>t+(k.w||0),0))))+'"></label><label class="f">How many items<input type="number" name="cnt" min="0" max="40" step="1" value="3"></label></div>'
+    +(c.pooled?'':'<div class="two"><label class="f">Scoring<select name="r"><option value="avg">Average of scores</option><option value="sum">Total points</option><option value="best">Only the best N count</option></select></label><label class="f">Each item is out of<input type="number" name="p" step="any" min="0" value="100"></label></div>'
+    +'<label class="swrow"><span>Drop the lowest score</span><input type="checkbox" class="swi" name="drop"><i></i></label>'),
+    'Add section',function(v){
+      const n=(v.n||'').trim(); if(!n) return false;
+      const cnt=Math.max(0,Math.min(40,Math.floor(num(v.cnt)||0))), p=c.pooled?(num(v.w)||100):(num(v.p)||100), base=n.replace(/s$/i,'');
+      const items=[]; for(let i=1;i<=cnt;i++) items.push(I(base+' '+i,p));
+      const k={name:n,w:c.pooled?0:(num(v.w)||0),rule:c.pooled?'sum':(v.r||'avg'),items:items};
+      if(!c.pooled&&v.drop==='on'&&(k.rule==='avg'||k.rule==='sum')) k.drop=1;
+      if(k.rule==='best') k.n=Math.max(1,cnt-1);
+      c.cats.push(k); save(); render(true);
+      setTimeout(function(){ const all=document.querySelectorAll('.cat'); const el=all[all.length-1]; if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.classList.add('flash'); } },60);
+    });
 }
 /* ---------- calendar ---------- */
 const DAYN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MONN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], CAL_RH=100;
@@ -2585,6 +2726,19 @@ function meetsEdit(c){
     +'<button type="button" class="mdel" data-act="mdel" data-c="'+c.id+'" data-mi="'+i+'" aria-label="Remove this time" title="Remove">×</button></div>').join('');
   return '<div class="f meets"><span>Class times</span>'+rows+'<div><button type="button" class="btn sm" data-act="madd" data-c="'+c.id+'">＋ '+(c.meets.length?'Add another time':'Add a time')+'</button></div><span class="hint">Shows in the Calendar tab at the top.</span></div>';
 }
+let openCats=new Set();
+function quickRule(c,k,ki){
+  const r=k.rule||'avg', base='data-c="'+c.id+'" data-k="'+ki+'"', real=k.items.filter(i=>!i.opt).length;
+  const step=(act,val,lab)=>'<span class="qstep"><button type="button" data-act="'+act+'" '+base+' data-d="-1" aria-label="Fewer">−</button><b>'+val+'</b><button type="button" data-act="'+act+'" '+base+' data-d="1" aria-label="More">+</button></span>'+(lab?'<span class="qlab">'+lab+'</span>':'');
+  let main='';
+  if(r==='avg'||r==='sum') main='<label class="qsw"><input type="checkbox" class="swi" data-f="qdrop" '+base+(k.drop>0?' checked':'')+'><i></i><span>Drop lowest</span></label>'+(k.drop>0?step('qdropn',k.drop,k.drop===1?'score':'scores'):'')
+    +'<label class="qsw"><input type="checkbox" class="swi" data-f="catrp" '+base+(k.rp?' checked':'')+'><i></i><span>Final replaces lowest</span></label>';
+  else if(r==='best') main='<span class="qlab strong">Count the best</span>'+step('qbestn',k.n||real,'of '+real);
+  else if(r==='cap') main='<span class="qlab strong">Capped at '+Math.round((k.cap||0.8)*100)+'% of points</span>';
+  else if(r==='swap') main='<span class="qlab strong">Optional items replace your lowest</span>';
+  const open=editing||openCats.has(c.id+':'+ki);
+  return '<div class="qrule">'+main+(editing?'':'<button type="button" class="qmore'+(open?' on':'')+'" data-act="catopts" '+base+'>'+(open?'Done':'More scoring options')+'</button>')+'</div>';
+}
 function catEdit(c,k,ki){
   const base='data-c="'+c.id+'" data-k="'+ki+'"', r=k.rule||'avg';
   const del='<button type="button" class="btn danger sm" data-act="delcat" '+base+'>Delete category</button>';
@@ -2647,6 +2801,11 @@ document.addEventListener('click',function(ev){
   if(a==='calday'){ calDay=b.dataset.d; calRedraw(); return; }
   if(a==='calwk'){ const w=b.dataset.w; if(w==='prev'){ calWk=addD(calWk,-7); if(calDay) calDay=addD(calDay,-7); } else if(w==='next'){ calWk=addD(calWk,7); if(calDay) calDay=addD(calDay,7); } else if(w==='today'){ calWk=null; calDay=null; } else { calWk=w; calDay=null; } calRedraw(); return; }
   if(a==='evnew'){ const r=b.getBoundingClientRect(), mins=Math.round((((ev.clientY-r.top)/r.height)*(+b.dataset.hrs)*60+(+b.dataset.h0)*60)/30)*30; evModal({date:b.dataset.date,st:minT(mins),en:minT(mins+60)}); return; }
+  if(a==='wiopen'){ const c=getC(b.dataset.c); if(c) wiOpen(c,b.dataset.k!=null?+b.dataset.k:-1,b.dataset.i!=null?+b.dataset.i:-1); return; }
+  if(a==='secnew'){ const c=getC(b.dataset.c); if(c) secModal(c); return; }
+  if(a==='catopts'){ const key=b.dataset.c+':'+b.dataset.k; if(openCats.has(key)) openCats.delete(key); else openCats.add(key); render(true); return; }
+  if(a==='qdropn'||a==='qbestn'){ const c=getC(b.dataset.c), k=c&&c.cats[+b.dataset.k]; if(!k) return; const real=k.items.filter(i=>!i.opt).length, d=+b.dataset.d;
+    if(a==='qdropn') k.drop=Math.max(1,Math.min(Math.max(1,real-1),(k.drop||1)+d)); else k.n=Math.max(1,Math.min(real,(k.n||real)+d)); save(); render(true); return; }
   if(a==='tourplay'){ tourOpen(); return; }
   if(a==='setupplay'){ setupOpen(); return; }
   if(a==='setupai'){ setupOpen('ai'); return; }
