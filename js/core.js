@@ -486,7 +486,7 @@ function itemRow(c,k,i,it){
     else if((cat.rule==='avg'||cat.rule==='sum')&&cat.rp) flag='<button type="button" class="mini'+(it.rp?' on':'')+'" data-act="rp" '+base+'>Replaces lowest</button>';
   }
   return '<div class="grid" data-r="'+k+'-'+i+'">'
-    +'<div class="it"><input type="text" data-f="n" '+base+' value="'+esc(it.n)+'" aria-label="Item name">'+due+'<div class="tag" data-tag></div>'+flag+(c.cats.length>1?'<button type="button" class="mvb" draggable="true" data-act="mvopen" '+base+' aria-label="Move to another section" title="Move to another section. Drag it onto a section, or click.">'+ICON_MOVE+'</button>':'')+'</div>'
+    +'<div class="it"><input type="text" data-f="n" '+base+' value="'+esc(it.n)+'" aria-label="Item name">'+due+'<div class="tag" data-tag></div>'+flag+(c.cats.length>1?'<button type="button" class="mvb" data-act="mvopen" '+base+' aria-label="Move to another section" title="Drag to reorder or move to another section. Click for a menu.">'+ICON_MOVE+'</button>':'')+'</div>'
     +'<input type="number" step="any" inputmode="decimal" data-f="e" '+base+' value="'+(it.e==null?'':it.e)+'" placeholder="earned" aria-label="Points earned">'
     +'<input type="number" step="any" inputmode="decimal" data-f="p" '+base+' value="'+(it.p==null?'':it.p)+'" placeholder="out of" aria-label="Points possible">'
     +'<input type="number" step="any" inputmode="decimal" data-f="w" '+base+' value="'+(it.w==null?'':it.w)+'" placeholder="what-if" aria-label="What-if score (replaces earned)">'

@@ -613,7 +613,7 @@ document.addEventListener('click',function(ev){
     if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(AI_PROMPT).then(done,function(){ ta.select(); document.execCommand('copy'); done(); });
     else { ta.select(); document.execCommand('copy'); done(); }
   }
-  else if(a==='mvopen'){ mvOpen(c,+b.dataset.k,+b.dataset.i,b); }
+  else if(a==='mvopen'){ if(mvSup) return; mvOpen(c,+b.dataset.k,+b.dataset.i,b); }
   else if(a==='del'){ const it=c.cats[+b.dataset.k].items[+b.dataset.i]; doDel('Removed “'+(it&&it.n||'item')+'”',function(){ c.cats[+b.dataset.k].items.splice(+b.dataset.i,1); save(); render(true); }); }
   else if(a==='download'){
     const json=JSON.stringify(W,null,2), name='tally-'+TODAY+'.json';
@@ -673,28 +673,53 @@ document.addEventListener('keydown',function(ev){
   if(ev.key==='Escape'){ ev.preventDefault(); mvClose(); }
   else if(ev.key==='ArrowDown'||ev.key==='ArrowUp'){ ev.preventDefault(); const bs=[].slice.call(mvEl.querySelectorAll('button')), n=bs.indexOf(document.activeElement); bs[(n+(ev.key==='ArrowDown'?1:-1)+bs.length)%bs.length].focus(); }
 },true);
-/* drag the handle onto another section */
-let mvDrag=null;
-document.addEventListener('dragstart',function(ev){
-  const b=ev.target.closest&&ev.target.closest('.mvb'); if(!b){ return; }
-  mvDrag={c:b.dataset.c,k:+b.dataset.k,i:+b.dataset.i}; mvClose();
-  try{ ev.dataTransfer.effectAllowed='move'; ev.dataTransfer.setData('text/plain','tally-item'); const row=b.closest('.grid'); if(row) ev.dataTransfer.setDragImage(row,20,18); }catch(e){}
-  const row=b.closest('.grid'); if(row) setTimeout(function(){ row.classList.add('mvdrag'); },0);
-  document.body.classList.add('mvdragging');
+/* drag a row up/down (and between sections) with the handle: pointer based, so it also works on touch */
+let mvPd=null, mvSup=false, mvTimer=null;
+function mvClear(){ document.querySelectorAll('.mvover,.mvdrag,.mvbefore,.mvafter').forEach(function(x){ x.classList.remove('mvover','mvdrag','mvbefore','mvafter'); }); }
+function mvTarget(x,y){
+  const el=document.elementFromPoint(x,y); if(!el) return null;
+  const sec=el.closest('section.cat'); if(!sec) return null;
+  const secs=[].slice.call(document.querySelectorAll('section.cat')), to=secs.indexOf(sec);
+  const row=el.closest('.grid:not(.h)'); let at=null, after=false;
+  if(row&&row.dataset.r){ const r=row.getBoundingClientRect(); after=y>r.top+r.height/2; at=+row.dataset.r.split('-')[1]+(after?1:0); }
+  return {sec:sec,to:to,row:row,at:at,after:after};
+}
+function mvEnd(){
+  clearInterval(mvTimer); mvTimer=null;
+  if(mvPd){ if(mvPd.ghost) mvPd.ghost.remove(); try{ mvPd.b.releasePointerCapture(mvPd.pid); }catch(e){} }
+  document.body.classList.remove('mvdragging'); mvClear(); mvPd=null;
+}
+document.addEventListener('pointerdown',function(ev){
+  const b=ev.target.closest&&ev.target.closest('.mvb'); if(!b||(ev.button&&ev.button>0)) return;
+  mvPd={b:b,x:ev.clientX,y:ev.clientY,on:false,c:b.dataset.c,k:+b.dataset.k,i:+b.dataset.i,row:b.closest('.grid'),pid:ev.pointerId,lx:ev.clientX,ly:ev.clientY};
 });
-document.addEventListener('dragover',function(ev){
-  if(!mvDrag) return; const sec=ev.target.closest&&ev.target.closest('section.cat'); if(!sec) return;
-  ev.preventDefault(); try{ ev.dataTransfer.dropEffect='move'; }catch(e){}
-  document.querySelectorAll('section.cat.mvover').forEach(function(x){ if(x!==sec) x.classList.remove('mvover'); }); sec.classList.add('mvover');
-  document.querySelectorAll('.mvbefore,.mvafter').forEach(function(x){ x.classList.remove('mvbefore','mvafter'); });
-  const row=ev.target.closest('.grid:not(.h)'); if(row){ const r=row.getBoundingClientRect(); row.classList.add(ev.clientY>r.top+r.height/2?'mvafter':'mvbefore'); }
+document.addEventListener('pointermove',function(ev){
+  const d=mvPd; if(!d) return;
+  d.lx=ev.clientX; d.ly=ev.clientY;
+  if(!d.on){
+    if(Math.hypot(ev.clientX-d.x,ev.clientY-d.y)<5) return;
+    d.on=true; mvClose();
+    const r=d.row.getBoundingClientRect(); d.off=d.y-r.top;
+    const g=d.row.cloneNode(true); g.className='grid mvghost'; g.style.width=r.width+'px'; g.style.left=r.left+'px'; document.body.appendChild(g); d.ghost=g;
+    d.row.classList.add('mvdrag'); document.body.classList.add('mvdragging');
+    try{ d.b.setPointerCapture(d.pid); }catch(e){}
+    mvTimer=setInterval(function(){ if(!mvPd) return; if(mvPd.ly<90) scrollBy(0,-14); else if(mvPd.ly>innerHeight-90) scrollBy(0,14); mvMark(); },30);
+  }
+  ev.preventDefault(); mvMark();
 });
-function mvEnd(){ mvDrag=null; document.body.classList.remove('mvdragging'); document.querySelectorAll('.mvover,.mvdrag,.mvbefore,.mvafter').forEach(function(x){ x.classList.remove('mvover','mvdrag','mvbefore','mvafter'); }); }
-document.addEventListener('dragend',mvEnd);
-document.addEventListener('drop',function(ev){
-  if(!mvDrag) return; const sec=ev.target.closest&&ev.target.closest('section.cat'); if(!sec){ mvEnd(); return; }
-  ev.preventDefault(); const d=mvDrag, secs=[].slice.call(document.querySelectorAll('section.cat')), to=secs.indexOf(sec);
-  let at=null; const row=ev.target.closest('.grid:not(.h)'); if(row&&row.dataset.r){ const r=row.getBoundingClientRect(), ri=+row.dataset.r.split('-')[1]; at=ri+(ev.clientY>r.top+r.height/2?1:0); }
-  mvEnd();
-  const c=S.courses.find(function(x){ return x.id===d.c; }); if(c&&to>=0) mvDo(c,d.k,d.i,to,at);
+function mvMark(){
+  const d=mvPd; if(!d||!d.on) return;
+  d.ghost.style.top=(d.ly-d.off)+'px';
+  document.querySelectorAll('.mvover,.mvbefore,.mvafter').forEach(function(x){ x.classList.remove('mvover','mvbefore','mvafter'); });
+  const t=mvTarget(d.lx,d.ly); if(!t) return;
+  t.sec.classList.add('mvover'); if(t.row&&t.row!==d.row) t.row.classList.add(t.after?'mvafter':'mvbefore');
+}
+document.addEventListener('pointerup',function(ev){
+  const d=mvPd; if(!d) return;
+  if(!d.on){ mvPd=null; return; }
+  const t=mvTarget(ev.clientX,ev.clientY); const c=S.courses.find(function(x){ return x.id===d.c; });
+  mvSup=true; setTimeout(function(){ mvSup=false; },80);
+  mvEnd(); if(t&&c) mvDo(c,d.k,d.i,t.to,t.at);
 });
+document.addEventListener('pointercancel',function(){ if(mvPd) mvEnd(); });
+document.addEventListener('keydown',function(ev){ if(ev.key==='Escape'&&mvPd&&mvPd.on) mvEnd(); },true);
