@@ -165,7 +165,7 @@ function loadMerged(saved){
 }
 const uid=()=>'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const subOf=c=>[c.code,c.prof].filter(Boolean).join(' · ');
-function normItem(it){ return {n:String(it.n==null?'':it.n),p:(typeof it.p==='number'?it.p:100),e:(typeof it.e==='number'?it.e:null),w:(typeof it.w==='number'?it.w:null),d:it.d||null,dl:it.dl||'',opt:!!it.opt,rp:!!it.rp}; }
+function normItem(it){ return {n:String(it.n==null?'':it.n),p:(typeof it.p==='number'?it.p:100),e:(typeof it.e==='number'?it.e:null),w:(typeof it.w==='number'?it.w:null),d:it.d||null,dl:it.dl||'',opt:!!it.opt,rp:!!it.rp,cid:it.cid?String(it.cid):undefined,cn:it.cn!=null?String(it.cn):undefined,cs:(typeof it.cs==='number')?it.cs:undefined}; }
 const DM={su:0,mo:1,tu:2,we:3,th:4,fr:5,sa:6,m:1,w:3,f:5,r:4};
 function normT(x){ const m=String(x==null?'':x).trim().match(/^(\d{1,2})(?::?(\d{2}))?\s*(am|pm)?$/i); if(!m) return ''; let h=+m[1]; const mi=+(m[2]||0), ap=(m[3]||'').toLowerCase(); if(ap==='pm'&&h<12) h+=12; if(ap==='am'&&h===12) h=0; if(h>23||mi>59) return ''; return String(h).padStart(2,'0')+':'+String(mi).padStart(2,'0'); }
 function normMeet(m){
@@ -285,10 +285,10 @@ function catPlan(cat,mode,fill){
       const rps=L.filter(x=>x.rp).sort((a,b)=>b.r-a.r||a.i-b.i), low=L.filter(x=>!x.rp).sort((a,b)=>a.r-b.r||a.i-b.i); let bi=0;
       rps.forEach(x=>{ if(bi<low.length&&x.r>low[bi].r){ st[low[bi].i]={s:'drop',by:x.i}; st[x.i]={s:'use',for:low[bi].i}; low[bi].r=x.r; bi++; } });
     }
-    const real=cat.items.filter(it=>!it.opt).length;
+    const real=cat.items.filter(it=>!it.opt).length, scoredReal=L.filter(x=>!x.opt).length;
     let keep=Infinity;
     if(rule==='best') keep=cat.n||real;
-    else if((rule==='avg'||rule==='sum')&&cat.drop>0) keep=Math.max(1,real-cat.drop);
+    else if((rule==='avg'||rule==='sum')&&cat.drop>0) keep=Math.max(1,scoredReal-cat.drop);
     if(cnt.length>keep){
       const order=cnt.slice().sort((a,b)=>b.r-a.r||a.i-b.i), kept=new Set(order.slice(0,keep).map(x=>x.i));
       cnt.forEach(x=>{ if(!kept.has(x.i)) st[x.i]={s:'drop'}; });
@@ -513,7 +513,7 @@ function needHtml(c){
 }
 function backupHtml(skipAi){
   return syncHtml()+'<details><summary>Backup and reset</summary>'
-    +'<div class="replayrow"><button type="button" class="btn" data-act="setupai">✦ Set up classes with AI</button><button type="button" class="btn" data-act="tourplay">▶ Replay demo</button><button type="button" class="btn" data-act="setupplay">↺ Replay setup</button></div>'
+    +'<div class="replayrow"><button type="button" class="btn" data-act="setupcanvas">▦ Import from Canvas</button><button type="button" class="btn" data-act="setupai">✦ Set up classes with AI</button><button type="button" class="btn" data-act="tourplay">▶ Replay demo</button><button type="button" class="btn" data-act="setupplay">↺ Replay setup</button></div>'
     +'<p class="sub">Everything saves on this device automatically. To move to another phone or computer, tap <b>Save backup</b>, send the file to yourself (AirDrop, Messages, email, Files), then tap <b>Restore from file</b> on the other device.</p>'
     +'<div class="addrow" style="padding-left:0"><button class="btn pri" data-act="download">Save backup</button>'
     +'<label class="btn" style="cursor:pointer">Restore from file<input type="file" id="bkfile" accept=".json,application/json" hidden></label>'

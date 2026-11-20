@@ -39,7 +39,7 @@
   if(h&&(h==='cal'||getC(h))) view=h;
   render();
   if(syncCfg()) syncNow();
-  try{ if(localStorage.getItem(TOUR_KEY)!=='1') setTimeout(function(){ if(!tourEl) tourOpen(); },600); }catch(e){}
+  try{ if(localStorage.getItem(TOUR_KEY)!=='1'&&location.hash!=='#canvas') setTimeout(function(){ if(!tourEl) tourOpen(); },600); }catch(e){}
   try{ if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')) navigator.serviceWorker.register('sw.js'); }catch(e){}
   try{
     const sc=JSON.parse(sessionStorage.getItem('gt-scroll')||'null');

@@ -57,6 +57,14 @@ T('drop lowest and highest together', () => {
   const c = course({ cats: [cat('Q', 100, 'avg', items(100, 80, 60, 40), { drop: 1, dropHi: 1 })] });
   near(pct(c), 70);
 });
+T('drop lowest works on the scores you have so far, like Canvas does', () => {
+  const c = course({ cats: [cat('Q', 100, 'avg', items(90, 60, null, null), { drop: 1 })] });
+  near(pct(c), 90);
+});
+T('drop lowest never drops your only score', () => {
+  const c = course({ cats: [cat('Q', 100, 'avg', items(60, null, null), { drop: 2 })] });
+  near(pct(c), 60);
+});
 T('best N of M keeps only the top scores', () => {
   const c = course({ cats: [cat('HW', 100, 'best', [{ n: 'a', p: 10, e: 10 }, { n: 'b', p: 10, e: 5 }, { n: 'c', p: 10, e: 9 }], { n: 2 })] });
   near(pct(c), 95);

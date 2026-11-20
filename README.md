@@ -22,6 +22,16 @@ It's an installable web app that also works offline.
 - **Android:** Chrome, then **Install app**.
 - **Mac or PC:** Chrome or Edge show an install icon in the address bar.
 
+## Connect Canvas
+
+No token and no school permission needed. It works the way browser extensions like Better Campus do: it reads your own signed-in Canvas page.
+
+1. Open **Backup and reset** (or the setup screen) and choose **Import from Canvas**.
+2. Drag the orange **Send Canvas to Tally** button into your bookmarks bar.
+3. Open your school's Canvas on a computer, sign in, and click the bookmark. Tally opens in a new tab.
+
+Tally builds a class for each Canvas course, a section for each assignment group (with its weight and drop-lowest rules), and fills in every grade that is already posted. Click the bookmark again any time. New assignments go into the matching section, new grades fill in, and your own what-ifs, curves and renames are kept. Everything is processed in your browser. Nothing is sent to any server.
+
 ## Move to another device
 
 The simple way: open **Backup and reset**, tap **Save backup** (on a phone this opens the share sheet), send the file to yourself, then tap **Restore from file** on the other device.
@@ -45,10 +55,12 @@ Your data lives in this browser on this device. Use **Save backup** now and then
 - `index.html`: the page shell.
 - `styles.css`: all styles.
 - `js/core.js`: grade scales, data shape and the grade engine (no screen code).
+- `js/canvas.js`: the Canvas reader (it becomes the bookmark) and the smart merge. No screen code.
+- `js/canvasui.js`: the Canvas screens.
 - `js/ui.js`: saving, home screen, sync, events, dialogs.
 - `js/features.js`: trends, undo, what-if popup, calendar, class editing, themes.
 - `js/tour.js`: first-run tour and setup.
 - `js/main.js`: privacy toggle and startup.
-- `tests/engine.test.js`: grade-math tests. Run `node tests/engine.test.js` (needs Node, nothing to install).
+- `tests/engine.test.js`, `tests/canvas.test.js`: grade-math and Canvas-import tests. Run `node tests/engine.test.js` and `node tests/canvas.test.js` (needs Node, nothing to install).
 
 Deleting a class, semester, section, item, event or day off shows a 10-second **Undo**.

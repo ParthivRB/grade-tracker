@@ -599,7 +599,7 @@ function addSem(name,copy){
   const sm={id:uid(),name:name,done:false,start:'',end:'',events:[],off:[],courses:[],gpaPick:{}};
   if(copy) sm.courses=S.courses.map(function(c){
     const n=JSON.parse(JSON.stringify(c)); n.id=uid(); n.color=ACC.cls[c.id]||c.color; delete n.cuts; if(c.cuts) n.cuts=c.cuts.map(r=>r.slice());
-    n.cats.forEach(k=>k.items.forEach(it=>{ it.e=null; it.w=null; it.d=null; it.dl=''; }));
+    delete n.cv; n.cats.forEach(k=>{ delete k.cid; delete k.cw; delete k.cdrop; delete k.cdrophi; k.items.forEach(it=>{ it.e=null; it.w=null; it.d=null; it.dl=''; delete it.cid; delete it.cn; delete it.cs; }); });
     n.ec=ecShape({label:c.ec.label,max:c.ec.max,mu:c.ec.mu}); return n;
   });
   W.sems.push(sm); setActive(sm.id); syncColors();

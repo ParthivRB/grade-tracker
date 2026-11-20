@@ -26,6 +26,11 @@ const TOUR=[
      +'<div class="mk m1" style="--c:#7B5CFF;--fg:#fff"><b>Neuroscience</b><small>NROSCI 1000</small><span class="mL">A</span><em>94.2%</em><div class="mkbar"><i style="--w:72%"></i></div></div>'
      +'<div class="mk m2" style="--c:#19C3A5;--fg:#052A24"><b>Organic Chemistry</b><small>CHEM 0310</small><span class="mL">B+</span><em>88.1%</em><div class="mkbar"><i style="--w:55%"></i></div></div>'
      +'<div class="mk m3" style="--c:#FFC233;--fg:#33240A"><b>Statistics</b><small>STAT 1100</small><span class="mL">A-</span><em>91.0%</em><div class="mkbar"><i style="--w:64%"></i></div></div></div>'},
+  {k:'Canvas',t:'Connect Canvas. Classes build themselves.',b:'Click one bookmark on your Canvas page. Tally creates every class and section with the right weights, fills in grades that are already posted, and slots each new grade into the right section.',
+   s:'<div class="st st7"><div class="cvbr"><div class="cvbar"><span class="cvdots"><i></i><i></i><i></i></span><span class="cvurl">canvas.school.edu</span><span class="cvbm">⇩ Send to Tally</span></div>'
+     +'<div class="cvbody">'
+     +[['Neuroscience','#7B5CFF','#fff',[['Homework','30%',3],['Exams','70%',1]]],['Organic Chemistry','#19C3A5','#052A24',[['Labs','25%',4],['Quizzes','15%',5],['Exams','60%',2]]],['Statistics','#FFC233','#33240A',[['Homework','40%',3],['Final','60%',0]]]].map(function(c,i){ return '<div class="cvk" style="--c:'+c[1]+';--fg:'+c[2]+';--i:'+i+'"><b>'+c[0]+'</b><div class="cvsec">'+c[3].map(function(s,j){ return '<span class="cvch" style="--j:'+j+'">'+s[0]+' <em>'+s[1]+'</em>'+(s[2]?'<u>'+(i===0&&j===0?'<s>3</s><s class="n4">4</s>':s[2])+'</u>':'')+'</span>'; }).join('')+'</div></div>'; }).join('')
+     +'</div><div class="cvnew">HW 4 · 10/10</div></div></div>'},
   {k:'What-ifs',t:'See your grade before it happens.',b:'Drag the final exam score and watch the grade move. Every class has this, for every assignment.',
    s:'<div class="st st2"><div class="mk wide" style="--c:#4C92FF;--fg:#fff"><div class="mkh"><b>Organic Chemistry</b><small>What-if final grade</small></div>'
      +'<div class="mkg"><span class="mL" id="twL">B+</span><span class="mP" id="twP">87.9%</span></div>'
@@ -118,10 +123,12 @@ function setupOpen(start){
       +'<div class="stwo"><div class="sfl"><span>First day <em>optional</em></span>'+dateField('name="sStart"',S.start,'First day','Pick a date')+'</div><div class="sfl"><span>Last day <em>optional</em></span>'+dateField('name="sEnd"',S.end,'Last day','Pick a date')+'</div></div></div>'
       +'<div class="sact"><span></span><button type="button" class="btn pri" data-s="semnext">Continue</button></div>');
     else if(step==='how') h=card('<span class="tk">Step 2</span><h2>How do you want to add classes?</h2><p class="slead">You can mix and match later.</p><div class="sopts">'
-      +'<button type="button" class="sopt rec" data-s="pick" data-h="ai"><span class="soi" style="--c:#7B5CFF">✦</span><b>Use AI with your syllabi</b><small>Upload syllabi to ChatGPT or Claude. It builds every class, weight, rule and due date.</small><em>Recommended · fastest</em></button>'
+      +'<button type="button" class="sopt rec" data-s="pick" data-h="canvas"><span class="soi" style="--c:#E66000">▦</span><b>Connect Canvas</b><small>One click from your Canvas page builds every class and section and fills in the grades already posted.</small><em>Automatic · stays up to date</em></button>'
+      +'<button type="button" class="sopt" data-s="pick" data-h="ai"><span class="soi" style="--c:#7B5CFF">✦</span><b>Use AI with your syllabi</b><small>Upload syllabi to ChatGPT or Claude. It builds every class, weight, rule and due date.</small></button>'
       +'<button type="button" class="sopt" data-s="pick" data-h="manual"><span class="soi" style="--c:#19C3A5">＋</span><b>Add them myself</b><small>Type in class names and credits. Add categories and scores later.</small></button>'
       +'<button type="button" class="sopt" data-s="pick" data-h="sample"><span class="soi" style="--c:#FFC233">◎</span><b>Try a sample semester</b><small>Explore with made-up classes first. Delete it anytime.</small></button></div>'
       +'<div class="sact"><button type="button" class="btn" data-s="back" data-to="sem">Back</button><span></span></div>');
+    else if(step==='canvas') h=card(canvasStepHtml()+'<div class="sact"><button type="button" class="btn" data-s="back" data-to="how">Back</button><span></span></div>');
     else if(step==='ai') h=card('<span class="tk">Step 3 · AI setup</span><h2>Let AI read your syllabi.</h2><p class="slead">Takes about a minute. Works with ChatGPT, Claude, or any chat that can make files.</p><ol class="ssteps">'
       +'<li><span class="sn">1</span><div><b>Copy the Tally prompt</b><small>It tells the AI exactly what file to make.</small></div><button type="button" class="btn pri sm" data-s="copy">Copy prompt</button></li>'
       +'<li><span class="sn">2</span><div><b>Open a chat and attach your syllabi</b><small>Paste the prompt, attach syllabi and any grades (PDFs, screenshots, Canvas exports).</small></div><div class="sbtns"><a class="btn sm" href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT ↗</a><a class="btn sm" href="https://claude.ai/new" target="_blank" rel="noopener">Claude ↗</a></div></li>'
@@ -136,6 +143,7 @@ function setupOpen(start){
       +'<button type="button" class="btn pri" data-s="close">Open Tally</button><small class="sfoot">Replay this anytime from Backup and reset at the bottom of the home page.</small></div>');
     body.innerHTML=h; const st=body.querySelector('.sstep'); requestAnimationFrame(function(){ st.classList.add('in'); });
     if(step==='ai') wireDrop();
+    if(step==='canvas') canvasStepWire(body);
     const f=body.querySelector('input[type=text]'); if(f&&step!=='done') setTimeout(function(){ f.focus({preventScroll:true}); },300);
   }
   function go(s){ const st=body.querySelector('.sstep'); if(st){ st.classList.add('out'); setTimeout(function(){ step=s; draw(); },180); } else { step=s; draw(); } }
@@ -154,6 +162,7 @@ function setupOpen(start){
     else if(a==='back') go(b.dataset.to);
     else if(a==='semnext'){ const n=(body.querySelector('#sName').value||'').trim(); if(n) S.name=n; const s1=body.querySelector('input[name=sStart]').value, s2=body.querySelector('input[name=sEnd]').value; S.start=s1||''; S.end=s2||''; if(S.start&&S.end&&S.end<S.start){ const x=S.start; S.start=S.end; S.end=x; } save(); render(true); go('how'); }
     else if(a==='pick'){ const h=b.dataset.h; if(h==='sample'){ const before=courseCount(); mergeSimple(sampleSemester()); added=courseCount()-before; how='sample'; go('done'); } else go(h); }
+    else if(a==='cvcopy'){ canvasCopyBookmark(b); }
     else if(a==='copy'){ const done=function(){ b.textContent='Copied ✓'; b.classList.add('ok'); setTimeout(function(){ b.textContent='Copy prompt'; b.classList.remove('ok'); },2000); };
       if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(AI_PROMPT).then(done,function(){ fallbackCopy(AI_PROMPT); done(); }); else { fallbackCopy(AI_PROMPT); done(); } }
     else if(a==='addrow'){ rows.push({n:'',c:''}); const st=body.querySelector('.srows'); const j=rows.length-1; st.insertAdjacentHTML('beforeend','<div class="srow"><input type="text" data-r="'+j+'" data-k="n" placeholder="Class name" aria-label="Class name"><input type="number" step="0.5" min="0" inputmode="decimal" data-r="'+j+'" data-k="c" placeholder="Credits" aria-label="Credits"></div>'); st.lastElementChild.querySelector('input').focus(); }
