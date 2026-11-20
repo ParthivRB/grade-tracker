@@ -142,7 +142,7 @@ function canvasMerge(c,pc,host){
         return;
       }
       const it=at.it;
-      if(at.k!==k){ at.k.items.splice(at.i,1); k.items.push(it); st.upd++; }
+      if(at.k!==k&&!at.it.mv){ at.k.items.splice(at.i,1); k.items.push(it); st.upd++; }
       if(it.n===it.cn||it.cn===undefined) it.n=a.n;
       it.cn=a.n; it.cid=a.id;
       if(it.p!==a.p){ it.p=a.p; st.upd++; }

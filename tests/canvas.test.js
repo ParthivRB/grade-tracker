@@ -129,6 +129,12 @@ T('a score you typed yourself is never replaced by Canvas', async () => {
   ctx.__pc = p2.courses[0]; run("canvasMerge(__c,__pc,'canvas.example.edu')");
   is(ctx.__c.cats[0].items[2].e, 7);
 });
+T('an assignment you moved to another section stays there on the next sync', async () => {
+  const p1 = await payload(); ctx.__pc = p1.courses[0]; ctx.__c = newCourse(); run("canvasMerge(__c,__pc,'canvas.example.edu')");
+  const c = ctx.__c; const it = c.cats[0].items.shift(); it.mv = 1; c.cats[1].items.push(it);
+  const p2 = await payload(); ctx.__pc = p2.courses[0]; run("canvasMerge(__c,__pc,'canvas.example.edu')");
+  is(ctx.__c.cats[0].items.length, 2); is(ctx.__c.cats[1].items.some((x) => x.n === it.n), true);
+});
 T('a changed score is updated and counted', async () => {
   const p1 = await payload(); ctx.__pc = p1.courses[0]; ctx.__c = newCourse(); run("canvasMerge(__c,__pc,'canvas.example.edu')");
   const p2 = await payload((st) => { st.groups[101][1].assignments[0].submission = sub(95); });

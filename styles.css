@@ -1367,3 +1367,23 @@ button:focus-visible,a:focus-visible,summary:focus-visible,[role=button]:focus-v
 .cvprog.ok .cvpb u{background:var(--good)}
 .cvprog.bad .cvpb u{background:var(--warn);width:100%!important}
 @media (prefers-reduced-motion:reduce){.cvprog,.cvprog .cvpb u{transition:none}.cvprog.ind .cvpb u{animation:none}}
+
+/* move an item between sections */
+.grid .it{position:relative}
+.mvb{all:unset;box-sizing:border-box;display:inline-grid;place-items:center;width:26px;height:26px;margin-left:6px;border-radius:9px;color:var(--mut);cursor:grab;opacity:0;transition:opacity .15s,background-color .15s,color .15s;vertical-align:middle}
+.grid:hover .mvb,.grid:focus-within .mvb,.mvb:focus-visible,body.editing .mvb{opacity:.85}
+.mvb:hover{background:var(--soft);color:var(--ink);opacity:1}
+.mvb:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+@media (hover:none){.mvb{opacity:.6}}
+.grid.mvdrag{opacity:.35}
+section.cat{transition:box-shadow .15s,transform .15s}
+body.mvdragging section.cat{box-shadow:inset 0 0 0 1.5px var(--line)}
+section.cat.mvover{box-shadow:inset 0 0 0 2.5px var(--blue)!important;transform:scale(1.005)}
+.mvpop{position:fixed;z-index:320;width:260px;max-width:calc(100vw - 20px);background:var(--elev);border:1px solid var(--line);border-radius:20px;padding:10px;box-shadow:0 24px 70px -18px rgba(0,0,0,.6),0 2px 6px rgba(0,0,0,.2);animation:tpin .16s cubic-bezier(.2,.8,.2,1)}
+.mvpop h4{margin:4px 8px 8px;font-size:12.5px;font-weight:700;color:var(--mut);letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mvpop button{all:unset;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:10px 12px;border-radius:13px;cursor:pointer;font-size:14px;font-weight:650;color:var(--ink)}
+.mvpop button span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mvpop button em{font-style:normal;font-size:12px;font-weight:600;color:var(--mut);flex:0 0 auto}
+.mvpop button:hover,.mvpop button:focus-visible{background:var(--soft)}
+.mvpop button:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
+.mvpop button.cur{opacity:.5;cursor:default}

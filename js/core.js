@@ -165,7 +165,7 @@ function loadMerged(saved){
 }
 const uid=()=>'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const subOf=c=>[c.code,c.prof].filter(Boolean).join(' · ');
-function normItem(it){ return {n:String(it.n==null?'':it.n),p:(typeof it.p==='number'?it.p:100),e:(typeof it.e==='number'?it.e:null),w:(typeof it.w==='number'?it.w:null),d:it.d||null,dl:it.dl||'',opt:!!it.opt,rp:!!it.rp,cid:it.cid?String(it.cid):undefined,cn:it.cn!=null?String(it.cn):undefined,cs:(typeof it.cs==='number')?it.cs:undefined}; }
+function normItem(it){ return {n:String(it.n==null?'':it.n),p:(typeof it.p==='number'?it.p:100),e:(typeof it.e==='number'?it.e:null),w:(typeof it.w==='number'?it.w:null),d:it.d||null,dl:it.dl||'',opt:!!it.opt,rp:!!it.rp,cid:it.cid?String(it.cid):undefined,cn:it.cn!=null?String(it.cn):undefined,cs:(typeof it.cs==='number')?it.cs:undefined,mv:it.mv?1:undefined}; }
 const DM={su:0,mo:1,tu:2,we:3,th:4,fr:5,sa:6,m:1,w:3,f:5,r:4};
 function normT(x){ const m=String(x==null?'':x).trim().match(/^(\d{1,2})(?::?(\d{2}))?\s*(am|pm)?$/i); if(!m) return ''; let h=+m[1]; const mi=+(m[2]||0), ap=(m[3]||'').toLowerCase(); if(ap==='pm'&&h<12) h+=12; if(ap==='am'&&h===12) h=0; if(h>23||mi>59) return ''; return String(h).padStart(2,'0')+':'+String(mi).padStart(2,'0'); }
 function normMeet(m){
@@ -475,6 +475,7 @@ function ruleLive(c,k){
   if(parts.length) return parts.join(' ');
   return ruleText(k)+(k.rule==='best'?' '+(d.scored?d.scored+' scored so far, nothing dropped yet.':'Nothing scored yet.'):'');
 }
+const ICON_MOVE='<svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3.5v13M7 3.5 4 6.5M7 3.5l3 3M13 16.5v-13M13 16.5l-3-3M13 16.5l3-3"/></svg>';
 function itemRow(c,k,i,it){
   const base='data-c="'+c.id+'" data-k="'+k+'" data-i="'+i+'"';
   const late=it.d&&it.d<TODAY&&it.e==null&&!it.opt;
@@ -485,7 +486,7 @@ function itemRow(c,k,i,it){
     else if((cat.rule==='avg'||cat.rule==='sum')&&cat.rp) flag='<button type="button" class="mini'+(it.rp?' on':'')+'" data-act="rp" '+base+'>Replaces lowest</button>';
   }
   return '<div class="grid" data-r="'+k+'-'+i+'">'
-    +'<div class="it"><input type="text" data-f="n" '+base+' value="'+esc(it.n)+'" aria-label="Item name">'+due+'<div class="tag" data-tag></div>'+flag+'</div>'
+    +'<div class="it"><input type="text" data-f="n" '+base+' value="'+esc(it.n)+'" aria-label="Item name">'+due+'<div class="tag" data-tag></div>'+flag+(c.cats.length>1?'<button type="button" class="mvb" draggable="true" data-act="mvopen" '+base+' aria-label="Move to another section" title="Move to another section. Drag it onto a section, or click.">'+ICON_MOVE+'</button>':'')+'</div>'
     +'<input type="number" step="any" inputmode="decimal" data-f="e" '+base+' value="'+(it.e==null?'':it.e)+'" placeholder="earned" aria-label="Points earned">'
     +'<input type="number" step="any" inputmode="decimal" data-f="p" '+base+' value="'+(it.p==null?'':it.p)+'" placeholder="out of" aria-label="Points possible">'
     +'<input type="number" step="any" inputmode="decimal" data-f="w" '+base+' value="'+(it.w==null?'':it.w)+'" placeholder="what-if" aria-label="What-if score (replaces earned)">'
