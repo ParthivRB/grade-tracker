@@ -84,26 +84,6 @@ T('the reader sends the token and never a session cookie', async () => {
   await run("canvasCollect(__f,'https://canvas.example.edu',null,'tok_123456789012345678')");
   is(seen[0].headers.Authorization, 'Bearer tok_123456789012345678'); is(seen[0].credentials, undefined);
 });
-T('a wrong token gives a clear message', async () => {
-  const { f } = fakeCanvas(baseState()); ctx.__f = f; let e1;
-  try { await run("canvasCollect(__f,'https://canvas.example.edu',null,'wrong')"); } catch (e) { e1 = e; }
-  is(e1.status, 401); ctx.__e = e1;
-  if (!/did not accept that token/.test(run('canvasExplain(__e)'))) throw new Error('unclear message');
-});
-T('network and browser-blocked failures get a helpful message', () => {
-  ctx.__e = new (run('TypeError'))('Failed to fetch');
-  if (!/could not reach Canvas/.test(run('canvasExplain(__e)'))) throw new Error('unclear message');
-});
-T('school addresses are cleaned up', () => {
-  is(call('canvasHost', 'canvas.pitt.edu'), { origin: 'https://canvas.pitt.edu', host: 'canvas.pitt.edu' });
-  is(call('canvasHost', ' https://pitt.instructure.com/login/canvas '), { origin: 'https://pitt.instructure.com', host: 'pitt.instructure.com' });
-  is(call('canvasHost', 'http://evil.example.com'), null); is(call('canvasHost', 'not a site'), null); is(call('canvasHost', ''), null);
-});
-T('the connection test returns your name', async () => {
-  ctx.__f = async (url, opts) => ({ ok: true, status: 200, headers: { get: () => null }, text: async () => 'while(1);' + JSON.stringify({ name: 'Pat Student' }) });
-  is((await run("canvasTest(__f,'https://canvas.example.edu','tok_123456789012345678')")).name, 'Pat Student');
-});
-const make = async () => { const { f } = fakeCanvas(baseState()); ctx.__f = f; return null.then ? null : null; };
 const payload = async (mut) => { const st = baseState(); if (mut) mut(st); const { f } = fakeCanvas(st); ctx.__f = f; const p = await run("canvasCollect(__f,'https://canvas.example.edu',null,'tok_123456789012345678')"); ctx.__p = p; return run('canvasClean(__p)'); };
 const newCourse = () => run("normCourse({name:'',cats:[]})");
 

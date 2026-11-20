@@ -1346,3 +1346,9 @@ button:focus-visible,a:focus-visible,summary:focus-visible,[role=button]:focus-v
 .cvconn{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
 .cvauto{margin-top:14px}
 #cvMsg{min-height:20px;margin-top:10px;font-weight:700;font-size:13.5px;color:var(--warn)}
+
+.cvwait{display:flex;align-items:center;gap:12px;padding:16px 18px;border-radius:18px;background:var(--soft);color:var(--ink2);font-weight:700;font-size:14px;margin-top:6px}
+.cvwait i{width:10px;height:10px;border-radius:99px;background:#E66000;flex:0 0 auto;animation:cvpulse 1.4s ease-in-out infinite}
+.cvwait.ok i{background:var(--good);animation:none}
+.cvform,#cvMsg{display:none}
+.cvcode{font-weight:800;color:var(--ink);white-space:nowrap}

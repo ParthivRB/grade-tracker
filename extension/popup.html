@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tally for Canvas</title>
+<style>
+:root{color-scheme:light dark;--bg:#fff;--ink:#0D1226;--mut:#69728C;--soft:#EFF1F8;--blue:#1B3FD1;--good:#12805C;--warn:#C2410C}
+@media (prefers-color-scheme:dark){:root{--bg:#0B0C10;--ink:#EEF1FA;--mut:#8A94B0;--soft:#15171F;--blue:#7D93FF;--good:#4FD6A0;--warn:#FF9F66}}
+*{box-sizing:border-box}
+body{margin:0;width:340px;padding:18px;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.top img{width:30px;height:30px;border-radius:9px}
+.top b{font-size:16px;letter-spacing:-0.02em}
+h2{font-size:18px;margin:0 0 6px;letter-spacing:-0.03em}
+p{margin:0 0 12px;color:var(--mut)}
+.card{background:var(--soft);border-radius:14px;padding:12px 14px;margin-bottom:12px}
+.card b{display:block}
+.card small{color:var(--mut)}
+button{all:unset;box-sizing:border-box;display:block;width:100%;text-align:center;cursor:pointer;padding:12px 16px;border-radius:99px;background:var(--blue);color:#fff;font-weight:700;margin-bottom:8px}
+button.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--soft)}
+button[disabled]{opacity:.5;cursor:default}
+button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.msg{min-height:20px;font-weight:600;font-size:13px;color:var(--mut)}
+.msg.ok{color:var(--good)}.msg.bad{color:var(--warn)}
+</style></head><body>
+<div class="top"><img src="icons/icon-48.png" alt=""><b>Tally for Canvas</b></div>
+<div id="view"></div>
+<script src="popup.js"></script>
+</body></html>

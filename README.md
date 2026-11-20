@@ -24,12 +24,15 @@ It's an installable web app that also works offline.
 
 ## Connect Canvas
 
-1. In Canvas, go to Account, then Settings, scroll to Approved Integrations, and click **＋ New Access Token**. Name it Tally, set an expiry (the end of the semester is a good choice), and copy the token.
-2. In Tally, open **Backup and reset**, choose **Import from Canvas** (or pick Connect Canvas during setup), and paste your school's Canvas address and the token.
+Canvas does not let websites read it directly, so Tally uses a small browser extension (Chrome, Edge, Brave, Arc, on a computer). It runs inside your own signed-in Canvas tab, so there is no token and no password, and nothing is sent to any server.
 
-Tally builds a class for each Canvas course, a section for each assignment group (with its weight and drop-lowest rules), and fills in every grade already posted. After that it checks Canvas when you open Tally. New assignments go into the matching section and new grades fill in. Your own what-ifs, curves and renames are kept, and every update can be undone. You can switch automatic updates off, and then Tally just tells you there is something new to review.
+1. In Tally, open **Backup and reset**, choose **Import from Canvas**, and download the extension.
+2. Unzip it. Open `chrome://extensions`, turn on Developer mode, click **Load unpacked**, and choose the folder.
+3. Open your Canvas, click the Tally icon, and press **Sync with Tally**. Your browser asks once for permission to read that one Canvas site.
 
-The token is stored only in this browser, and Tally talks directly to your school's Canvas, never through a server. If your school turns off student tokens, use AI setup instead. Delete the token in Canvas settings if you ever stop using this.
+Tally builds a class for each Canvas course and a section for each assignment group (with weights and drop-lowest rules), and fills in every grade already posted. After that, visiting Canvas refreshes your grades in the background (at most every 20 minutes). New assignments go into the matching section and new grades fill in. Your own what-ifs, curves and renames are kept, and every update can be undone. You can switch automatic updates off and Tally will just tell you there is something to review.
+
+The extension lives in `extension/`. After changing `js/canvas.js`, run `node tools/build-extension.js` to refresh its copy of the reader and the download zip.
 
 ## Move to another device
 
@@ -55,11 +58,12 @@ Your data lives in this browser on this device. Use **Save backup** now and then
 - `styles.css`: all styles.
 - `js/core.js`: grade scales, data shape and the grade engine (no screen code).
 - `js/canvas.js`: the Canvas reader and the smart merge. No screen code.
-- `js/canvasui.js`: the Canvas screens.
+- `js/canvasui.js`: the Canvas screens and the link to the extension.
+- `extension/`: the Tally for Canvas browser extension. `tools/build-extension.js` builds its reader and the zip.
 - `js/ui.js`: saving, home screen, sync, events, dialogs.
 - `js/features.js`: trends, undo, what-if popup, calendar, class editing, themes.
 - `js/tour.js`: first-run tour and setup.
 - `js/main.js`: privacy toggle and startup.
-- `tests/engine.test.js`, `tests/canvas.test.js`: grade-math and Canvas-import tests. Run `node tests/engine.test.js` and `node tests/canvas.test.js` (needs Node, nothing to install).
+- `tests/`: grade-math, Canvas-import and extension tests. Run `node tests/engine.test.js`, `node tests/canvas.test.js` and `node tests/extension.test.js` (needs Node, nothing to install).
 
 Deleting a class, semester, section, item, event or day off shows a 10-second **Undo**.

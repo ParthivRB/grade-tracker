@@ -1,10 +1,11 @@
 "use strict";
 /* ---------- Canvas import: reader + smart merge (no screen code here) ---------- */
 
-/* Reads the student's own Canvas with their personal access token. The request goes
-   straight from this browser to their school's Canvas; nothing passes through any server. */
+/* Reads the student's own Canvas. The browser extension runs this inside their signed-in
+   Canvas tab, so the requests carry their normal session and never leave their computer.
+   (Pass a token as the fourth argument to use an access token instead.) */
 async function canvasCollect(f,origin,prog,token){
-  const H={headers:{Accept:'application/json+canvas-string-ids',Authorization:'Bearer '+token}};
+  const H=token?{headers:{Accept:'application/json+canvas-string-ids',Authorization:'Bearer '+token}}:{credentials:'same-origin',headers:{Accept:'application/json+canvas-string-ids'}};
   const pad=function(n){ return (n<10?'0':'')+n; };
   const J=async function(url){
     const r=await f(url,H); if(!r.ok){ const er=new Error('Canvas answered '+r.status); er.status=r.status; throw er; }
@@ -48,28 +49,6 @@ async function canvasCollect(f,origin,prog,token){
     });
   }
   return {v:1,src:'canvas',host:String(origin).replace(/^https?:\/\//,''),at:Date.now(),courses:out};
-}
-
-function canvasHost(input){
-  let s=String(input||'').trim(); if(!s) return null;
-  if(!/^https?:\/\//i.test(s)) s='https://'+s;
-  let u; try{ u=new URL(s); }catch(e){ return null; }
-  if(!/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(u.hostname)&&u.hostname!=='localhost') return null;
-  if(u.protocol!=='https:'&&u.hostname!=='localhost') return null;
-  return {origin:u.origin,host:u.host};
-}
-function canvasExplain(e){
-  const st=e&&e.status;
-  if(st===401) return 'Canvas did not accept that token. Check that you copied all of it and that it has not expired.';
-  if(st===403) return 'Canvas says this token is not allowed to read your courses.';
-  if(st===404) return 'That address does not look like a Canvas site. Use the address you sign in to.';
-  if(e&&(e.name==='TypeError'||/fetch|network/i.test(String(e.message)))) return 'Tally could not reach Canvas from the browser. Check the address. Some schools block this, in which case use AI setup instead.';
-  return String((e&&e.message)||e||'Something went wrong talking to Canvas.');
-}
-async function canvasTest(f,origin,token){
-  const r=await f(origin+'/api/v1/users/self',{headers:{Accept:'application/json+canvas-string-ids',Authorization:'Bearer '+token}});
-  if(!r.ok){ const er=new Error('Canvas answered '+r.status); er.status=r.status; throw er; }
-  const d=JSON.parse((await r.text()).replace(/^while\(1\);/,'')); return {name:String(d.name||d.short_name||'')};
 }
 
 /* ---------- checking what arrives (treat it as untrusted) ---------- */
