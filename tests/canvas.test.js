@@ -122,6 +122,13 @@ T('a newly posted grade fills the existing item instead of duplicating it', asyn
   ctx.__pc = p2.courses[0]; const st = run("canvasMerge(__c,__pc,'canvas.example.edu')");
   is(ctx.__c.cats[0].items.length, 3); is(ctx.__c.cats[0].items[2].e, 8); is([st.items, st.scores, st.upd], [0, 1, 0]);
 });
+T('a score you typed yourself is never replaced by Canvas', async () => {
+  const p1 = await payload(); ctx.__pc = p1.courses[0]; ctx.__c = newCourse(); run("canvasMerge(__c,__pc,'canvas.example.edu')");
+  ctx.__c.cats[0].items[2].e = 7; // HW 3 had no Canvas score; user typed 7
+  const p2 = await payload((st) => { st.groups[101][0].assignments[2].submission = sub(8); });
+  ctx.__pc = p2.courses[0]; run("canvasMerge(__c,__pc,'canvas.example.edu')");
+  is(ctx.__c.cats[0].items[2].e, 7);
+});
 T('a changed score is updated and counted', async () => {
   const p1 = await payload(); ctx.__pc = p1.courses[0]; ctx.__c = newCourse(); run("canvasMerge(__c,__pc,'canvas.example.edu')");
   const p2 = await payload((st) => { st.groups[101][1].assignments[0].submission = sub(95); });

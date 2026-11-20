@@ -148,8 +148,11 @@ function canvasMerge(c,pc,host){
       if(it.p!==a.p){ it.p=a.p; st.upd++; }
       if(a.d&&it.d!==a.d) it.d=a.d;
       if(a.e!=null){
-        if(it.e!==a.e){ if(it.e==null) st.scores++; else st.upd++; it.e=a.e; }
-        it.cs=a.e;
+        if(it.e!=null&&(it.cs==null)&&it.e!==a.e){ /* typed by the user, never from Canvas: keep it */ }
+        else{
+          if(it.e!==a.e){ if(it.e==null) st.scores++; else st.upd++; it.e=a.e; }
+          it.cs=a.e;
+        }
       }else if(it.cs!=null){ it.e=null; it.cs=null; st.upd++; }
     });
   });
