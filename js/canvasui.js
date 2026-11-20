@@ -52,13 +52,19 @@ function canvasReview(p,opts){
   if(typeof tourClose==='function') tourClose(true);
   const old=document.getElementById('cvOv'); if(old) old.remove();
   const host=p.host||'Canvas';
-  const rows=p.courses.map(function(pc,i){ const sug=canvasSuggest(S.courses,pc,host); return {pc:pc,sel:sug||'new',on:true,i:i}; });
+  const used=new Set(), fresh=!S.courses.length;
+  const rows=p.courses.map(function(pc,i){
+    const sug=canvasSuggest(S.courses,pc,host,used), real=pc.groups.some(function(g){ return g.items.some(cvUsable); });
+    return {pc:pc,sel:sug||'new',on:fresh?real:(!!sug&&real),i:i,empty:!real};
+  });
+  const matched=rows.filter(function(r){ return r.sel!=='new'; }).length;
   const ov=document.createElement('div'); ov.className='wio cvov'; ov.id='cvOv';
   const rel=trapFocus(ov);
   function line(r){
     const ex=r.sel==='new'?null:S.courses.find(function(c){ return c.id===r.sel; });
     const st=canvasPreview(ex,r.pc,host);
     const secs=r.pc.groups.filter(function(g){ return g.items.some(cvUsable); });
+    if(r.empty) return '<div class="cvs">No graded work in Canvas yet</div>';
     if(!ex){
       const warn=(r.pc.cs!=null&&st.assignments>0&&st.graded===0)?'<div class="cvwarn">Canvas shows a grade for this class, but Tally could not read any individual scores. Your school may hide them. Tell support using the extension’s “Copy a report” button.</div>':'';
       return warn+'<div class="cvs">'+st.sections+' section'+(st.sections===1?'':'s')+' · '+st.assignments+' assignment'+(st.assignments===1?'':'s')+(st.graded?' · <b>'+st.graded+' grade'+(st.graded===1?'':'s')+' already posted</b>':'')+'</div>'
@@ -70,10 +76,10 @@ function canvasReview(p,opts){
   const cfg0=cvCfg(); let autoOn=cfg0&&!cfg0.off?!!cfg0.auto:true;
   function draw(){
     const n=rows.filter(function(r){ return r.on; }).length;
-    ov.innerHTML='<div class="cvc" role="dialog" aria-modal="true" aria-label="Import from Canvas"><div class="cvh"><div><h3>Found '+p.courses.length+' class'+(p.courses.length===1?'':'es')+' in Canvas</h3><small>Adding to <b>'+esc(S.name)+'</b>. Existing classes are matched and updated, never duplicated.</small></div><button type="button" class="rgx" data-cv="x" aria-label="Close">×</button></div>'
+    ov.innerHTML='<div class="cvc" role="dialog" aria-modal="true" aria-label="Import from Canvas"><div class="cvh"><div><h3>Found '+p.courses.length+' class'+(p.courses.length===1?'':'es')+' in Canvas</h3><small>'+(fresh?'Adding to <b>'+esc(S.name)+'</b>.':'Matched <b>'+matched+' of '+p.courses.length+'</b> to your existing classes. The rest are unchecked: tick only the ones you want added to <b>'+esc(S.name)+'</b>.')+'</small></div><button type="button" class="rgx" data-cv="x" aria-label="Close">×</button></div>'
       +'<div class="cvlist">'+rows.map(function(r){
         const ex=S.courses.filter(function(c){ return !c.cv||c.id===r.sel||(c.cv&&c.cv.id===r.pc.id); });
-        return '<div class="cvr'+(r.on?'':' off')+'" style="--d:'+(r.i*50)+'ms"><label class="cvt"><input type="checkbox" class="swi" data-cv="on" data-i="'+r.i+'"'+(r.on?' checked':'')+'><i></i><span><b>'+esc(r.pc.name)+'</b><small>'+esc(r.pc.code)+(r.pc.term?' · '+esc(r.pc.term):'')+(r.pc.cs!=null?' · Canvas shows '+trim(String(Math.round(r.pc.cs*100)/100))+'%'+(r.pc.cg?' ('+esc(r.pc.cg)+')':''):'')+'</small></span></label>'
+        return '<div class="cvr'+(r.on?'':' cvoff')+(r.empty?' empty':'')+'" style="--d:'+(r.i*50)+'ms"><label class="cvt"><input type="checkbox" class="swi" data-cv="on" data-i="'+r.i+'"'+(r.on?' checked':'')+'><i></i><span><b>'+esc(r.pc.name)+'</b><small>'+esc(r.pc.code)+(r.pc.term?' · '+esc(r.pc.term):'')+(r.pc.cs!=null?' · Canvas shows '+trim(String(Math.round(r.pc.cs*100)/100))+'%'+(r.pc.cg?' ('+esc(r.pc.cg)+')':''):'')+'</small></span></label>'
           +'<select data-cv="sel" data-i="'+r.i+'" aria-label="Where to put '+esc(r.pc.name)+'"><option value="new"'+(r.sel==='new'?' selected':'')+'>Create a new class</option>'+ex.map(function(c){ return '<option value="'+c.id+'"'+(r.sel===c.id?' selected':'')+'>Update “'+esc(c.name)+'”</option>'; }).join('')+'</select>'
           +line(r)+'</div>';
       }).join('')+'</div>'
@@ -111,7 +117,7 @@ function canvasApply(rows,host){
   });
   view='home'; editing=false; save(); setHash(); render(); window.scrollTo(0,0);
   const msg=(made?made+' new class'+(made===1?'':'es'):'')+(made&&linked?' + ':'')+(linked?linked+' updated':'');
-  showUndo('Imported from Canvas: '+msg+(scores?' · '+scores+' grade'+(scores===1?'':'s')+' filled in':''),sn,v0);
+  showUndo('Imported from Canvas: '+msg+(scores?' · '+scores+' grade'+(scores===1?'':'s')+' filled in':''),sn,v0,true);
 }
 
 /* ---------- a new reading arrives ---------- */
@@ -137,7 +143,7 @@ function canvasIngest(d){
     if(any){
       const sn=JSON.stringify(W), v0=view; canvasSync(W.sems,p,false); save(); render(true);
       const bits=[]; if(t.scores) bits.push(t.scores+' new grade'+(t.scores===1?'':'s')); if(t.items) bits.push(t.items+' new assignment'+(t.items===1?'':'s')); if(t.upd) bits.push(t.upd+' updated'); if(t.cats) bits.push(t.cats+' new section'+(t.cats===1?'':'s'));
-      showUndo('Canvas updated: '+bits.join(' · '),sn,v0);
+      showUndo('Canvas updated: '+bits.join(' · '),sn,v0,true);
     }
     if(plan.fresh.length) cvToast(plan.fresh.length+' new class'+(plan.fresh.length===1?'':'es')+' in Canvas','Review',function(){ canvasReview({v:1,host:p.host,courses:plan.fresh}); });
   }else if(any||plan.fresh.length){

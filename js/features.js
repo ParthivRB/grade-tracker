@@ -53,21 +53,49 @@ function trendInner(c){
 function trendHtml(c){ return '<section class="card trendc"><h2 class="projh">Grade trend</h2><div id="trendBox">'+trendInner(c)+'</div></section>'; }
 /* ---------- undo ---------- */
 let undoT=null;
-function showUndo(msg,snap,v0){
+const undoStack=[], redoStack=[];
+const isMac=/Mac|iPhone|iPad/i.test((navigator.platform||'')+(navigator.userAgent||''));
+const UKEY=isMac?'⌘Z':'Ctrl+Z';
+function undoToast(msg,label,fn,ms){
   let el=document.getElementById('undoBar'); if(el) el.remove();
   el=document.createElement('div'); el.id='undoBar'; el.className='undobar'; el.setAttribute('role','status'); el.setAttribute('aria-live','polite');
-  el.innerHTML='<span>'+esc(msg)+'</span><button type="button" data-u="1">Undo</button><i class="uprog"></i>';
+  el.innerHTML='<span>'+esc(msg)+'</span><button type="button" data-u="1">'+esc(label)+'</button><i class="uprog" style="animation-duration:'+Math.round(ms/1000)+'s"></i>';
   document.body.appendChild(el); document.body.classList.add('hasundo'); requestAnimationFrame(function(){ el.classList.add('in'); });
   clearTimeout(undoT);
   const hide=function(){ el.classList.remove('in'); document.body.classList.remove('hasundo'); setTimeout(function(){ el.remove(); },300); };
-  undoT=setTimeout(hide,10000);
-  el.querySelector('button').addEventListener('click',function(){
-    clearTimeout(undoT); hide();
-    W=loadAny(JSON.parse(snap)); S=W.sems.find(x=>x.id===W.active)||W.sems[0]; W.active=S.id; editing=false;
-    view=(v0==='home'||v0==='cal'||getC(v0))?v0:'home'; refreshPrior(); syncColors(); save(); setHash(); render(true); setStat('Restored','ok');
-  });
+  undoT=setTimeout(hide,ms);
+  el.querySelector('button').addEventListener('click',function(){ clearTimeout(undoT); hide(); fn(); });
 }
-const doDel=function(msg,fn){ const sn=JSON.stringify(W), v0=view; fn(); showUndo(msg,sn,v0); };
+function restoreSnap(snap,v0){
+  W=loadAny(JSON.parse(snap)); S=W.sems.find(x=>x.id===W.active)||W.sems[0]; W.active=S.id; editing=false;
+  view=(v0==='home'||v0==='cal'||getC(v0))?v0:'home'; refreshPrior(); syncColors(); save(); setHash(); render(true);
+}
+function undoNow(){
+  const e=undoStack.pop(); if(!e) return false;
+  redoStack.push({msg:e.msg,snap:JSON.stringify(W),v0:view});
+  restoreSnap(e.snap,e.v0);
+  undoToast('Undid: '+e.msg,'Redo',redoNow,8000); return true;
+}
+function redoNow(){
+  const e=redoStack.pop(); if(!e) return false;
+  undoStack.push({msg:e.msg,snap:JSON.stringify(W),v0:view});
+  restoreSnap(e.snap,e.v0);
+  undoToast('Redone: '+e.msg,'Undo',undoNow,8000); return true;
+}
+/* big=true keeps the toast up much longer (imports and other large changes) */
+function showUndo(msg,snap,v0,big){
+  undoStack.push({msg:msg,snap:snap,v0:v0}); if(undoStack.length>12) undoStack.shift(); redoStack.length=0;
+  undoToast(msg,'Undo ('+UKEY+')',undoNow,big?60000:12000);
+}
+document.addEventListener('keydown',function(ev){
+  if(!(ev.metaKey||ev.ctrlKey)||ev.altKey) return;
+  const k=ev.key.toLowerCase(); if(k!=='z'&&k!=='y') return;
+  const t=ev.target; if(t&&(/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)||t.isContentEditable)) return;
+  if(document.querySelector('.modal,.wio,.tour,.tpop,.dpop')) return;
+  const redo=(k==='y')||(k==='z'&&ev.shiftKey);
+  if(redo?redoStack.length:undoStack.length){ ev.preventDefault(); redo?redoNow():undoNow(); }
+});
+const doDel=function(msg,fn,big){ const sn=JSON.stringify(W), v0=view; fn(); showUndo(msg,sn,v0,big); };
 /* ---------- what-if popup ---------- */
 function wiOpen(c,ki,ii){
   const list=[]; c.cats.forEach((k,a)=>k.items.forEach((it,b)=>list.push({a:a,b:b,k:k,it:it})));

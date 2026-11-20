@@ -630,7 +630,7 @@ semPop.addEventListener('click',function(ev){
   }
   else if(m==='del'){
     if(W.sems.length<2){ alert('Tally needs at least one semester. Rename this one instead.'); return; }
-    const nm=S.name; closeSemMenu(); doDel('Deleted “'+nm+'”',function(){ const i=W.sems.indexOf(S); W.sems.splice(i,1); setActive(W.sems[Math.max(0,i-1)].id); });
+    const nm=S.name; closeSemMenu(); doDel('Deleted “'+nm+'”',function(){ const i=W.sems.indexOf(S); W.sems.splice(i,1); setActive(W.sems[Math.max(0,i-1)].id); },true);
   }
 });
 semPop.addEventListener('change',function(ev){ const t=ev.target; if(t.dataset&&t.dataset.m==='done'){ S.done=t.checked; refreshPrior(); save(); refresh(); } });

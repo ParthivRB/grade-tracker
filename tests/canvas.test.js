@@ -163,6 +163,29 @@ T('an existing class is linked by name and keeps its own settings', async () => 
   is(mine.credits, 3); is(mine.scale, 'plain'); is(mine.cats[0].cid, '11'); is(mine.cats[0].items[0].cid, '1'); is(mine.cats[0].items[0].e, 9);
   is(mine.cats[0].items.length, 3, 'only the missing items were added');
 });
+T('Canvas course names match your own, even when they carry codes, terms and sections', () => {
+  const mk = (name, code) => run('normCourse(' + JSON.stringify({ name, code, cats: [] }) + ')');
+  const mine = [mk('Neurophysiology', 'NROSCI 1012'), mk('Human Physiology', 'BIOSC 1250'), mk('Physiology Lab', 'BIOSC 1255'), mk('WW2 in Asia', 'HIST 0100')];
+  ctx.__list = mine;
+  const pick = (name, code) => { ctx.__pc = { id: 'x' + name, name, code }; ctx.__u = run('new Set()'); return run("canvasSuggest(__list,__pc,'h',__u)"); };
+  is(pick('NROSCI 1012 - Neurophysiology (Fall 2026)', 'NROSCI1012_FALL26'), mine[0].id);
+  is(pick('Human Physiology - BIOSC 1250 Section 02', 'BIOSC 1250'), mine[1].id);
+  is(pick('BIOSC 1255 Physiology Lab', 'BIOSC1255'), mine[2].id);
+  is(pick('HIST 0100 World War II in Asia', 'HIST 0100'), mine[3].id);
+});
+T('unrelated Canvas courses are not matched to your classes', () => {
+  const mk = (name, code) => run('normCourse(' + JSON.stringify({ name, code, cats: [] }) + ')');
+  ctx.__list = [mk('Neurophysiology', 'NROSCI 1012'), mk('Human Physiology', 'BIOSC 1250')];
+  ['Pitt Student Orientation', 'Library Research Skills', 'Intro to Biology Lab Safety', 'Career Center Sandbox'].forEach((n) => {
+    ctx.__pc = { id: 'q', name: n, code: '' }; ctx.__u = run('new Set()'); is(run("canvasSuggest(__list,__pc,'h',__u)"), null, n);
+  });
+});
+T('two Canvas courses never claim the same class', () => {
+  const mk = (name, code) => run('normCourse(' + JSON.stringify({ name, code, cats: [] }) + ')');
+  const mine = [mk('Human Physiology', 'BIOSC 1250')]; ctx.__list = mine; ctx.__u = run('new Set()');
+  ctx.__a = { id: '1', name: 'Human Physiology BIOSC 1250', code: '' }; ctx.__b = { id: '2', name: 'Human Physiology BIOSC 1250 recitation', code: '' };
+  is(run("canvasSuggest(__list,__a,'h',__u)"), mine[0].id); is(run("canvasSuggest(__list,__b,'h',__u)"), null);
+});
 T('survives saving and loading (ids are kept)', async () => {
   const p = await payload(); ctx.__pc = p.courses[0]; ctx.__c = newCourse(); run("canvasMerge(__c,__pc,'canvas.example.edu')");
   ctx.__json = JSON.stringify(ctx.__c); const c2 = run('normCourse(JSON.parse(__json))');

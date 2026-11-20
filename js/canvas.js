@@ -81,16 +81,32 @@ function canvasClean(p){
 const cvKey=function(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]/g,''); };
 const cvUsable=function(a){ return !a.x&&a.pub&&a.p>0; };
 
-function canvasSuggest(courses,pc,host){
+const CV_STOP=new Set(['fall','spring','summer','winter','term','semester','section','sec','the','and','of','for','to','in','a','an','i','ii','iii','lec','lecture','rec','recitation','course','class']);
+function cvTokens(s){
+  return String(s||'').toLowerCase().replace(/\([^)]*\)/g,' ').split(/[^a-z0-9]+/).filter(function(w){ return w&&!CV_STOP.has(w)&&!/^(19|20)\d\d$/.test(w)&&!(w.length===1); });
+}
+/* How well does an existing class match a Canvas course? 0 to 1. */
+function cvScore(c,pc){
+  const code=cvKey(c.code), blob=cvKey(pc.name+' '+pc.code);
+  if(code&&code.length>=4&&/[0-9]/.test(code)&&blob.indexOf(code)>=0) return 1;
+  const a=cvTokens(c.name), b=cvTokens(pc.name);
+  if(!a.length||!b.length) return 0;
+  const sa=new Set(a), sb=new Set(b); let inter=0; sa.forEach(function(w){ if(sb.has(w)) inter++; });
+  const uni=sa.size+sb.size-inter, jac=inter/uni;
+  const sub=(inter===sa.size||inter===sb.size)&&Array.from(sa).some(function(w){ return sb.has(w)&&w.length>=5; });
+  return Math.max(jac,sub?0.7:0);
+}
+/* Best existing class for a Canvas course. `used` keeps two Canvas courses from taking the same class. */
+function canvasSuggest(courses,pc,host,used){
   const exact=courses.find(function(c){ return c.cv&&c.cv.id===pc.id&&(!c.cv.h||c.cv.h===host); });
-  if(exact) return exact.id;
-  const nk=cvKey(pc.name), ck=cvKey(pc.code);
-  const hit=courses.find(function(c){
-    if(c.cv) return false;
-    const a=cvKey(c.name), b=cvKey(c.code);
-    return (a&&nk&&(a===nk||(a.length>4&&nk.indexOf(a)>=0)||(nk.length>4&&a.indexOf(nk)>=0)))||(b&&ck&&b===ck);
+  if(exact){ if(used) used.add(exact.id); return exact.id; }
+  let best=null,bs=0.6;
+  courses.forEach(function(c){
+    if(c.cv||(used&&used.has(c.id))) return;
+    const s=cvScore(c,pc); if(s>bs){ best=c; bs=s; }
   });
-  return hit?hit.id:null;
+  if(best&&used) used.add(best.id);
+  return best?best.id:null;
 }
 
 function canvasMerge(c,pc,host){
