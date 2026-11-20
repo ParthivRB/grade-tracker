@@ -1352,3 +1352,4 @@ button:focus-visible,a:focus-visible,summary:focus-visible,[role=button]:focus-v
 .cvwait.ok i{background:var(--good);animation:none}
 .cvform,#cvMsg{display:none}
 .cvcode{font-weight:800;color:var(--ink);white-space:nowrap}
+.cvwarn{padding:9px 12px;border-radius:12px;background:var(--warn-soft);color:var(--warn);font-size:12.5px;font-weight:700;line-height:1.4}

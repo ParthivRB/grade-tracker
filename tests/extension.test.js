@@ -140,6 +140,11 @@ T('popup: on Canvas it asks permission, reads your classes, stores them, registe
   is(log.registered.map((r) => r.id), ['tally-canvas.pitt.edu']); is(log.registered[0].js, ['collector.js', 'auto.js']); is(log.registered[0].matches, ['https://canvas.pitt.edu/*']);
   is(log.tabsCreated, ['https://parthivrb.github.io/grade-tracker/']);
   if (!/Sent to Tally/.test(el('msg').textContent)) throw new Error('no success message: ' + el('msg').textContent);
+  if (!/Read 1 class, 1 assignments, 1 with grades/.test(el('msg').textContent)) throw new Error('no counts: ' + el('msg').textContent);
+  let copied = ''; ctx.navigator = { clipboard: { writeText: async (t) => { copied = t; } } };
+  await el('diag').handlers.click(); await tick(20);
+  const rep = JSON.parse(copied); is(rep.readClasses, 1); is(rep.classes[0].withScore, 1);
+  if (/Neuroscience|Pat|HW 1|canvas\.pitt/.test(copied)) throw new Error('report leaks names');
 });
 T('popup: on a page that is not Canvas it says what to do', async () => {
   const { chrome } = fakeChrome({ activeTab: { id: 1, url: 'https://example.com/' }, executeScript: async () => [{ result: { ok: false, status: 404 } }] });

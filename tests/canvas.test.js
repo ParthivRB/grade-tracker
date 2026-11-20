@@ -173,6 +173,19 @@ T('junk from outside is rejected or trimmed', () => {
   const c = call('canvasClean', { v: 1, courses: [{ id: 5, name: 'X'.repeat(500), groups: [{ id: 1, name: 'G', w: 999, items: [{ id: 2, n: 'A', p: 'abc', d: 'tomorrow', e: 'x' }] }] }] });
   is(c.courses[0].name.length, 160); is(c.courses[0].groups[0].w, 100); is(c.courses[0].groups[0].items[0].p, null); is(c.courses[0].groups[0].items[0].d, null);
 });
+T('the reader counts what it saw, without any names or scores', async () => {
+  const p = await payload(); void p;
+  const { f } = fakeCanvas(baseState()); ctx.__f = f;
+  const raw = await run("canvasCollect(__f,'https://canvas.example.edu',null,'tok_123456789012345678')");
+  const dg = raw.courses[0].dg;
+  is([dg.a, dg.sub, dg.scored, dg.hidden, dg.ex], [6, 6, 3, 1, 1]); is(raw.courses[0].ng, 3); is(raw.total, 3); is(raw.skipped, [], 'nothing skipped');
+});
+T('a class Canvas will not list assignments for is reported, not silently dropped', async () => {
+  const st = baseState(); delete st.groups[303];
+  const { f } = fakeCanvas(st); ctx.__f = f;
+  const raw = await run("canvasCollect(__f,'https://canvas.example.edu',null,'tok_123456789012345678')");
+  is(raw.courses.map((c) => c.id), ['101']); is(raw.skipped, [401]);
+});
 T('missing numbers stay missing (not zero)', () => {
   const c = call('canvasClean', { v: 1, courses: [{ id: 1, name: 'A', cs: null, groups: [{ id: 2, name: 'G', w: null, items: [{ id: 3, n: 'x', p: 10, e: null }] }] }] });
   is(c.courses[0].cs, null); is(c.courses[0].groups[0].items[0].e, null);

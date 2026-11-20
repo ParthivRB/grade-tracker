@@ -2,6 +2,7 @@
 const TALLY='https://parthivrb.github.io/grade-tracker/';
 const $=function(id){ return document.getElementById(id); };
 const view=$('view');
+let lastRead=null;
 const esc=function(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); };
 const ago=function(t){ if(!t) return 'never'; const m=Math.round((Date.now()-t)/60000); return m<1?'just now':m<60?m+' min ago':m<1440?Math.round(m/60)+' hr ago':Math.round(m/1440)+' days ago'; };
 function say(t,cls){ const m=$('msg'); if(m){ m.textContent=t; m.className='msg '+(cls||''); } }
@@ -14,6 +15,15 @@ function openTally(){
     if(tabs&&tabs.length){ chrome.tabs.update(tabs[0].id,{active:true}); chrome.windows.update(tabs[0].windowId,{focused:true}); }
     else chrome.tabs.create({url:TALLY});
   });
+}
+function summary(p){
+  const s={classes:p.courses.length,assignments:0,graded:0};
+  p.courses.forEach(function(c){ if(c.dg){ s.assignments+=c.dg.a; s.graded+=c.dg.scored; } });
+  return s;
+}
+function report(p){
+  return JSON.stringify({extension:'1.0.1',readClasses:p.courses.length,canvasListed:p.total,couldNotRead:p.skipped||[],
+    classes:p.courses.map(function(c){ return {weighted:c.weighted,sections:c.ng,assignments:c.dg&&c.dg.a,withSubmissionInfo:c.dg&&c.dg.sub,withScore:c.dg&&c.dg.scored,noPoints:c.dg&&c.dg.noPts,unpublished:c.dg&&c.dg.hidden,excusedOrOmitted:c.dg&&c.dg.ex,canvasShowsAScore:c.cs!=null}; })},null,2);
 }
 async function activeTab(){ const t=await chrome.tabs.query({active:true,currentWindow:true}); return t&&t[0]; }
 async function detect(tab){
@@ -54,7 +64,9 @@ async function sync(tab,origin,det){
         if(!ex.length) await chrome.scripting.registerContentScripts([{id:id,matches:[origin+'/*'],js:['collector.js','auto.js'],runAt:'document_idle',persistAcrossSessions:true}]);
       }catch(e){}
     }
-    say(granted?'Sent to Tally. It will keep updating when you visit Canvas.':'Sent to Tally. Allow access next time to keep it updating.','ok');
+    lastRead=out.p; const sm=summary(out.p);
+    say('Read '+sm.classes+' class'+(sm.classes===1?'':'es')+', '+sm.assignments+' assignments, '+sm.graded+' with grades. '+(granted?'Sent to Tally. It keeps updating when you visit Canvas.':'Sent to Tally. Allow access next time to keep it updating.'),sm.graded?'ok':'bad');
+    const d=$('diag'); if(d) d.hidden=false;
     openTally();
   }catch(e){ say('Something went wrong. Reload the Canvas page and try again.','bad'); btn.disabled=false; }
 }
@@ -66,8 +78,9 @@ async function main(){
   const list=sites.length?'<div class="card"><b>Connected</b>'+sites.map(function(s){ return '<small>'+esc(s.host)+' · last read '+esc(ago(s.last))+'</small>'; }).join('<br>')+'</div>':'';
   if(det.ok){
     view.innerHTML='<h2>Canvas found</h2><p>'+esc(new URL(origin).host)+(det.name?' · signed in as '+esc(det.name):'')+'</p>'
-      +'<button id="go">Sync with Tally</button><button class="ghost" id="tally">Open Tally</button><div class="msg" id="msg" role="status"></div>'+list;
+      +'<button id="go">Sync with Tally</button><button class="ghost" id="tally">Open Tally</button><button class="ghost" id="diag" hidden>Copy a report for support</button><div class="msg" id="msg" role="status"></div>'+list;
     $('go').addEventListener('click',function(){ sync(tab,origin,det); });
+    $('diag').addEventListener('click',async function(){ const t=report(lastRead||{courses:[]}); try{ await navigator.clipboard.writeText(t); say('Report copied. It has counts only: no class names, grades or sign-in details.','ok'); }catch(e){ say('Could not copy. Select and copy this instead:\n'+t,'bad'); } });
   }else{
     view.innerHTML='<h2>Open your Canvas</h2><p>Go to your school’s Canvas and sign in, then click this icon again. Tally then builds your classes and keeps them up to date.</p>'
       +'<button id="tally">Open Tally</button><div class="msg" id="msg" role="status"></div>'+list;

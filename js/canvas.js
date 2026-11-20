@@ -19,17 +19,19 @@ async function canvasCollect(f,origin,prog,token){
     return out;
   };
   const cs=await ALL('/api/v1/courses?enrollment_state=active&include[]=term&include[]=teachers&include[]=total_scores&per_page=100');
-  const out=[];
+  const out=[], skipped=[];
   for(let i=0;i<cs.length;i++){
     const c=cs[i]; if(!c||!c.id||!c.name||c.access_restricted_by_date) continue;
     if(prog) prog(c.name,i,cs.length);
     let gs=[];
-    try{ gs=await ALL('/api/v1/courses/'+c.id+'/assignment_groups?include[]=assignments&include[]=submission&per_page=100'); }catch(e){ continue; }
+    try{ gs=await ALL('/api/v1/courses/'+c.id+'/assignment_groups?include[]=assignments&include[]=submission&per_page=100'); }catch(e){ skipped.push((e&&e.status)||0); continue; }
+    const dg={a:0,sub:0,scored:0,noPts:0,hidden:0,ex:0};
+    gs.forEach(function(g){ (g.assignments||[]).forEach(function(a){ dg.a++; if(a.submission) dg.sub++; if(a.submission&&a.submission.score!=null) dg.scored++; if(!(a.points_possible>0)) dg.noPts++; if(a.published===false) dg.hidden++; if((a.submission&&a.submission.excused)||a.omit_from_final_grade) dg.ex++; }); });
     const en=(c.enrollments||[]).filter(function(x){ return x&&x.type==='student'; })[0]||(c.enrollments||[])[0]||{};
     out.push({
       id:String(c.id), name:String(c.name), code:String(c.course_code||''), term:String((c.term&&c.term.name)||''),
       prof:String((c.teachers&&c.teachers[0]&&c.teachers[0].display_name)||''),
-      weighted:!!c.apply_assignment_group_weights,
+      weighted:!!c.apply_assignment_group_weights, dg:dg, ng:gs.length,
       cs:(typeof en.computed_current_score==='number')?en.computed_current_score:null, cg:en.computed_current_grade||null,
       groups:gs.map(function(g){
         return {
@@ -48,7 +50,7 @@ async function canvasCollect(f,origin,prog,token){
       })
     });
   }
-  return {v:1,src:'canvas',host:String(origin).replace(/^https?:\/\//,''),at:Date.now(),courses:out};
+  return {v:1,src:'canvas',host:String(origin).replace(/^https?:\/\//,''),at:Date.now(),courses:out,skipped:skipped,total:cs.length};
 }
 
 /* ---------- checking what arrives (treat it as untrusted) ---------- */

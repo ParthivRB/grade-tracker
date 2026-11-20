@@ -60,7 +60,8 @@ function canvasReview(p,opts){
     const st=canvasPreview(ex,r.pc,host);
     const secs=r.pc.groups.filter(function(g){ return g.items.some(cvUsable); });
     if(!ex){
-      return '<div class="cvs">'+st.sections+' section'+(st.sections===1?'':'s')+' · '+st.assignments+' assignment'+(st.assignments===1?'':'s')+(st.graded?' · <b>'+st.graded+' grade'+(st.graded===1?'':'s')+' already posted</b>':'')+'</div>'
+      const warn=(r.pc.cs!=null&&st.assignments>0&&st.graded===0)?'<div class="cvwarn">Canvas shows a grade for this class, but Tally could not read any individual scores. Your school may hide them. Tell support using the extension’s “Copy a report” button.</div>':'';
+      return warn+'<div class="cvs">'+st.sections+' section'+(st.sections===1?'':'s')+' · '+st.assignments+' assignment'+(st.assignments===1?'':'s')+(st.graded?' · <b>'+st.graded+' grade'+(st.graded===1?'':'s')+' already posted</b>':'')+'</div>'
         +'<div class="cvchips">'+secs.slice(0,8).map(function(g){ return '<span>'+esc(g.name)+(r.pc.weighted&&g.w?' <em>'+trim(String(g.w))+'%</em>':'')+'</span>'; }).join('')+'</div>';
     }
     const bits=[]; if(st.items) bits.push('+'+st.items+' new assignment'+(st.items===1?'':'s')); if(st.cats) bits.push('+'+st.cats+' new section'+(st.cats===1?'':'s')); if(st.scores) bits.push(st.scores+' new grade'+(st.scores===1?'':'s')); if(st.upd) bits.push(st.upd+' updated');
