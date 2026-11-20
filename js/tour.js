@@ -128,13 +128,13 @@ function setupOpen(start){
       +'<button type="button" class="sopt" data-s="pick" data-h="manual"><span class="soi" style="--c:#19C3A5">＋</span><b>Add them myself</b><small>Type in class names and credits. Add categories and scores later.</small></button>'
       +'<button type="button" class="sopt" data-s="pick" data-h="sample"><span class="soi" style="--c:#FFC233">◎</span><b>Try a sample semester</b><small>Explore with made-up classes first. Delete it anytime.</small></button></div>'
       +'<div class="sact"><button type="button" class="btn" data-s="back" data-to="sem">Back</button><span></span></div>');
-    else if(step==='canvas') h=card(canvasStepHtml()+'<div class="sact"><button type="button" class="btn" data-s="back" data-to="how">Back</button><span></span></div>');
+    else if(step==='canvas') h=card(canvasStepHtml()+'<div class="sact"><button type="button" class="btn" data-s="back" data-to="how">Back</button><button type="button" class="btn" data-s="skipcv">Skip for now</button></div>');
     else if(step==='ai') h=card('<span class="tk">Step 3 · AI setup</span><h2>Let AI read your syllabi.</h2><p class="slead">Takes about a minute. Works with ChatGPT, Claude, or any chat that can make files.</p><ol class="ssteps">'
       +'<li><span class="sn">1</span><div><b>Copy the Tally prompt</b><small>It tells the AI exactly what file to make.</small></div><button type="button" class="btn pri sm" data-s="copy">Copy prompt</button></li>'
       +'<li><span class="sn">2</span><div><b>Open a chat and attach your syllabi</b><small>Paste the prompt, attach syllabi and any grades (PDFs, screenshots, Canvas exports).</small></div><div class="sbtns"><a class="btn sm" href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT ↗</a><a class="btn sm" href="https://claude.ai/new" target="_blank" rel="noopener">Claude ↗</a></div></li>'
       +'<li><span class="sn">3</span><div><b>Drop the file it gives you</b><small>Usually called grades.json.</small></div></li></ol>'
       +'<label class="sdrop" id="sDrop"><input type="file" id="sFile" accept=".json,application/json" hidden><span class="sdi">⤓</span><b>Drop grades.json here</b><small>or click to choose the file</small><span class="serr" id="sErr"></span></label>'
-      +'<div class="sact"><button type="button" class="btn" data-s="back" data-to="how">Back</button><span></span></div>');
+      +'<div class="sact"><button type="button" class="btn" data-s="back" data-to="how">Back</button><button type="button" class="btn" data-s="skipcv">Skip for now</button></div>');
     else if(step==='manual') h=card('<span class="tk">Step 3 · Your classes</span><h2>Add your classes.</h2><p class="slead">Just the names for now. Each one starts with Homework, Midterm and Final, and you can change that anytime.</p>'
       +'<div class="srows">'+rows.map((r,j)=>'<div class="srow" style="--d:'+(j*60)+'ms"><input type="text" data-r="'+j+'" data-k="n" value="'+esc(r.n)+'" placeholder="'+(['Organic Chemistry','Statistics','Writing Seminar','Class name'][Math.min(j,3)])+'" aria-label="Class name"><input type="number" step="0.5" min="0" inputmode="decimal" data-r="'+j+'" data-k="c" value="'+esc(r.c)+'" placeholder="Credits" aria-label="Credits"></div>').join('')+'</div>'
       +'<button type="button" class="sadd" data-s="addrow">＋ Another class</button>'
@@ -160,6 +160,7 @@ function setupOpen(start){
     const b=ev.target.closest('[data-s]'); if(!b) return; const a=b.dataset.s;
     if(a==='close'){ tourClose(); view='home'; setHash(); render(); window.scrollTo(0,0); }
     else if(a==='back') go(b.dataset.to);
+    else if(a==='skipcv'){ how='skip'; go('done'); }
     else if(a==='semnext'){ const n=(body.querySelector('#sName').value||'').trim(); if(n) S.name=n; const s1=body.querySelector('input[name=sStart]').value, s2=body.querySelector('input[name=sEnd]').value; S.start=s1||''; S.end=s2||''; if(S.start&&S.end&&S.end<S.start){ const x=S.start; S.start=S.end; S.end=x; } save(); render(true); go('how'); }
     else if(a==='pick'){ const h=b.dataset.h; if(h==='sample'){ const before=courseCount(); mergeSimple(sampleSemester()); added=courseCount()-before; how='sample'; go('done'); } else go(h); }
     else if(a==='copy'){ const done=function(){ b.textContent='Copied ✓'; b.classList.add('ok'); setTimeout(function(){ b.textContent='Copy prompt'; b.classList.remove('ok'); },2000); };

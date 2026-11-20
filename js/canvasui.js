@@ -133,9 +133,10 @@ function cvToast(msg,label,fn){
 const cvIdle=function(){ const a=document.activeElement; return !document.querySelector('.modal,.wio,.tour,.tpop,.dpop')&&!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)); };
 function canvasIngest(d){
   const cfg=cvCfg(); if(cfg&&cfg.off) return;
-  if(cfg&&cfg.id===d.id) return;
+  const linked=W.sems.some(function(se){ return se.courses.some(function(c){ return c.cv; }); });
+  if(cfg&&linked&&cfg.id===d.id) return;
   const p=canvasClean(d.payload); if(!p) return;
-  if(!cfg){ canvasReview(p,{first:true,id:d.id,at:d.at}); return; }
+  if(!cfg||!linked){ canvasReview(p,{first:true,id:d.id,at:d.at}); return; }
   if(cfg.auto&&!cvIdle()){ cvPending=d; setTimeout(function(){ if(cvPending===d){ cvPending=null; canvasIngest(d); } },30000); return; }
   cfg.id=d.id; cfg.last=d.at||Date.now(); cfg.host=p.host||cfg.host; cvSave(cfg);
   const plan=canvasSync(W.sems,p,true), t=plan.totals, any=t.items+t.scores+t.upd+t.cats;
