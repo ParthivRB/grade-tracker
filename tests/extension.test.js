@@ -107,7 +107,7 @@ T('visiting Canvas refreshes at most every 20 minutes', async () => {
     const ctx = vm.createContext({ chrome, window: win, location: { host: 'canvas.pitt.edu', origin: 'https://canvas.pitt.edu' }, setTimeout: (fn) => { fn(); return 0; }, Date, Math, URL, JSON, Promise, Array, String, Number, isNaN, Set });
     win.fetch = f; win.window = win; ctx.fetch = f;
     vm.runInContext(read('collector.js'), ctx); vm.runInContext(read('auto.js'), ctx);
-    await tick(20); return sent;
+    await tick(20); return sent.filter((m) => m.type === 'data');
   };
   is((await mk(null)).length, 1, 'never synced: reads'); is((await mk(60)).length, 1, 'stale: reads'); is((await mk(5)).length, 0, 'fresh: skips');
   const s = await mk(null); is(s[0].payload.courses[0].groups[0].items[0].e, 9); is(s[0].origin, 'https://canvas.pitt.edu');
@@ -125,7 +125,7 @@ T('popup: on Canvas it asks permission, reads your classes, stores them, registe
       const r = await vm.runInContext('(' + o.func.toString() + ')()', ctx); return [{ result: r }];
     },
   });
-  const tabCtx = vm.createContext({ fetch: cv.f, location: { origin: 'https://canvas.pitt.edu', host: 'canvas.pitt.edu' }, window: {}, Date, Math, JSON, Promise, Array, String, Number, isNaN, Set, URL });
+  const tabCtx = vm.createContext({ fetch: cv.f, location: { origin: 'https://canvas.pitt.edu', host: 'canvas.pitt.edu' }, window: {}, Date, Math, JSON, Promise, Array, Object, String, Number, isNaN, Set, URL });
   tabCtx.window.fetch = cv.f; ctxHolder.tab = tabCtx;
   const els = {}; const el = (id) => els[id] || (els[id] = { id, innerHTML: '', textContent: '', className: '', disabled: false, handlers: {}, addEventListener(t, f) { this.handlers[t] = f; } });
   const bg = vm.createContext({ chrome, Date, Math, URL }); vm.runInContext(read('background.js'), bg);

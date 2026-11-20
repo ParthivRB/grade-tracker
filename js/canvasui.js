@@ -14,9 +14,30 @@ window.addEventListener('message',function(e){
   const d=e.data; if(!d||typeof d!=='object') return;
   if(d.tallyExt==='pong'){ cvExt=true; const el=document.getElementById('cvState'); if(el) cvStateText(el); }
   else if(d.tallyExt==='canvas') canvasIngest(d);
+  else if(d.tallyExt==='prog') cvProg(d);
 });
 
 /* ---------- the connect step (inside setup) ---------- */
+/* live progress pill while the extension reads Canvas */
+let cvProgT=null;
+function cvProg(d){
+  const st=d.state; if(st!=='start'&&st!=='run'&&st!=='done'&&st!=='fail') return;
+  const c=cvCfg(); if(c&&c.off) return;
+  let el=document.getElementById('cvProg');
+  if(!el){
+    el=document.createElement('div'); el.id='cvProg'; el.className='cvprog'; el.setAttribute('role','status'); el.setAttribute('aria-live','polite');
+    el.innerHTML='<b class="cvpt"></b><span class="cvpm"></span><i class="cvpb"><u></u></i>';
+    document.body.appendChild(el); void el.offsetWidth;
+  }
+  const n=+d.n||0, i=+d.i||0, t=el.querySelector('.cvpt'), m=el.querySelector('.cvpm'), u=el.querySelector('u');
+  el.classList.add('in'); el.classList.toggle('ok',st==='done'); el.classList.toggle('bad',st==='fail'); el.classList.toggle('ind',st==='start'||(st==='run'&&!n));
+  if(st==='start'){ t.textContent='Syncing with Canvas'; m.textContent='Finding your classes…'; u.style.width='30%'; }
+  else if(st==='run'){ t.textContent='Syncing with Canvas'; m.textContent='Class '+(i+1)+' of '+n+(d.name?' · '+d.name:''); u.style.width=Math.round((i+1)/n*100)+'%'; }
+  else if(st==='done'){ t.textContent='Canvas synced'; m.textContent=n?(n+' class'+(n===1?'':'es')+' read'):'Done'; u.style.width='100%'; }
+  else { t.textContent='Sync did not finish'; m.textContent='Reload your Canvas page and try again.'; }
+  clearTimeout(cvProgT);
+  cvProgT=setTimeout(function(){ el.classList.remove('in'); setTimeout(function(){ if(!el.classList.contains('in')) el.remove(); },350); },st==='done'?2200:st==='fail'?6000:25000);
+}
 function cvStateText(el){
   const cfg=cvCfg();
   el.innerHTML='<i></i><span>'+(cvExt?(cfg&&!cfg.off?'Extension connected. Open your Canvas and click its icon to refresh.':'Extension found. Open your Canvas, click the Tally icon, then press Sync with Tally.'):'Waiting for the extension…')+'</span>';

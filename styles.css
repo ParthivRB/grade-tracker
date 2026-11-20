@@ -1354,3 +1354,16 @@ button:focus-visible,a:focus-visible,summary:focus-visible,[role=button]:focus-v
 .cvcode{font-weight:800;color:var(--ink);white-space:nowrap}
 .cvwarn{padding:9px 12px;border-radius:12px;background:var(--warn-soft);color:var(--warn);font-size:12.5px;font-weight:700;line-height:1.4}
 .cvr.empty{opacity:.45}
+
+/* Canvas sync progress pill */
+.cvprog{position:fixed;left:50%;bottom:22px;z-index:9000;width:min(360px,calc(100vw - 32px));transform:translate(-50%,24px);opacity:0;pointer-events:none;padding:12px 16px 14px;border-radius:18px;background:var(--card);color:var(--ink);box-shadow:0 14px 40px rgba(0,0,0,.35),inset 0 0 0 1px var(--line);transition:transform .3s cubic-bezier(.2,.8,.2,1),opacity .25s}
+.cvprog.in{transform:translate(-50%,0);opacity:1}
+.cvprog .cvpt{display:block;font-size:14px;letter-spacing:-0.01em}
+.cvprog .cvpm{display:block;font-size:12.5px;color:var(--mut);margin:2px 0 9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cvprog .cvpb{display:block;height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.cvprog .cvpb u{display:block;height:100%;width:0;border-radius:99px;background:var(--blue);transition:width .35s ease,background-color .25s}
+.cvprog.ind .cvpb u{animation:cvpind 1.1s ease-in-out infinite alternate}
+@keyframes cvpind{from{margin-left:0}to{margin-left:70%}}
+.cvprog.ok .cvpb u{background:var(--good)}
+.cvprog.bad .cvpb u{background:var(--warn);width:100%!important}
+@media (prefers-reduced-motion:reduce){.cvprog,.cvprog .cvpb u{transition:none}.cvprog.ind .cvpb u{animation:none}}

@@ -13,5 +13,9 @@
     if(e.source!==window||!e.data||typeof e.data!=='object') return;
     if(e.data.tallyExt==='ping'){ window.postMessage({tallyExt:'pong',v:V},location.origin); send(); }
   });
-  try{ chrome.storage.onChanged.addListener(function(ch,area){ if(area==='local'&&ch.latest) send(); }); }catch(e){}
+  try{ chrome.storage.onChanged.addListener(function(ch,area){
+    if(area!=='local') return;
+    if(ch.prog&&ch.prog.newValue){ var p=ch.prog.newValue; window.postMessage({tallyExt:'prog',state:p.state,i:p.i,n:p.n,name:p.name,host:p.host},location.origin); }
+    if(ch.latest) send();
+  }); }catch(e){}
 })();

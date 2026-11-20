@@ -10,7 +10,11 @@
       if(Date.now()-(st.last||0)<GAP) return;
       st.origin=location.origin; st.host=location.host; st.last=Date.now();
       var o={}; o[KEY]=st; await chrome.storage.local.set(o);
-      var p=await canvasCollect(window.fetch.bind(window),location.origin,null);
+      var tell=function(o){ try{ chrome.runtime.sendMessage(Object.assign({type:'prog',host:location.host},o)); }catch(e){} };
+      tell({state:'start'});
+      var p;
+      try{ p=await canvasCollect(window.fetch.bind(window),location.origin,function(name,i,n){ tell({state:'run',i:i,n:n,name:name}); }); }
+      catch(e){ tell({state:'fail'}); return; }
       if(p&&p.courses&&p.courses.length) chrome.runtime.sendMessage({type:'data',payload:p,origin:location.origin,name:st.name||''});
     }catch(e){}
   },2500);
