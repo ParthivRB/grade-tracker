@@ -193,6 +193,13 @@ function ecHtml(c){
     +'<div class="eck">Percent'+lim('pct')+'<small>Added straight onto your final percent.</small></div>'+fld('pct','ece',e.pct.e,'Extra credit percent earned')+fld('pct','ecw',e.pct.w,'Extra credit percent what-if')
     +'</div>'+tot+'</section>';
 }
+/* points earned so far / possible in a section (what-ifs count, optional items don't add to the total) */
+function secPts(k){
+  let e=0,p=0,all=0;
+  k.items.forEach(it=>{ if(it.opt) return; const pp=+it.p||0; all+=pp; const v=(it.w!=null)?it.w:it.e; if(v!=null){ e+=+v||0; p+=pp; } });
+  return {e:e,p:p,all:all};
+}
+function secPtsHtml(k){ const t=secPts(k); const f=x=>trim(String(+x.toFixed(2))); return '<span class="cpts" title="Points earned out of points graded so far. '+f(t.all)+' possible in total.">'+f(t.e)+' / '+f(t.p)+' pts'+(t.p<t.all?'<small> of '+f(t.all)+'</small>':'')+'</span>'; }
 function courseView(c){
   const cats=c.cats.map((k,ki)=>{
     const meta=c.pooled
@@ -200,7 +207,7 @@ function courseView(c){
       :'<label>Weight <input type="number" step="any" inputmode="decimal" data-f="cw" data-c="'+c.id+'" data-k="'+ki+'" value="'+k.w+'" aria-label="Category weight in percent"> %</label>';
     const rt=c.pooled?'':ruleText(k);
     const ttl=editing?'<input type="text" class="catname" data-f="catname" data-c="'+c.id+'" data-k="'+ki+'" value="'+esc(k.name)+'" aria-label="Category name">':esc(k.name);
-    return '<section class="card cat"><div class="cathead"><h3>'+ttl+'</h3><div class="catmeta">'+meta+'<span class="cpct" data-k="'+ki+'">–</span></div></div>'
+    return '<section class="card cat"><div class="cathead"><h3>'+ttl+'</h3><div class="catmeta">'+secPtsHtml(k)+meta+'<span class="cpct" data-k="'+ki+'">–</span></div></div>'
       +((editing||openCats.has(c.id+':'+ki))?catEdit(c,k,ki):'')
       +(c.pooled?'':quickRule(c,k,ki))
       +((rt||(editing&&!c.pooled))?'<div class="rule" data-rl="'+ki+'">'+rt+'</div>':'')
@@ -305,6 +312,7 @@ function refresh(){
     const k=c.cats[+el.dataset.k]; const r=catRes(k,'whatif',null);
     el.textContent=r?pctS(r.pct):'–';
   });
+  $$('.catmeta').forEach((m,i)=>{ const k=c.cats[i], o=m.querySelector('.cpts'); if(k&&o) o.outerHTML=secPtsHtml(k); });
   $$('[data-rl]').forEach(el=>{ el.innerHTML=c.pooled?'':ruleLive(c,c.cats[+el.dataset.rl]); });
   const infos=c.cats.map(k=>c.pooled?null:dropInfo(k));
   $$('.grid[data-r]').forEach(row=>{
