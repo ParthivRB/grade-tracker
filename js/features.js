@@ -642,23 +642,29 @@ document.addEventListener('change',function(ev){
 /* ---------- move an item to another section ---------- */
 let mvEl=null;
 function mvClose(){ if(mvEl){ const b=mvEl._btn; mvEl.remove(); mvEl=null; if(b&&document.contains(b)){ try{ b.focus({preventScroll:true}); }catch(e){} } } }
-function mvDo(c,k,i,to){
-  const from=c.cats[k], dest=c.cats[to]; if(!from||!dest||k===to) return;
+function mvDo(c,k,i,to,at){
+  const from=c.cats[k], dest=c.cats[to]; if(!from||!dest) return;
   const it=from.items[i]; if(!it) return;
+  if(k===to){
+    let pos=at==null?from.items.length:at; if(pos>i) pos--; pos=Math.max(0,Math.min(from.items.length-1,pos)); if(pos===i) return;
+    doDel('Reordered “'+(it.n||'item')+'”',function(){ from.items.splice(i,1); from.items.splice(pos,0,it); save(); render(true); });
+    return;
+  }
   doDel('Moved “'+(it.n||'item')+'” to '+dest.name,function(){
-    from.items.splice(i,1); it.opt=false; it.rp=false; if(it.cid) it.mv=1; dest.items.push(it); save(); render(true);
+    from.items.splice(i,1); it.opt=false; it.rp=false; if(it.cid) it.mv=1; const pos=at==null?dest.items.length:Math.max(0,Math.min(dest.items.length,at)); dest.items.splice(pos,0,it); save(); render(true);
   });
 }
 function mvOpen(c,k,i,btn){
   mvClose();
   const el=document.createElement('div'); el.className='mvpop'; el.setAttribute('role','menu'); el.setAttribute('aria-label','Move to section'); el._btn=btn;
   const it=c.cats[k].items[i];
-  el.innerHTML='<h4>Move “'+esc(it.n||'item')+'” to</h4>'+c.cats.map(function(s,j){ return '<button type="button" role="menuitem" data-to="'+j+'"'+(j===k?' class="cur" aria-current="true"':'')+'><span>'+esc(s.name)+'</span>'+(j===k?'<em>here</em>':'<em>'+s.items.length+' item'+(s.items.length===1?'':'s')+'</em>')+'</button>'; }).join('');
+  const n=c.cats[k].items.length;
+  el.innerHTML='<div class="mvord"><button type="button" data-dir="-1"'+(i===0?' disabled':'')+'>↑ Up</button><button type="button" data-dir="1"'+(i===n-1?' disabled':'')+'>↓ Down</button></div><h4>Move “'+esc(it.n||'item')+'” to</h4>'+c.cats.map(function(s,j){ return '<button type="button" role="menuitem" data-to="'+j+'"'+(j===k?' class="cur" aria-current="true"':'')+'><span>'+esc(s.name)+'</span>'+(j===k?'<em>here</em>':'<em>'+s.items.length+' item'+(s.items.length===1?'':'s')+'</em>')+'</button>'; }).join('');
   document.body.appendChild(el); mvEl=el;
   const r=btn.getBoundingClientRect(), w=el.offsetWidth, h=el.offsetHeight;
   el.style.left=Math.max(10,Math.min(innerWidth-w-10,r.left))+'px';
   el.style.top=Math.max(10,Math.min(innerHeight-h-10,(r.bottom+h+12>innerHeight)?r.top-h-6:r.bottom+6))+'px';
-  el.addEventListener('click',function(ev){ const t=ev.target.closest('button[data-to]'); if(!t) return; const to=+t.dataset.to; el._btn=null; mvClose(); mvDo(c,k,i,to); });
+  el.addEventListener('click',function(ev){ const d=ev.target.closest('button[data-dir]'); if(d){ if(d.disabled) return; const dir=+d.dataset.dir; el._btn=null; mvClose(); mvDo(c,k,i,k,dir<0?i-1:i+2); return; } const t=ev.target.closest('button[data-to]'); if(!t) return; const to=+t.dataset.to; el._btn=null; mvClose(); mvDo(c,k,i,to); });
   const first=el.querySelector('button:not(.cur)')||el.querySelector('button'); if(first) first.focus({preventScroll:true});
 }
 document.addEventListener('mousedown',function(ev){ if(mvEl&&!mvEl.contains(ev.target)&&!(ev.target.closest&&ev.target.closest('.mvb'))) mvClose(); });
@@ -680,11 +686,15 @@ document.addEventListener('dragover',function(ev){
   if(!mvDrag) return; const sec=ev.target.closest&&ev.target.closest('section.cat'); if(!sec) return;
   ev.preventDefault(); try{ ev.dataTransfer.dropEffect='move'; }catch(e){}
   document.querySelectorAll('section.cat.mvover').forEach(function(x){ if(x!==sec) x.classList.remove('mvover'); }); sec.classList.add('mvover');
+  document.querySelectorAll('.mvbefore,.mvafter').forEach(function(x){ x.classList.remove('mvbefore','mvafter'); });
+  const row=ev.target.closest('.grid:not(.h)'); if(row){ const r=row.getBoundingClientRect(); row.classList.add(ev.clientY>r.top+r.height/2?'mvafter':'mvbefore'); }
 });
-function mvEnd(){ mvDrag=null; document.body.classList.remove('mvdragging'); document.querySelectorAll('.mvover,.mvdrag').forEach(function(x){ x.classList.remove('mvover','mvdrag'); }); }
+function mvEnd(){ mvDrag=null; document.body.classList.remove('mvdragging'); document.querySelectorAll('.mvover,.mvdrag,.mvbefore,.mvafter').forEach(function(x){ x.classList.remove('mvover','mvdrag','mvbefore','mvafter'); }); }
 document.addEventListener('dragend',mvEnd);
 document.addEventListener('drop',function(ev){
   if(!mvDrag) return; const sec=ev.target.closest&&ev.target.closest('section.cat'); if(!sec){ mvEnd(); return; }
-  ev.preventDefault(); const d=mvDrag, secs=[].slice.call(document.querySelectorAll('section.cat')), to=secs.indexOf(sec); mvEnd();
-  const c=S.courses.find(function(x){ return x.id===d.c; }); if(c&&to>=0) mvDo(c,d.k,d.i,to);
+  ev.preventDefault(); const d=mvDrag, secs=[].slice.call(document.querySelectorAll('section.cat')), to=secs.indexOf(sec);
+  let at=null; const row=ev.target.closest('.grid:not(.h)'); if(row&&row.dataset.r){ const r=row.getBoundingClientRect(), ri=+row.dataset.r.split('-')[1]; at=ri+(ev.clientY>r.top+r.height/2?1:0); }
+  mvEnd();
+  const c=S.courses.find(function(x){ return x.id===d.c; }); if(c&&to>=0) mvDo(c,d.k,d.i,to,at);
 });
