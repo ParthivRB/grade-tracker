@@ -1438,3 +1438,25 @@ body.mvdragging *{cursor:grabbing!important}
 
 .catmeta .cpts{font-weight:750;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
 .catmeta .cpts small{font-weight:600;color:var(--mut);font-size:12px}
+
+/* phone: section header, rows, move handle, popups */
+@media (max-width:640px){
+  .cathead{padding:12px 16px;gap:8px}
+  .catmeta{width:100%;gap:8px;justify-content:space-between;flex-wrap:nowrap;font-size:12.5px}
+  .catmeta label{display:flex;align-items:center;gap:5px;white-space:nowrap}
+  .catmeta input{width:52px;padding:5px 6px}
+  .catmeta .cpts{font-size:13px}
+  .catmeta .cpts small{display:none}
+  .catmeta .cpct{min-width:0;padding:4px 10px}
+  .grid .it{display:flex;flex-wrap:wrap;align-items:center;gap:2px 6px;position:relative}
+  .grid .it input{flex:1 1 100%;padding-right:40px}
+  .grid .it .due{padding:0 8px;flex:0 0 auto}
+  .grid .it .tag,.grid .it .mini{margin:2px 0 0 8px;flex:0 0 auto}
+  .grid .it .mvb{position:absolute;right:0;top:0;width:34px;height:34px;margin:0;opacity:.7}
+  .mvb svg{width:17px;height:17px}
+  .mvpop{width:min(280px,calc(100vw - 24px))}
+  .mvpop button{padding:13px 12px}
+  .cvprog{bottom:auto;top:calc(10px + env(safe-area-inset-top,0px));transform:translate(-50%,-24px)}
+  .cvprog.in{transform:translate(-50%,0)}
+  .cvlg{grid-template-columns:auto minmax(0,1fr)}.cvlg small{grid-column:2}
+}
