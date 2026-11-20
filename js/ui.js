@@ -172,7 +172,6 @@ function homeView(){
     gpa:{t:'GPA planner',b:gpaTable},
     projected:{t:'Projected final',b:'<div id="projbox">'+projHomeHtml()+'</div>'}
   };
-  const cmpH=compareHtml(); if(cmpH) secs.compare={t:'Semester comparison',b:cmpH};
   if(PRIOR.length) secs.history={t:'Past semesters',b:'<div class="semgrid">'+cards+'</div>'+trCard};
   return semTitle()
     +'<div id="heroBox">'+heroHtml()+'</div>'+banner

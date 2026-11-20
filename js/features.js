@@ -51,17 +51,6 @@ function trendInner(c){
   return '<div class="trhead"><span>Your grade as each score came in</span><b class="'+(d>=0?'up':'dn')+'">'+(d>=0?'▲ ':'▼ ')+f1(Math.abs(d))+' pts</b></div>'+trendSvg(pts);
 }
 function trendHtml(c){ return '<section class="card trendc"><h2 class="projh">Grade trend</h2><div id="trendBox">'+trendInner(c)+'</div></section>'; }
-function semBars(){
-  const rows=[];
-  PRIOR.forEach(p=>{ const cr=p.c.reduce((a,x)=>a+x[1],0), qp=p.c.reduce((a,x)=>a+x[1]*x[2],0); if(cr) rows.push({n:p.short||p.t,v:qp/cr}); });
-  W.sems.forEach(sm=>{ let t; if(sm===S){ const g=gpaCalc('whatif'); t=g.cr?{cr:g.cr,qp:g.qp}:{cr:0,qp:0}; } else t=semTotals(sm); if(t.cr) rows.push({n:sm.short||sm.name,v:t.qp/t.cr,now:sm===S}); });
-  return rows;
-}
-function compareHtml(){
-  const rows=semBars(); if(rows.length<2) return '';
-  const best=Math.max.apply(null,rows.map(r=>r.v));
-  return '<div class="card panel cmp">'+rows.map((r,i)=>'<div class="cmpr"><span class="cmpn">'+esc(r.n)+(r.now?' <em>now</em>':'')+'</span><div class="cmpbar"><i class="'+(r.v===best?'top':'')+'" style="--w:'+Math.max(2,Math.min(100,r.v/4*100)).toFixed(1)+'%;--d:'+(i*70)+'ms"></i></div><b class="cmpv">'+g2(r.v)+'</b></div>').join('')+'</div>';
-}
 /* ---------- undo ---------- */
 let undoT=null;
 function showUndo(msg,snap,v0){

@@ -1233,16 +1233,7 @@ button.rpct:hover{transform:translateY(-1px);box-shadow:0 0 0 2px var(--c)}
 .tr-hit{fill:transparent;cursor:default}
 .tr-hit:hover+.tr-dot{r:5}
 .trnone{color:var(--mut);padding:8px 0 14px;font-size:14px}
-.cmp{display:grid;gap:12px;padding:20px 22px}
-.cmpr{display:grid;grid-template-columns:minmax(110px,190px) 1fr 52px;align-items:center;gap:14px}
-.cmpn{font-weight:700;font-size:14px;white-space:normal;line-height:1.2}
-.cmpn em{font-style:normal;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);margin-left:6px}
-.cmpbar{height:12px;border-radius:99px;background:var(--soft);overflow:hidden}
-.cmpbar i{display:block;height:100%;width:0;border-radius:99px;background:color-mix(in srgb,var(--blue) 55%,transparent);animation:cmpgrow .9s var(--d,0ms) cubic-bezier(.2,.7,.2,1) forwards}
-.cmpbar i.top{background:var(--blue)}
-@keyframes cmpgrow{to{width:var(--w)}}
-.cmpv{font-family:var(--disp);font-weight:800;font-size:15px;letter-spacing:-0.03em;text-align:right}
-@media (max-width:720px){ .cmpr{grid-template-columns:90px 1fr 46px;gap:10px} .trendc{padding:16px 14px 10px} }
+@media (max-width:720px){ .trendc{padding:16px 14px 10px} }
 
 .skip{position:fixed;left:12px;top:-60px;z-index:500;padding:10px 16px;border-radius:99px;background:var(--ink);color:var(--bg);font-weight:800;text-decoration:none;transition:top .2s ease}
 .skip:focus{top:12px;outline:2px solid var(--blue);outline-offset:2px}

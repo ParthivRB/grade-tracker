@@ -1,6 +1,6 @@
 "use strict";
 (function(){
-  const SEL=['.gnum','.hero .after b','.hc svg','.semtop .g','.semnote b','.gp .v','.gp .s','.tile .L','.tile .p','.tile .pj','.tile .mr','.gletter','.gpct','.ghint','.cpct','.rpct','.grid input[data-f=e]','.grid input[data-f=w]','td.r','.projres','.cr .gg','.cr .m','.chip','.need','.fillbox b','.cmpv','.trendc svg'].join(',');
+  const SEL=['.gnum','.hero .after b','.hc svg','.semtop .g','.semnote b','.gp .v','.gp .s','.tile .L','.tile .p','.tile .pj','.tile .mr','.gletter','.gpct','.ghint','.cpct','.rpct','.grid input[data-f=e]','.grid input[data-f=w]','td.r','.projres','.cr .gg','.cr .m','.chip','.need','.fillbox b','.trendc svg'].join(',');
   const st=document.createElement('style'); st.id='privCss';
   st.textContent=':is('+SEL+'){transition:filter .32s cubic-bezier(.2,.7,.2,1)}'
     +'html[data-priv] :is('+SEL+'){filter:blur(max(6px,.2em));user-select:none;-webkit-user-select:none}'
