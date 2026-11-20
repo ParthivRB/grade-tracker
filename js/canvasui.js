@@ -47,7 +47,7 @@ function canvasStepHtml(){
   const cfg=cvCfg();
   if(cfg&&!cfg.off) return '<span class="tk">Canvas</span><h2>Canvas is connected.</h2>'
     +'<p class="slead">Tally is reading <b>'+esc(cfg.host||'your Canvas')+'</b> through the browser extension. Last update '+esc(cvAgo(cfg.last))+'. Visiting Canvas refreshes your grades automatically.</p>'
-    +'<label class="swrow"><span>Update automatically<small style="display:block;font-weight:500;font-size:12.5px;color:var(--mut);margin-top:2px">Fill in new grades and assignments without asking. You can always undo.</small></span><input type="checkbox" class="swi" id="cvAuto"'+(cfg.auto?' checked':'')+'><i></i></label>'
+    +'<p class="slead" style="font-size:13.5px">New grades and assignments always ask for your approval first. Nothing changes until you tap Approve.</p>'
     +'<div class="cvwait" id="cvState"></div>'
     +'<div class="cvconn"><button type="button" class="btn danger" data-s="cvoff">Disconnect</button></div>';
   return '<span class="tk">Step 3 · Canvas</span><h2>Connect Canvas with the Tally extension.</h2>'
@@ -104,7 +104,7 @@ function canvasReview(p,opts){
           +'<select data-cv="sel" data-i="'+r.i+'" aria-label="Where to put '+esc(r.pc.name)+'"><option value="new"'+(r.sel==='new'?' selected':'')+'>Create a new class</option>'+ex.map(function(c){ return '<option value="'+c.id+'"'+(r.sel===c.id?' selected':'')+'>Update “'+esc(c.name)+'”</option>'; }).join('')+'</select>'
           +line(r)+'</div>';
       }).join('')+'</div>'
-      +(opts.first||(cfg0&&!cfg0.off)?'<label class="swrow cvauto"><span>Keep these up to date<small style="display:block;font-weight:500;font-size:12.5px;color:var(--mut);margin-top:2px">New grades and assignments fill in on their own when you visit Canvas.</small></span><input type="checkbox" class="swi" data-cv="auto"'+(autoOn?' checked':'')+'><i></i></label>':'')
+      +''
       +'<div class="cva"><button type="button" class="wbtn ghost" data-cv="x">Cancel</button><button type="button" class="wbtn" data-cv="go"'+(n?'':' disabled')+'>Import '+n+' class'+(n===1?'':'es')+'</button></div></div>';
   }
   function close(skipped){
@@ -138,6 +138,7 @@ function canvasApply(rows,host){
   });
   view='home'; editing=false; save(); setHash(); render(); window.scrollTo(0,0);
   const msg=(made?made+' new class'+(made===1?'':'es'):'')+(made&&linked?' + ':'')+(linked?linked+' updated':'');
+  cvLog('Imported: '+msg+(scores?' · '+scores+' grade'+(scores===1?'':'s'):''),'imp');
   showUndo('Imported from Canvas: '+msg+(scores?' · '+scores+' grade'+(scores===1?'':'s')+' filled in':''),sn,v0,true);
 }
 
@@ -152,23 +153,57 @@ function cvToast(msg,label,fn){
   el.querySelector('button').addEventListener('click',function(){ clearTimeout(t); hide(); fn(); });
 }
 const cvIdle=function(){ const a=document.activeElement; return !document.querySelector('.modal,.wio,.tour,.tpop,.dpop')&&!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)); };
+/* every change from Canvas waits for a tap on Approve; each step is written to a small activity log */
+const CVLOG_KEY='tally-canvas-log';
+function cvLogGet(){ try{ const a=JSON.parse(localStorage.getItem(CVLOG_KEY)||'[]'); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
+function cvLog(msg,kind){ try{ const a=cvLogGet(); if(a[0]&&a[0].m===msg&&a[0].k===kind&&Date.now()-a[0].t<6*3600*1000) return; a.unshift({t:Date.now(),k:kind||'info',m:msg}); localStorage.setItem(CVLOG_KEY,JSON.stringify(a.slice(0,200))); }catch(e){} }
+function cvBits(st){ const b=[]; if(st.scores) b.push(st.scores+' new grade'+(st.scores===1?'':'s')); if(st.items) b.push(st.items+' new assignment'+(st.items===1?'':'s')); if(st.cats) b.push(st.cats+' new section'+(st.cats===1?'':'s')); if(st.upd) b.push(st.upd+' changed'); return b; }
+function cvAskClose(){ const el=document.getElementById('cvAsk'); if(el){ el.classList.remove('in'); setTimeout(function(){ el.remove(); },300); } }
+function cvAsk(p,plan,any){
+  let el=document.getElementById('cvAsk');
+  if(!el){ el=document.createElement('div'); el.id='cvAsk'; el.className='cvask'; el.setAttribute('role','alertdialog'); el.setAttribute('aria-label','Canvas has updates'); document.body.appendChild(el); void el.offsetWidth; }
+  const rows=plan.linked.filter(function(x){ return cvBits(x.stats).length; });
+  el.innerHTML='<b class="cvat">Canvas has updates</b>'
+    +'<ul class="cval">'+rows.slice(0,4).map(function(x){ return '<li><span>'+esc(x.course.name)+'</span><em>'+esc(cvBits(x.stats).join(' · '))+'</em></li>'; }).join('')+(rows.length>4?'<li><span>and '+(rows.length-4)+' more classes</span></li>':'')+'</ul>'
+    +(plan.fresh.length?'<p class="cvan">'+plan.fresh.length+' new class'+(plan.fresh.length===1?'':'es')+' also showed up in Canvas.</p>':'')
+    +'<div class="cvab">'+(any?'<button type="button" class="cvaok" data-q="ok">Approve</button>':'')+(plan.fresh.length?'<button type="button" data-q="new">New classes…</button>':'')+'<button type="button" class="ghost" data-q="no">Not now</button></div>';
+  requestAnimationFrame(function(){ el.classList.add('in'); });
+  el.onclick=function(ev){
+    const b=ev.target.closest('[data-q]'); if(!b) return; const q=b.dataset.q;
+    if(q==='ok'){
+      const sn=JSON.stringify(W), v0=view, t=plan.totals; canvasSync(W.sems,p,false); save(); render(true);
+      const msg=cvBits(t).join(' · '); cvLog('Approved: '+msg,'ok'); showUndo('Canvas updated: '+msg,sn,v0,true);
+      if(!plan.fresh.length) cvAskClose(); else cvAsk(p,{linked:[],fresh:plan.fresh,totals:{items:0,scores:0,upd:0,cats:0}},0);
+    }else if(q==='new'){ cvAskClose(); canvasReview({v:1,host:p.host,courses:plan.fresh}); }
+    else{ cvLog('Dismissed an update from Canvas','no'); cvAskClose(); }
+  };
+}
 function canvasIngest(d){
   const cfg=cvCfg(); if(cfg&&cfg.off) return;
   const linked=W.sems.some(function(se){ return se.courses.some(function(c){ return c.cv; }); });
   if(cfg&&linked&&cfg.id===d.id) return;
   const p=canvasClean(d.payload); if(!p) return;
   if(!cfg||!linked){ canvasReview(p,{first:true,id:d.id,at:d.at}); return; }
-  if(cfg.auto&&!cvIdle()){ cvPending=d; setTimeout(function(){ if(cvPending===d){ cvPending=null; canvasIngest(d); } },30000); return; }
   cfg.id=d.id; cfg.last=d.at||Date.now(); cfg.host=p.host||cfg.host; cvSave(cfg);
   const plan=canvasSync(W.sems,p,true), t=plan.totals, any=t.items+t.scores+t.upd+t.cats;
-  if(cfg.auto){
-    if(any){
-      const sn=JSON.stringify(W), v0=view; canvasSync(W.sems,p,false); save(); render(true);
-      const bits=[]; if(t.scores) bits.push(t.scores+' new grade'+(t.scores===1?'':'s')); if(t.items) bits.push(t.items+' new assignment'+(t.items===1?'':'s')); if(t.upd) bits.push(t.upd+' updated'); if(t.cats) bits.push(t.cats+' new section'+(t.cats===1?'':'s'));
-      showUndo('Canvas updated: '+bits.join(' · '),sn,v0,true);
-    }
-    if(plan.fresh.length) cvToast(plan.fresh.length+' new class'+(plan.fresh.length===1?'':'es')+' in Canvas','Review',function(){ canvasReview({v:1,host:p.host,courses:plan.fresh}); });
-  }else if(any||plan.fresh.length){
-    cvToast('Canvas has '+(t.scores?t.scores+' new grade'+(t.scores===1?'':'s'):any+' update'+(any===1?'':'s'))+(plan.fresh.length?' and '+plan.fresh.length+' new class'+(plan.fresh.length===1?'':'es'):''),'Review',function(){ canvasReview(p); });
+  if(!any&&!plan.fresh.length) return;
+  cvLog('Canvas has '+(any?cvBits(t).join(' · '):'')+(any&&plan.fresh.length?' and ':'')+(plan.fresh.length?plan.fresh.length+' new class'+(plan.fresh.length===1?'':'es'):'')+', waiting for approval','found');
+  cvAsk(p,plan,any);
+}
+/* the hidden activity log */
+function cvLogOpen(){
+  const old=document.getElementById('cvLogOv'); if(old) old.remove();
+  const ov=document.createElement('div'); ov.className='wio cvov'; ov.id='cvLogOv'; const rel=trapFocus(ov);
+  const kinds={found:'Waiting',ok:'Approved',no:'Skipped',imp:'Imported',info:''};
+  function draw(){
+    const a=cvLogGet(), cfg=cvCfg();
+    ov.innerHTML='<div class="cvc" role="dialog" aria-modal="true" aria-label="Canvas activity"><div class="cvh"><div><h3>Canvas activity</h3><small>'+(cfg&&!cfg.off?'Connected to <b>'+esc(cfg.host||'Canvas')+'</b> · last update '+esc(cvAgo(cfg.last)):'Not connected')+'. Kept on this device only.</small></div></div>'
+      +'<div class="cvlist">'+(a.length?a.map(function(x){ return '<div class="cvlg"><span class="cvlk k-'+esc(x.k)+'">'+esc(kinds[x.k]||'Note')+'</span><b>'+esc(x.m)+'</b><small>'+esc(cvAgo(x.t))+'</small></div>'; }).join(''):'<div class="cvs" style="padding:18px 6px">Nothing yet. When Canvas has new grades or assignments, they show up here and in a small popup that waits for your approval.</div>')+'</div>'
+      +'<div class="cva">'+(a.length?'<button type="button" class="wbtn ghost" data-lg="clear">Clear</button>':'')+'<button type="button" class="wbtn" data-lg="x">Done</button></div></div>';
   }
+  function close(){ ov.classList.remove('open'); document.removeEventListener('keydown',kd,true); rel(); setTimeout(function(){ ov.remove(); },260); }
+  const kd=function(e){ if(e.key==='Escape'){ e.stopPropagation(); close(); } };
+  document.addEventListener('keydown',kd,true);
+  ov.addEventListener('click',function(e){ if(e.target===ov){ close(); return; } const b=e.target.closest('[data-lg]'); if(!b) return; if(b.dataset.lg==='x') close(); else if(b.dataset.lg==='clear'){ try{ localStorage.removeItem(CVLOG_KEY); }catch(x){} draw(); } });
+  document.body.appendChild(ov); draw(); requestAnimationFrame(function(){ ov.classList.add('open'); });
 }

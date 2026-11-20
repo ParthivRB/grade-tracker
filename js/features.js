@@ -558,6 +558,7 @@ document.addEventListener('click',function(ev){
   if(a==='tourplay'){ tourOpen(); return; }
   if(a==='setupplay'){ setupOpen(); return; }
   if(a==='setupai'){ setupOpen('ai'); return; }
+  if(a==='cvlog'){ cvLogOpen(); return; }
   if(a==='setupcanvas'){ setupOpen('canvas'); return; }
   if(a==='clsopen'){ classModal(b.dataset.id,b.dataset.d); return; }
   if(a==='skipwk'){ const o=b.dataset.k==='e'?(S.events||[]).find(x=>x.id===b.dataset.id):getC(b.dataset.id); if(o){ o.skip=o.skip||[]; if(!o.skip.includes(calWk)) o.skip.push(calWk); save(); closeModal(); calRedraw(); } return; }

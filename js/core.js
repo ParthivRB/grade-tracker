@@ -514,7 +514,7 @@ function needHtml(c){
 }
 function backupHtml(skipAi){
   return syncHtml()+'<details><summary>Backup and reset</summary>'
-    +'<div class="replayrow"><button type="button" class="btn" data-act="setupcanvas">▦ Import from Canvas</button><button type="button" class="btn" data-act="setupai">✦ Set up classes with AI</button><button type="button" class="btn" data-act="tourplay">▶ Replay demo</button><button type="button" class="btn" data-act="setupplay">↺ Replay setup</button></div>'
+    +'<div class="replayrow"><button type="button" class="btn" data-act="setupcanvas">▦ Import from Canvas</button><button type="button" class="btn" data-act="setupai">✦ Set up classes with AI</button><button type="button" class="btn" data-act="cvlog">Canvas activity</button><button type="button" class="btn" data-act="tourplay">▶ Replay demo</button><button type="button" class="btn" data-act="setupplay">↺ Replay setup</button></div>'
     +'<p class="sub">Everything saves on this device automatically. To move to another phone or computer, tap <b>Save backup</b>, send the file to yourself (AirDrop, Messages, email, Files), then tap <b>Restore from file</b> on the other device.</p>'
     +'<div class="addrow" style="padding-left:0"><button class="btn pri" data-act="download">Save backup</button>'
     +'<label class="btn" style="cursor:pointer">Restore from file<input type="file" id="bkfile" accept=".json,application/json" hidden></label>'
