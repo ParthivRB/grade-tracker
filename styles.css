@@ -1278,17 +1278,11 @@ button:focus-visible,a:focus-visible,summary:focus-visible,[role=button]:focus-v
 .tr-line,.tr-area,.tr-dot{transition:stroke .5s ease,fill .5s ease}
 
 /* Canvas import */
-.cvmark{grid-column:3;display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:99px;background:linear-gradient(160deg,#FF8A3D,#E66000);color:#fff!important;font-weight:800;font-size:13.5px;text-decoration:none;cursor:grab;box-shadow:0 10px 24px -12px #E66000;transition:transform .2s}
-.cvmark:hover{transform:translateY(-1px)}
-.cvmark:active{cursor:grabbing;transform:scale(.97)}
-.cvwait{display:flex;align-items:center;gap:12px;padding:16px 18px;border-radius:18px;background:var(--soft);color:var(--ink2);font-weight:700;font-size:14px}
-.cvwait i,.cvwaiting i{width:10px;height:10px;border-radius:99px;background:#E66000;flex:0 0 auto;animation:cvpulse 1.4s ease-in-out infinite}
+.cvwaiting i{width:10px;height:10px;border-radius:99px;background:#E66000;flex:0 0 auto;animation:cvpulse 1.4s ease-in-out infinite}
 @keyframes cvpulse{0%,100%{box-shadow:0 0 0 0 rgba(230,96,0,.5);transform:scale(.9)}50%{box-shadow:0 0 0 8px rgba(230,96,0,0);transform:scale(1.1)}}
 .cvmore{margin-top:14px;font-size:13.5px;color:var(--mut)}
 .cvmore summary{cursor:pointer;font-weight:700;color:var(--ink2)}
 .cvmore p{margin:10px 0;line-height:1.5}
-.cvwaiting{position:fixed;left:50%;top:calc(18px + env(safe-area-inset-top,0px));z-index:400;display:flex;align-items:center;gap:12px;padding:12px 20px;border-radius:99px;background:var(--elev);border:1px solid var(--line);box-shadow:var(--shadow);font-weight:700;font-size:14px;transform:translate(-50%,-30px);opacity:0;transition:transform .45s cubic-bezier(.16,1,.3,1),opacity .3s}
-.cvwaiting.in{transform:translate(-50%,0);opacity:1}
 .cvc{width:min(620px,100%);max-height:calc(100vh - 32px);overflow:auto;border-radius:30px;padding:24px;background:var(--elev);border:1px solid var(--line);box-shadow:0 40px 90px -30px rgba(0,0,0,.7);transform:translateY(18px) scale(.97);transition:transform .45s cubic-bezier(.16,1,.3,1)}
 .wio.open .cvc{transform:none}
 .cvh{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px}
@@ -1317,7 +1311,7 @@ button:focus-visible,a:focus-visible,summary:focus-visible,[role=button]:focus-v
 .cva .wbtn{background:var(--blue);color:#fff}
 .cva .wbtn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
 .cva .wbtn[disabled]{opacity:.4;pointer-events:none}
-@media (max-width:720px){ .cvov{align-items:end;padding:0} .cvc{width:100%;border-radius:30px 30px 0 0;padding:20px 16px} .cvmark{grid-column:2} }
+@media (max-width:720px){ .cvov{align-items:end;padding:0} .cvc{width:100%;border-radius:30px 30px 0 0;padding:20px 16px} }
 /* tour: Canvas demo */
 .st7{width:100%;display:grid;place-items:center;padding:0 22px}
 .cvbr{position:relative;width:min(420px,100%);border-radius:22px;background:var(--card);border:1px solid var(--line);box-shadow:0 24px 50px -28px rgba(0,0,0,.5);overflow:hidden}
@@ -1352,3 +1346,12 @@ button:focus-visible,a:focus-visible,summary:focus-visible,[role=button]:focus-v
 .slide.play .cvk:first-child .cvch:first-child u s:first-child{animation:cvhide .01s 5.75s forwards}
 @keyframes cvshow{to{opacity:1}}
 @keyframes cvhide{to{opacity:0}}
+
+.cvform{display:grid;gap:12px;margin-top:6px}
+.cvform input{height:50px;border-radius:14px;padding:0 16px;font-size:15px;font-weight:600;text-transform:none;letter-spacing:0}
+.cvform .btn{height:50px;font-size:15px}
+.cvform .btn[disabled]{opacity:.5}
+.okmsg{color:var(--good)!important}
+.cvconn{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.cvauto{margin-top:14px}
+#cvMsg{min-height:20px;margin-top:10px;font-weight:700;font-size:13.5px;color:var(--warn)}

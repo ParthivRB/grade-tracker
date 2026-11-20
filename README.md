@@ -24,13 +24,12 @@ It's an installable web app that also works offline.
 
 ## Connect Canvas
 
-No token and no school permission needed. It works the way browser extensions like Better Campus do: it reads your own signed-in Canvas page.
+1. In Canvas, go to Account, then Settings, scroll to Approved Integrations, and click **＋ New Access Token**. Name it Tally, set an expiry (the end of the semester is a good choice), and copy the token.
+2. In Tally, open **Backup and reset**, choose **Import from Canvas** (or pick Connect Canvas during setup), and paste your school's Canvas address and the token.
 
-1. Open **Backup and reset** (or the setup screen) and choose **Import from Canvas**.
-2. Drag the orange **Send Canvas to Tally** button into your bookmarks bar.
-3. Open your school's Canvas on a computer, sign in, and click the bookmark. Tally opens in a new tab.
+Tally builds a class for each Canvas course, a section for each assignment group (with its weight and drop-lowest rules), and fills in every grade already posted. After that it checks Canvas when you open Tally. New assignments go into the matching section and new grades fill in. Your own what-ifs, curves and renames are kept, and every update can be undone. You can switch automatic updates off, and then Tally just tells you there is something new to review.
 
-Tally builds a class for each Canvas course, a section for each assignment group (with its weight and drop-lowest rules), and fills in every grade that is already posted. Click the bookmark again any time. New assignments go into the matching section, new grades fill in, and your own what-ifs, curves and renames are kept. Everything is processed in your browser. Nothing is sent to any server.
+The token is stored only in this browser, and Tally talks directly to your school's Canvas, never through a server. If your school turns off student tokens, use AI setup instead. Delete the token in Canvas settings if you ever stop using this.
 
 ## Move to another device
 
@@ -55,7 +54,7 @@ Your data lives in this browser on this device. Use **Save backup** now and then
 - `index.html`: the page shell.
 - `styles.css`: all styles.
 - `js/core.js`: grade scales, data shape and the grade engine (no screen code).
-- `js/canvas.js`: the Canvas reader (it becomes the bookmark) and the smart merge. No screen code.
+- `js/canvas.js`: the Canvas reader and the smart merge. No screen code.
 - `js/canvasui.js`: the Canvas screens.
 - `js/ui.js`: saving, home screen, sync, events, dialogs.
 - `js/features.js`: trends, undo, what-if popup, calendar, class editing, themes.

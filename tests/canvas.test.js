@@ -25,8 +25,8 @@ function fakeCanvas(state) {
   const resp = (body, link) => ({ ok: true, status: 200, headers: { get: (k) => (k === 'Link' ? link || null : null) }, text: async () => 'while(1);' + JSON.stringify(body) });
   const f = async (url, opts) => {
     calls.push(url);
-    if (!opts || opts.credentials !== 'include') throw new Error('must send the session cookie');
-    if (!opts.headers || !/canvas-string-ids/.test(opts.headers.Accept)) throw new Error('must ask for string ids');
+    if (!opts || !opts.headers || opts.headers.Authorization !== 'Bearer tok_123456789012345678') { return { ok: false, status: 401, headers: { get: () => null }, text: async () => '{}' }; }
+    if (!/canvas-string-ids/.test(opts.headers.Accept)) throw new Error('must ask for string ids');
     const u = new URL(url);
     if (u.pathname === '/api/v1/courses') {
       if (u.searchParams.get('page') === '2') return resp(state.courses.slice(1));
@@ -63,7 +63,7 @@ const baseState = () => ({
 T('reader follows paging, strips while(1), skips locked courses, keeps ids as strings', async () => {
   const { f, calls } = fakeCanvas(baseState());
   ctx.__f = f;
-  const p = await run("canvasCollect(__f,'https://canvas.example.edu')");
+  const p = await run("canvasCollect(__f,'https://canvas.example.edu',null,'tok_123456789012345678')");
   is(p.courses.map((c) => c.id), ['101', '303']);
   is(p.courses[0].prof, 'Dr. Rivera'); is(p.courses[0].weighted, true); is(p.courses[0].cs, 91.2); is(p.courses[1].weighted, false);
   is(p.courses[0].groups[0].drop, 1); is(p.courses[0].groups[0].w, 30);
@@ -78,16 +78,33 @@ T('reader reports a friendly error when Canvas refuses', async () => {
   try { await run("canvasCollect(__f,'https://x')"); } catch (e) { msg = e.message; }
   if (!/401/.test(msg)) throw new Error('expected a 401 message, got: ' + msg);
 });
-T('bookmarklet text is one safe line of code', () => {
-  const b = call('canvasBookmarklet', 'https://example.github.io/grade-tracker/');
-  if (!b.startsWith('javascript:')) throw new Error('not a javascript: link');
-  const code = decodeURIComponent(b.slice('javascript:'.length));
-  if (/\n/.test(code)) throw new Error('bookmarklet has line breaks');
-  new Function(code);
+T('the reader sends the token and never a session cookie', async () => {
+  const seen = [];
+  ctx.__f = async (url, opts) => { seen.push(opts); return { ok: true, status: 200, headers: { get: () => null }, text: async () => '[]' }; };
+  await run("canvasCollect(__f,'https://canvas.example.edu',null,'tok_123456789012345678')");
+  is(seen[0].headers.Authorization, 'Bearer tok_123456789012345678'); is(seen[0].credentials, undefined);
 });
-
-const make = async () => { const { f } = fakeCanvas(baseState()); ctx.__f = f; return run("canvasClean(canvasCollect(__f,'https://canvas.example.edu'))").then ? null : null; };
-const payload = async (mut) => { const st = baseState(); if (mut) mut(st); const { f } = fakeCanvas(st); ctx.__f = f; const p = await run("canvasCollect(__f,'https://canvas.example.edu')"); ctx.__p = p; return run('canvasClean(__p)'); };
+T('a wrong token gives a clear message', async () => {
+  const { f } = fakeCanvas(baseState()); ctx.__f = f; let e1;
+  try { await run("canvasCollect(__f,'https://canvas.example.edu',null,'wrong')"); } catch (e) { e1 = e; }
+  is(e1.status, 401); ctx.__e = e1;
+  if (!/did not accept that token/.test(run('canvasExplain(__e)'))) throw new Error('unclear message');
+});
+T('network and browser-blocked failures get a helpful message', () => {
+  ctx.__e = new (run('TypeError'))('Failed to fetch');
+  if (!/could not reach Canvas/.test(run('canvasExplain(__e)'))) throw new Error('unclear message');
+});
+T('school addresses are cleaned up', () => {
+  is(call('canvasHost', 'canvas.pitt.edu'), { origin: 'https://canvas.pitt.edu', host: 'canvas.pitt.edu' });
+  is(call('canvasHost', ' https://pitt.instructure.com/login/canvas '), { origin: 'https://pitt.instructure.com', host: 'pitt.instructure.com' });
+  is(call('canvasHost', 'http://evil.example.com'), null); is(call('canvasHost', 'not a site'), null); is(call('canvasHost', ''), null);
+});
+T('the connection test returns your name', async () => {
+  ctx.__f = async (url, opts) => ({ ok: true, status: 200, headers: { get: () => null }, text: async () => 'while(1);' + JSON.stringify({ name: 'Pat Student' }) });
+  is((await run("canvasTest(__f,'https://canvas.example.edu','tok_123456789012345678')")).name, 'Pat Student');
+});
+const make = async () => { const { f } = fakeCanvas(baseState()); ctx.__f = f; return null.then ? null : null; };
+const payload = async (mut) => { const st = baseState(); if (mut) mut(st); const { f } = fakeCanvas(st); ctx.__f = f; const p = await run("canvasCollect(__f,'https://canvas.example.edu',null,'tok_123456789012345678')"); ctx.__p = p; return run('canvasClean(__p)'); };
 const newCourse = () => run("normCourse({name:'',cats:[]})");
 
 T('first import builds sections with weights, drop rules and points-based scoring', async () => {
@@ -179,6 +196,15 @@ T('junk from outside is rejected or trimmed', () => {
 T('missing numbers stay missing (not zero)', () => {
   const c = call('canvasClean', { v: 1, courses: [{ id: 1, name: 'A', cs: null, groups: [{ id: 2, name: 'G', w: null, items: [{ id: 3, n: 'x', p: 10, e: null }] }] }] });
   is(c.courses[0].cs, null); is(c.courses[0].groups[0].items[0].e, null);
+});
+T('auto-update changes linked classes and reports new ones separately', async () => {
+  const p1 = await payload(); ctx.__pc = p1.courses[0]; const mine = newCourse(); ctx.__c = mine; run("canvasMerge(__c,__pc,'canvas.example.edu')");
+  const p2 = await payload((st) => { st.groups[101][0].assignments[2].submission = sub(8); st.groups[101][0].assignments.push({ id: '7', name: 'HW 4', points_possible: 10, submission: sub(10), published: true }); });
+  p2.host = 'canvas.example.edu'; ctx.__sems = [{ courses: [mine] }]; ctx.__p2 = p2;
+  const dry = run('canvasSync(__sems,__p2,true)');
+  is(dry.totals.items, 1); is(dry.totals.scores, 2); is(dry.fresh.map((c) => c.id), ['303']); is(mine.cats[0].items.length, 3, 'dry run changed nothing');
+  const live = run('canvasSync(__sems,__p2,false)');
+  is(mine.cats[0].items.map((i) => i.e), [9, 6, 8, 10]); is(live.totals.items, 1);
 });
 T('preview counts match what applying does', async () => {
   const p = await payload(); ctx.__pc = p.courses[0];

@@ -1,13 +1,13 @@
 "use strict";
 /* ---------- Canvas import: reader + smart merge (no screen code here) ---------- */
 
-/* Runs on the student's own Canvas page, using their signed-in session. It is
-   turned into the bookmark by canvasBookmarklet(), so keep it free of // comments. */
-async function canvasCollect(f,origin,prog){
-  const H={credentials:'include',headers:{Accept:'application/json+canvas-string-ids'}};
+/* Reads the student's own Canvas with their personal access token. The request goes
+   straight from this browser to their school's Canvas; nothing passes through any server. */
+async function canvasCollect(f,origin,prog,token){
+  const H={headers:{Accept:'application/json+canvas-string-ids',Authorization:'Bearer '+token}};
   const pad=function(n){ return (n<10?'0':'')+n; };
   const J=async function(url){
-    const r=await f(url,H); if(!r.ok) throw new Error('Canvas answered '+r.status+'. Make sure you are signed in.');
+    const r=await f(url,H); if(!r.ok){ const er=new Error('Canvas answered '+r.status); er.status=r.status; throw er; }
     const t=await r.text(); const d=JSON.parse(t.replace(/^while\(1\);/,''));
     const l=r.headers&&r.headers.get&&r.headers.get('Link'); const m=l&&l.match(/<([^>]+)>;\s*rel="next"/);
     return {d:d,next:m?m[1]:null};
@@ -47,19 +47,29 @@ async function canvasCollect(f,origin,prog){
       })
     });
   }
-  return {v:1,src:'canvas',host:(typeof location!=='undefined'?location.hostname:''),at:Date.now(),courses:out};
+  return {v:1,src:'canvas',host:String(origin).replace(/^https?:\/\//,''),at:Date.now(),courses:out};
 }
 
-function canvasBookmarklet(tallyUrl){
-  const body='(function(){var T='+JSON.stringify(tallyUrl)+',O=new URL(T).origin,P=null,R=false;'
-    +'var w=window.open(T+"#canvas","tally-canvas");'
-    +'if(!w){alert("Allow pop-ups for Canvas, then click the bookmark again.");return;}'
-    +'var send=function(){w.postMessage({tallyCanvas:P},O);};'
-    +'window.addEventListener("message",function(e){if(e.source===w&&e.data&&e.data.tallyReady){R=true;if(P)send();}});'
-    +'var collect='+canvasCollect.toString().replace(/\s*\n\s*/g,' ')+';'
-    +'collect(window.fetch.bind(window),location.origin).then(function(p){P=p;if(R)send();setTimeout(function(){if(P)send();},800);})'
-    +'.catch(function(err){try{w.postMessage({tallyCanvasError:String(err&&err.message||err)},O);}catch(e){}alert("Tally could not read Canvas: "+(err&&err.message||err));});})();';
-  return 'javascript:'+encodeURIComponent(body);
+function canvasHost(input){
+  let s=String(input||'').trim(); if(!s) return null;
+  if(!/^https?:\/\//i.test(s)) s='https://'+s;
+  let u; try{ u=new URL(s); }catch(e){ return null; }
+  if(!/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(u.hostname)&&u.hostname!=='localhost') return null;
+  if(u.protocol!=='https:'&&u.hostname!=='localhost') return null;
+  return {origin:u.origin,host:u.host};
+}
+function canvasExplain(e){
+  const st=e&&e.status;
+  if(st===401) return 'Canvas did not accept that token. Check that you copied all of it and that it has not expired.';
+  if(st===403) return 'Canvas says this token is not allowed to read your courses.';
+  if(st===404) return 'That address does not look like a Canvas site. Use the address you sign in to.';
+  if(e&&(e.name==='TypeError'||/fetch|network/i.test(String(e.message)))) return 'Tally could not reach Canvas from the browser. Check the address. Some schools block this, in which case use AI setup instead.';
+  return String((e&&e.message)||e||'Something went wrong talking to Canvas.');
+}
+async function canvasTest(f,origin,token){
+  const r=await f(origin+'/api/v1/users/self',{headers:{Accept:'application/json+canvas-string-ids',Authorization:'Bearer '+token}});
+  if(!r.ok){ const er=new Error('Canvas answered '+r.status); er.status=r.status; throw er; }
+  const d=JSON.parse((await r.text()).replace(/^while\(1\);/,'')); return {name:String(d.name||d.short_name||'')};
 }
 
 /* ---------- checking what arrives (treat it as untrusted) ---------- */
@@ -158,4 +168,23 @@ function canvasPreview(existing,pc,host){
   st.assignments=pc.groups.reduce(function(a,g){ return a+g.items.filter(cvUsable).length; },0);
   st.graded=pc.groups.reduce(function(a,g){ return a+g.items.filter(function(x){ return cvUsable(x)&&x.e!=null; }).length; },0);
   return st;
+}
+
+/* Find an already-linked class anywhere in the saved data. */
+function canvasFindLinked(sems,pc,host){
+  for(let i=0;i<sems.length;i++){ const c=sems[i].courses.find(function(x){ return x.cv&&x.cv.id===pc.id&&(!x.cv.h||x.cv.h===host); }); if(c) return c; }
+  return null;
+}
+/* Apply a fresh Canvas reading to classes that are already linked. New Canvas classes are returned, not added. */
+function canvasSync(sems,payload,dry){
+  const host=payload.host, out={linked:[],fresh:[],totals:{items:0,scores:0,upd:0,cats:0}};
+  payload.courses.forEach(function(pc){
+    const c=canvasFindLinked(sems,pc,host);
+    if(!c){ out.fresh.push(pc); return; }
+    const target=dry?JSON.parse(JSON.stringify(c)):c;
+    const st=canvasMerge(target,pc,host);
+    out.linked.push({course:c,stats:st});
+    ['items','scores','upd','cats'].forEach(function(k){ out.totals[k]+=st[k]; });
+  });
+  return out;
 }
